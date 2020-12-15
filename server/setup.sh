@@ -26,11 +26,12 @@ test -d "$BASE_DIR" || git clone "$GIT_URL" "$BASE_DIR"
 
 cd "$BASE_DIR"
 
-certbot --nginx --non-interactive --agree-tos --email "$EMAIL" \
-  --domain "$DOMAIN" --domain "www.$DOMAIN"
-
 cp server/nginx.conf "/etc/nginx/sites-available/$PROJECT"
 ln -sf "../sites-available/$PROJECT" "/etc/nginx/sites-enabled/$PROJECT"
+
+certbot --nginx --non-interactive --agree-tos --email "$EMAIL" \
+  --domain "$DOMAIN" --domain "api.$DOMAIN" --domain "www.$DOMAIN"
+
 systemctl restart nginx.service
 
 if ! test -f /etc/webhook.conf.secret; then

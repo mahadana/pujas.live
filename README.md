@@ -14,5 +14,5 @@ docker-compose up
 ## Server Setup
 
 ```sh
-wget -qO- 'https://raw.githubusercontent.com/mahadana/neo.pujas.live/master/server/setup.sh' | bash
+wget -qO- 'https://raw.githubusercontent.com/mahadana/neo.pujas.live/main/server/setup.sh' | bash
 ```
