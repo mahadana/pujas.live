@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "streams",
+  "info": {
+    "name": "streams",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "streamUrl": {
+      "type": "string"
+    },
+    "embeddable": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "image": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images"
+      ],
+      "plugin": "upload",
+      "required": false
+    },
+    "monastery": {
+      "model": "monasteries"
+    }
+  }
+}

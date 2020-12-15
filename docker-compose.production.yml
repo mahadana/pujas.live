@@ -1,0 +1,34 @@
+version: "3.7"
+
+services:
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - 127.0.0.1:1337:1337
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: strapi
+      POSTGRES_PASSWORD: strapi
+      POSTGRES_USER: strapi
+  frontend:
+    build:
+      context: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - db
+      - redis
+    ports:
+      - 127.0.0.1:3002:3000
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+  worker:
+    build:
+      context: ./worker
+    restart: unless-stopped

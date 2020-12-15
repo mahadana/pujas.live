@@ -1,0 +1,41 @@
+version: "3.7"
+
+services:
+  backend:
+    image: node:14
+    depends_on:
+      - db
+    ports:
+      - 127.0.0.1:1337:1337
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    command: "/app/scripts/docker-development.sh"
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: strapi
+      POSTGRES_PASSWORD: strapi
+      POSTGRES_USER: strapi
+  frontend:
+    image: node:14
+    depends_on:
+      - db
+      - redis
+    ports:
+      - 127.0.0.1:3000:3000
+    volumes:
+      - ./frontend:/app
+    working_dir: /app
+    command: "/app/scripts/docker-development.sh"
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+  worker:
+    image: node:14
+    restart: unless-stopped
+    volumes:
+      - ./worker:/app
+    working_dir: /app
+    command: "/app/scripts/docker-development.sh"

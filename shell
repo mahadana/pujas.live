@@ -1,0 +1,10 @@
+#!/bin/sh
+
+SERVICE="$1"
+
+if test -z "$SERVICE"; then
+  echo "Usage: $0 <backend|frontend|worker>"
+  exit 1
+fi
+
+docker-compose exec -u node "$SERVICE" bash
