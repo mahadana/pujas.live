@@ -1,18 +1,33 @@
+import { Box, makeStyles } from "@material-ui/core";
 import Stream from "./Stream";
+import Link from "next/link";
 
-function StreamList(props) {
-  const { streams } = props;
-  if (streams) {
-    return (
-      <>
+const useStyles = makeStyles((theme) => ({
+  root: {
+    margin: "1em 0",
+  },
+  showMore: {
+    margin: "1em 0",
+    textAlign: "center",
+  },
+}));
+
+function StreamList({ streams }) {
+  const classes = useStyles();
+  return (
+    <Box className={classes.root}>
+      <Box>
         {streams.map((stream) => (
           <Stream key={stream.id} {...stream} />
         ))}
-      </>
-    );
-  } else {
-    return <p>No Streams Found</p>;
-  }
+      </Box>
+      <Box className={classes.showMore}>
+        <Link href="#">
+          <a>Show more livestreams</a>
+        </Link>
+      </Box>
+    </Box>
+  );
 }
 
 export default StreamList;

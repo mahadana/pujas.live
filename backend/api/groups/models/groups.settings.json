@@ -32,6 +32,10 @@
       ],
       "plugin": "upload",
       "required": false
+    },
+    "owner": {
+      "plugin": "users-permissions",
+      "model": "user"
     }
   }
 }

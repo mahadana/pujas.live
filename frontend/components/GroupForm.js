@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { setNestedObjectValues, useFormik } from "formik";
+import React, { useContext, useState } from "react";
+import { useFormik } from "formik";
 import * as yup from "yup";
+import fetch from "cross-fetch";
 import { Button, Container, Grid, TextField } from "@material-ui/core";
+import { apiUrl, UserContext } from "../lib/context";
 
 const validationSchema = yup.object({
   email: yup.string().email("Invalid email address").required("Required"),
@@ -14,17 +16,25 @@ const validationSchema = yup.object({
 });
 
 function GroupForm(props) {
+  const { user } = useContext(UserContext);
+  const [loading, setLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
-      email: "",
-      emailConfirmation: "",
+      email: user?.email || "",
+      emailConfirmation: user?.email || "",
       name: "",
       description: "",
     },
     validationSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
-      props.onSuccess();
+    onSubmit: async (data) => {
+      setLoading(true);
+      const response = await fetch(`${apiUrl}/groups/prepare`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+      });
+      setLoading(false);
+      props.onSuccess(data);
     },
   });
 
@@ -90,6 +100,7 @@ function GroupForm(props) {
               variant="contained"
               color="primary"
               onClick={formik.handleSubmit}
+              disabled={loading}
             >
               Save
             </Button>

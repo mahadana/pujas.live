@@ -1,11 +1,12 @@
-import { useState } from "react";
 import { gql, useQuery } from "@apollo/client";
-import { Container, makeStyles, StylesProvider } from "@material-ui/core";
+import { Container, makeStyles } from "@material-ui/core";
+
 import Banner from "../components/Banner";
-import StreamList from "../components/StreamList";
 import GroupFormDialog from "../components/GroupFormDialog";
 import GroupList from "../components/GroupList";
-import withApollo from "../lib/apollo";
+import StreamList from "../components/StreamList";
+import UserBar from "../components/UserBar";
+import { withApollo } from "../lib/context";
 
 const useStyles = makeStyles((theme) => ({
   lead: {
@@ -17,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 
 const QUERY = gql`
   {
-    groups {
+    groups(where: { confirmed: true }) {
       id
       name
       description
@@ -30,6 +31,7 @@ const QUERY = gql`
       name
       description
       streamUrl
+      previousStreamsUrl
       image {
         formats
       }
@@ -43,19 +45,18 @@ const QUERY = gql`
 
 const Home = () => {
   const classes = useStyles();
-  const [query, updateQuery] = useState("");
   const { loading, error, data } = useQuery(QUERY);
-  if (error) return <p>Error loading data...</p>;
-  if (loading) return <h1>Fetching...</h1>;
 
   return (
     <>
       <Banner />
+      <UserBar />
+      {error && <p>Error loading data...</p>}
       <Container maxWidth="lg">
         <h2 className={classes.lead}>Livestreams</h2>
-        <StreamList streams={data.streams} />
-        <h2 className={classes.lead}>Dhamma Groups (actively recruiting)</h2>
-        <GroupList groups={data.groups} />
+        {!loading && <StreamList streams={data.streams} />}
+        <h2 className={classes.lead}>Open Sitting Groups</h2>
+        {!loading && <GroupList groups={data.groups} />}
         <GroupFormDialog />
       </Container>
     </>

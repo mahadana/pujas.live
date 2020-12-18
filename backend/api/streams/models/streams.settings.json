@@ -22,6 +22,9 @@
     "streamUrl": {
       "type": "string"
     },
+    "previousStreamsUrl": {
+      "type": "string"
+    },
     "embeddable": {
       "type": "boolean",
       "default": false,

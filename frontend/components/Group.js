@@ -1,29 +1,40 @@
-import { Grid, makeStyles } from "@material-ui/core";
+import { Box, Button, Grid, makeStyles } from "@material-ui/core";
+import Link from "next/link";
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    margin: ".5em",
+  root: {
+    display: "flex",
+    flexWrap: "wrap",
+    padding: "1.5em",
+    "&:nth-child(odd)": {
+      backgroundColor: "#eee",
+    },
   },
   image: {
-    float: "left",
-    display: "block",
-    objectFit: "cover",
-    width: "100px",
-    height: "100px",
-    marginRight: "1.5em",
-  },
-  name: {
-    margin: 0,
-    fontSize: "1.5em",
-    fontWeight: 400,
-  },
-  description: {
-    margin: ".5em 0 0",
-  },
-  join: {
-    [theme.breakpoints.up("sm")]: {
-      alignSelf: "flex-end",
+    flex: "0 0 12em",
+    "& > img": {
+      display: "block",
+      objectFit: "cover",
+      width: "10em",
+      height: "10em",
     },
+  },
+  text: {
+    flex: "1 1 20em",
+    marginRight: "2em",
+    "& > h3": {
+      margin: 0,
+      fontSize: "1.5em",
+      fontWeight: 400,
+    },
+    "& > p": {
+      fontSize: "1.1em",
+      marginBottom: 0,
+    },
+  },
+  links: {
+    display: "flex",
+    alignItems: "center",
   },
 }));
 
@@ -34,18 +45,20 @@ const Group = (props) => {
     : "https://placekitten.com/g/100/100";
 
   return (
-    <Grid container spacing={3} className={classes.container}>
-      <Grid item sm={8}>
-        <img src={imageUrl} className={classes.image} />
-        <h3 className={classes.name}>{props.name}</h3>
-        <p className={classes.description}>{props.description}</p>
-      </Grid>
-      <Grid item sm={4} className={classes.join}>
-        <p className={classes.description}>
-          <a href={"#"}>Apply to join this group</a>
-        </p>
-      </Grid>
-    </Grid>
+    <Box className={classes.root}>
+      <Box className={classes.image}>
+        <img src={imageUrl} />
+      </Box>
+      <Box className={classes.text}>
+        <h3>{props.name}</h3>
+        <p>{props.description}</p>
+      </Box>
+      <Box className={classes.links}>
+        <Link href={`/groups/${props.id}`}>
+          <Button variant="contained">Message group</Button>
+        </Link>
+      </Box>
+    </Box>
   );
 };
 

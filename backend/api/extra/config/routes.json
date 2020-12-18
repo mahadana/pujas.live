@@ -1,0 +1,20 @@
+{
+  "routes": [
+    {
+      "method": "POST",
+      "path": "/auth/token",
+      "handler": "extra.loginWithToken",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/groups/prepare",
+      "handler": "extra.prepareGroup",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

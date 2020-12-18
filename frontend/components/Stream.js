@@ -1,35 +1,40 @@
-import { Grid, makeStyles } from "@material-ui/core";
+import { Box, Button, makeStyles } from "@material-ui/core";
+import Link from "next/link";
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    margin: ".5em",
+  root: {
+    display: "flex",
+    flexWrap: "wrap",
+    padding: "1.5em",
+    "&:nth-child(odd)": {
+      backgroundColor: "#eee",
+    },
   },
   image: {
-    float: "left",
-    display: "block",
-    objectFit: "cover",
-    width: "150px",
-    height: "150px",
-    marginRight: "1.5em",
+    flex: "0 0 12em",
+    "& > img": {
+      display: "block",
+      objectFit: "cover",
+      width: "10em",
+      height: "10em",
+    },
   },
-  name: {
-    margin: 0,
-    fontSize: "1.5em",
-    fontWeight: 400,
-  },
-  description: {
-    margin: ".5em 0 0",
-  },
-  join: {
-    [theme.breakpoints.up("sm")]: {
-      alignSelf: "flex-end",
+  text: {
+    flex: "1 1 20em",
+    marginRight: "2em",
+    "& > h3": {
+      margin: 0,
+      fontSize: "1.5em",
+      fontWeight: 400,
+    },
+    "& > p": {
+      marginBottom: 0,
+      fontSize: "1.1em",
     },
   },
   links: {
-    padding: 0,
-  },
-  link: {
-    listStyleType: "none",
+    display: "flex",
+    alignItems: "center",
   },
 }));
 
@@ -40,29 +45,34 @@ const Stream = (props) => {
     : "https://placekitten.com/g/150/150";
 
   return (
-    <Grid container spacing={3} className={classes.container}>
-      <Grid item sm={8}>
-        <img src={imageUrl} className={classes.image} />
-        <h3 className={classes.name}>{props.name}</h3>
-        <p className={classes.description}>{props.description}</p>
+    <Box className={classes.root}>
+      <Box className={classes.image}>
+        <img src={imageUrl} />
+      </Box>
+      <Box className={classes.text}>
+        <h3>{props.name}</h3>
+        <p>{props.description}</p>
         <p>
-          <strong>Next stream: TODO</strong>
+          <strong>Next stream:</strong> TODO
         </p>
-      </Grid>
-      <Grid item sm={4}>
-        <ul className={classes.links}>
-          <li className={classes.link}>
+        <p>
+          {props.monastery?.url && (
             <a href={props.monastery?.url}>{props.monastery?.name} Website</a>
-          </li>
-          <li className={classes.link}>
-            <a href={props.streamUrl}>Livestream</a>
-          </li>
-          <li className={classes.link}>
-            <a href="#">Previous chanting sessions</a>
-          </li>
-        </ul>
-      </Grid>
-    </Grid>
+          )}
+          {props.previousStreamsUrl && (
+            <>
+              {" "}
+              · <a href={props.previousStreamsUrl}>Previous chanting sessions</a>
+            </>
+          )}
+        </p>
+      </Box>
+      <Box className={classes.links}>
+        <Link href={props.streamUrl}>
+          <Button variant="contained">Livestream page</Button>
+        </Link>
+      </Box>
+    </Box>
   );
 };
 

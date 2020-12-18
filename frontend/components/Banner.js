@@ -1,11 +1,10 @@
-import Image from "next/image";
+import Link from "next/link";
 import { makeStyles, withTheme } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     position: "relative",
     height: "10em",
-    marginBottom: "2em",
   },
   image: {
     position: "absolute",
@@ -17,18 +16,24 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     zIndex: 100,
     margin: 0,
-    top: "2rem",
-    left: "2rem",
-    fontSize: "2.5em",
+    top: "1.5rem",
+    left: "1.5rem",
     color: "white",
+    "& > a": {
+      fontSize: "1.5em",
+      fontWeight: 400,
+      color: "white",
+      textDecoration: "none",
+    },
   },
   summary: {
     position: "absolute",
     zIndex: 100,
     margin: 0,
-    top: "5rem",
-    left: "2rem",
-    fontWeight: "bold",
+    top: "4.75rem",
+    left: "1.65rem",
+    fontSize: "1.2em",
+    fontWeight: 500,
     color: "white",
   },
 }));
@@ -38,7 +43,9 @@ const Banner = () => {
   return (
     <header className={classes.container}>
       <img className={classes.image} src="/banner.jpg" alt="banner" />
-      <h1 className={classes.title}>Pujas.live</h1>
+      <h1 className={classes.title}>
+        <Link href="/">Pujas.live</Link>
+      </h1>
       <p className={classes.summary}>
         Livestreams and meditation groups in the Thai Forest tradition of Ajahn
         Chah

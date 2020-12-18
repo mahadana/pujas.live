@@ -100,6 +100,8 @@ module.exports = async () => {
         "Streamed daily at 7pm Pacific Time, with some exceptions.\nDhamma talks follow puja 1-2 times per week",
       streamUrl:
         "https://www.youtube.com/embed/live_stream?channel=UCFAuQ5fmYYVv5_Dim0EQpVA",
+      previousStreamsUrl:
+        "https://www.youtube.com/playlist?list=PLa-KRFyPjreSeLAusZUEWIpVqTOWsJzCQ",
       embeddable: 0,
       monastery: 1,
       state: "published",
@@ -156,13 +158,25 @@ module.exports = async () => {
 
   await updatePermissions(
     "Public",
+    ["extra"],
+    ["loginwithtoken", "preparegroup"],
+    true
+  );
+  await updatePermissions(
+    "Public",
     ["groups", "monasteries", "streams"],
     ["find", "findone"],
     true
   );
   await updatePermissions(
     "Authenticated",
-    ["groups", "monasteries", "streams"],
+    ["monasteries", "streams"],
+    ["find", "findone"],
+    true
+  );
+  await updatePermissions(
+    "Authenticated",
+    ["groups"],
     ["create", "find", "findone", "update"],
     true
   );

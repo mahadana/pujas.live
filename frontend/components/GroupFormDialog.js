@@ -1,18 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   AppBar,
-  Button,
   Dialog,
   IconButton,
-  Snackbar,
+  Link,
   Toolbar,
   Typography,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
-import Alert from "@material-ui/lab/Alert";
 import GroupForm from "../components/GroupForm";
+import { UserContext } from "../lib/context";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -31,32 +30,27 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function Test() {
   const classes = useStyles();
+  const { alertUser } = useContext(UserContext);
   const [dialog, setDialog] = React.useState(false);
-  const [alert, setAlert] = React.useState(false);
 
-  const onSuccess = () => {
+  const onSuccess = (data) => {
     setDialog(false);
-    setAlert(true);
+    alertUser(`Please check your email at ${data.email} to confirm the post.`);
   };
 
   return (
     <>
-      <Button
+      <Link
         variant="outlined"
         color="primary"
-        onClick={() => setDialog(true)}
+        href="#"
+        onClick={(e) => {
+          e.preventDefault();
+          setDialog(true);
+        }}
       >
-        Post new group...
-      </Button>
-      <Snackbar
-        open={alert}
-        autoHideDuration={6000}
-        onClose={() => setAlert(false)}
-      >
-        <Alert onClose={() => setAlert(false)} severity="success">
-          Please check your email to confirm the group.
-        </Alert>
-      </Snackbar>
+        <a>+ Click here to post new group</a>
+      </Link>
       <Dialog
         fullScreen
         open={dialog}
