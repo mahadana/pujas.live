@@ -2,6 +2,7 @@ import { gql, useQuery } from "@apollo/client";
 import { Container, makeStyles } from "@material-ui/core";
 
 import Banner from "../components/Banner";
+import ChantingBooksBar from "../components/ChantingBooksBar";
 import GroupFormDialog from "../components/GroupFormDialog";
 import GroupList from "../components/GroupList";
 import StreamList from "../components/StreamList";
@@ -18,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 const QUERY = gql`
   {
-    streams(sort:"updated_at:desc") {
+    streams(sort: "updated_at:desc") {
       id
       name
       description
@@ -32,7 +33,7 @@ const QUERY = gql`
         url
       }
     }
-    groups(sort:"updated_at:desc", where: { confirmed: true }) {
+    groups(sort: "updated_at:desc", where: { confirmed: true }) {
       id
       name
       description
@@ -50,6 +51,7 @@ const Home = () => {
   return (
     <>
       <Banner />
+      <ChantingBooksBar />
       <UserBar />
       {error && <p>Error loading data...</p>}
       <Container maxWidth="lg">
