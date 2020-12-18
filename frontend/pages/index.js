@@ -18,15 +18,7 @@ const useStyles = makeStyles((theme) => ({
 
 const QUERY = gql`
   {
-    groups(where: { confirmed: true }) {
-      id
-      name
-      description
-      image {
-        formats
-      }
-    }
-    streams {
+    streams(sort:"updated_at:desc") {
       id
       name
       description
@@ -38,6 +30,14 @@ const QUERY = gql`
       monastery {
         name
         url
+      }
+    }
+    groups(sort:"updated_at:desc", where: { confirmed: true }) {
+      id
+      name
+      description
+      image {
+        formats
       }
     }
   }

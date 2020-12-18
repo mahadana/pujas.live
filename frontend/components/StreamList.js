@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { Box, makeStyles } from "@material-ui/core";
-import Stream from "./Stream";
 import Link from "next/link";
+import Stream from "./Stream";
+
+const MAX_INITIAL = 3;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,18 +17,30 @@ const useStyles = makeStyles((theme) => ({
 
 function StreamList({ streams }) {
   const classes = useStyles();
+  const [showMore, setShowMore] = useState(true);
+  const handleShowMore = (event) => {
+    event.preventDefault();
+    setShowMore(false);
+  };
+
+  const hasMore = streams.length > MAX_INITIAL;
+  const shownStreams =
+    showMore && hasMore ? streams.slice(0, MAX_INITIAL) : streams;
+
   return (
     <Box className={classes.root}>
       <Box>
-        {streams.map((stream) => (
+        {shownStreams.map((stream) => (
           <Stream key={stream.id} {...stream} />
         ))}
       </Box>
-      <Box className={classes.showMore}>
-        <Link href="#">
-          <a>Show more livestreams</a>
-        </Link>
-      </Box>
+      {showMore && hasMore && (
+        <Box className={classes.showMore}>
+          <Link href="#">
+            <a onClick={handleShowMore}>Show more streams</a>
+          </Link>
+        </Box>
+      )}
     </Box>
   );
 }

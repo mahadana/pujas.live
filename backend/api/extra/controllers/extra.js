@@ -15,16 +15,13 @@ module.exports = {
     if (!loginToken) {
       return ctx.badRequest(null, "loginToken not provided");
     }
-    console.log("1");
 
     const user = await strapi.query("user", "users-permissions").findOne({
       loginToken,
     });
-    console.log("2");
     if (!user) {
       return ctx.badRequest(null, "user not found with loginToken");
     }
-    console.log("3");
 
     await strapi
       .query("user", "users-permissions")
@@ -99,6 +96,7 @@ module.exports = {
       confirmed: false,
       owner: user.id,
     });
+    console.log(`created group ${name}`);
 
     const text = `To validate your new group posting, please click on the following link:
 
@@ -108,12 +106,13 @@ Have fun!
 `;
 
     await strapi.plugins["email"].services.email.send({
-      to: "v.jagaro+123@gmail.com", // email
+      to: email,
       from: "admin@pujas.live",
       fromName: "Pujas.live",
-      subject: `Verify group ${name}`,
+      subject: `[Pujas.live] Verify group ${name}`,
       text,
     });
+    console.log(`sent email to ${email}`);
 
     return JSON.stringify(group);
   },

@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { Box, makeStyles } from "@material-ui/core";
-import Group from "./Group";
 import Link from "next/link";
+import Group from "./Group";
+
+const MAX_INITIAL = 3;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,18 +17,30 @@ const useStyles = makeStyles((theme) => ({
 
 function GroupList({ groups }) {
   const classes = useStyles();
+  const [showMore, setShowMore] = useState(true);
+  const handleShowMore = (event) => {
+    event.preventDefault();
+    setShowMore(false);
+  };
+
+  const hasMore = groups.length > MAX_INITIAL;
+  const shownGroups =
+    showMore && hasMore ? groups.slice(0, MAX_INITIAL) : groups;
+
   return (
     <Box className={classes.root}>
       <Box>
-        {groups.map((group) => (
+        {shownGroups.map((group) => (
           <Group key={group.id} {...group} />
         ))}
       </Box>
-      <Box className={classes.showMore}>
-        <Link href="#">
-          <a>Show more groups</a>
-        </Link>
-      </Box>
+      {showMore && hasMore && (
+        <Box className={classes.showMore}>
+          <Link href="#">
+            <a onClick={handleShowMore}>Show more groups</a>
+          </Link>
+        </Box>
+      )}
     </Box>
   );
 }
