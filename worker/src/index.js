@@ -30,16 +30,18 @@ import { GraphQLClient, gql } from "graphql-request";
           id
           name
           description
-          websiteUrl
           streamUrl
-          embeddable
+          previousStreamsUrl
           image {
+            formats
+          }
+          monastery {
+            name
             url
           }
         }
       }
     `);
-    console.log(result);
-    console.log(`End job ${job.id}`);
+    console.log(`End job ${job.id} with ${result.streams.length} items`);
   });
 })();
