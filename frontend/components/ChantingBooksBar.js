@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Box, makeStyles } from "@material-ui/core";
 import Link from "next/link";
+import IframeModal from "./IframeModal";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,25 +29,38 @@ const useStyles = makeStyles((theme) => ({
 
 const ChantingBooksBar = () => {
   const classes = useStyles();
+  const [open, setOpen] = useState(false);
+  const [url, setUrl] = useState(null);
+
+  const openChantingBook = (event, n) => {
+    event.preventDefault();
+    setUrl("https://pujas.live/chanting/iframe.html?book=" + n);
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
 
   return (
     <Box className={classes.root}>
       <Box className={classes.book}>
-        <Link href="https://pujas.live/chanting/iframe.html?book=1">
-          <a>
+        <Link href="#">
+          <a onClick={(e) => openChantingBook(e, 1)}>
             <span>Chanting Book 1</span>
             <img src="/chanting1.jpg" />
           </a>
         </Link>
       </Box>
       <Box className={classes.book}>
-        <Link href="https://pujas.live/chanting/iframe.html?book=2">
-          <a>
+        <Link href="#">
+          <a onClick={(e) => openChantingBook(e, 2)}>
             <span>Chanting Book 2</span>
             <img src="/chanting2.jpg" />
           </a>
         </Link>
       </Box>
+      <IframeModal url={url} open={open} onClose={onClose} />
     </Box>
   );
 };

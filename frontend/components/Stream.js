@@ -35,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
   links: {
     display: "flex",
     alignItems: "center",
+    "& button": {
+      borderRadius: 20,
+    },
   },
 }));
 
