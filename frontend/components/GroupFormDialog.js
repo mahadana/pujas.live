@@ -41,8 +41,6 @@ export default function Test() {
   return (
     <>
       <Link
-        variant="outlined"
-        color="primary"
         href="#"
         onClick={(e) => {
           e.preventDefault();

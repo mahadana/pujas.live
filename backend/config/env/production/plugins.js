@@ -1,11 +1,13 @@
 module.exports = ({ env }) => ({
   email: {
-    provider: "sendinblue",
+    provider: "mailjet",
     providerOptions: {
-      sendinblue_api_key: env("SENDINBLUE_API_KEY"),
-      sendinblue_default_from_name: "Pujas.live",
-      sendinblue_default_from: "admin@pujas.live",
-      sendinblue_default_replyto: "admin@pujas.live",
+      publicApiKey: env("MAILJET_PUBLIC_KEY"),
+      secretApiKey: env("MAILJET_SECRET_KEY"),
+    },
+    settings: {
+      defaultFrom: "contact@pujas.live",
+      defaultFromName: "Pujas.live",
     },
   },
 });
