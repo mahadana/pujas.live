@@ -24,7 +24,6 @@
     "strapi-plugin-users-permissions": "3.4.0",
     "strapi-provider-email-mailjet": "^3.3.0",
     "strapi-provider-email-mailtrap": "^3.1.5",
-    "strapi-provider-email-sendinblue": "^1.0.5",
     "strapi-utils": "3.4.0"
   },
   "author": {
