@@ -66,3 +66,12 @@ You can create JWT secrets with:
 ```sh
 openssl rand -hex 32
 ```
+
+To completely restart from on scratch:
+
+```sh
+cd /opt/neo.pujas.live
+docker-compose down
+docker volume rm $(docker volume ls -q | grep neopujaslive)
+docker-compose -f docker-compose.production.yml up -d
+```
