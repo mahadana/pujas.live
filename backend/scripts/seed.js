@@ -83,7 +83,7 @@ const seedAdminUser = async () => {
       blocked: false,
       isActive: true,
     });
-    console.log(`  email = ${adminUser.email}, password = ${adminPassword}`);
+    console.log(`  email = ${adminUser.email}`);
   }
 };
 
@@ -115,7 +115,7 @@ const seedUsers = async () => {
       created_by: admin.id,
       updated_by: admin.id,
     });
-    console.log(`  email: ${user.email}, password: ${adminPassword}`);
+    console.log(`  email: ${user.email}`);
   }
 };
 
@@ -236,8 +236,8 @@ const seedTables = async () => {
 const run = async () => {
   // Set globals
   strapi = await strapiLibrary().load();
-  adminEmail = process.env.STRAPI_ADMIN_EMAIL || "admin@pujas.live";
-  adminPassword = process.env.STRAPI_ADMIN_PASSWORD || "Password1";
+  adminEmail = strapi.config.server.admin.auth.email;
+  adminPassword = strapi.config.server.admin.auth.password;
 
   await seedAdminUser();
   await seedUsers();
