@@ -1,10 +1,24 @@
 #!/bin/sh
 
-SERVICE="$1"
-
-if test -z "$SERVICE"; then
-  echo "Usage: $0 <backend|frontend|worker>"
+if [ $# = 0 ]; then
+  echo "Usage: $0 <backend|db|frontend|redis|worker> [command ...]"
   exit 1
 fi
 
-docker-compose exec -u node "$SERVICE" bash
+SERVICE="$1"
+shift
+
+case "$SERVICE" in
+  backend|frontend|worker)
+    USER=node
+    ;;
+  *)
+    USER=root
+    ;;
+esac
+
+if [ $# = 0 ]; then
+  set bash
+fi
+
+docker-compose exec -u $USER "$SERVICE" "$@"

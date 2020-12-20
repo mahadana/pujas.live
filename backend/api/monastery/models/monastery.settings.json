@@ -1,8 +1,8 @@
 {
   "kind": "collectionType",
-  "collectionName": "streams",
+  "collectionName": "monasteries",
   "info": {
-    "name": "streams",
+    "name": "monastery",
     "description": ""
   },
   "options": {
@@ -19,17 +19,6 @@
     "description": {
       "type": "text"
     },
-    "streamUrl": {
-      "type": "string"
-    },
-    "previousStreamsUrl": {
-      "type": "string"
-    },
-    "embeddable": {
-      "type": "boolean",
-      "default": false,
-      "required": true
-    },
     "image": {
       "model": "file",
       "via": "related",
@@ -39,8 +28,8 @@
       "plugin": "upload",
       "required": false
     },
-    "monastery": {
-      "model": "monasteries"
+    "url": {
+      "type": "string"
     }
   }
 }

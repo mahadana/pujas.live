@@ -21,4 +21,6 @@ if ! test -d node_modules; then
   su -c "npm install --silent" node
 fi
 
+su -c "node scripts/seed.js" node
+
 su -c "npm run develop" node

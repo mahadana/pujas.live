@@ -2,48 +2,48 @@
   "routes": [
     {
       "method": "GET",
-      "path": "/monasteries",
-      "handler": "monasteries.find",
+      "path": "/streams",
+      "handler": "stream.find",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/monasteries/count",
-      "handler": "monasteries.count",
+      "path": "/streams/count",
+      "handler": "stream.count",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/monasteries/:id",
-      "handler": "monasteries.findOne",
+      "path": "/streams/:id",
+      "handler": "stream.findOne",
       "config": {
         "policies": []
       }
     },
     {
       "method": "POST",
-      "path": "/monasteries",
-      "handler": "monasteries.create",
+      "path": "/streams",
+      "handler": "stream.create",
       "config": {
         "policies": []
       }
     },
     {
       "method": "PUT",
-      "path": "/monasteries/:id",
-      "handler": "monasteries.update",
+      "path": "/streams/:id",
+      "handler": "stream.update",
       "config": {
         "policies": []
       }
     },
     {
       "method": "DELETE",
-      "path": "/monasteries/:id",
-      "handler": "monasteries.delete",
+      "path": "/streams/:id",
+      "handler": "stream.delete",
       "config": {
         "policies": []
       }

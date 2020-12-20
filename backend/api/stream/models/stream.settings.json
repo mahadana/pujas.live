@@ -1,8 +1,8 @@
 {
   "kind": "collectionType",
-  "collectionName": "groups",
+  "collectionName": "streams",
   "info": {
-    "name": "groups",
+    "name": "stream",
     "description": ""
   },
   "options": {
@@ -19,11 +19,6 @@
     "description": {
       "type": "text"
     },
-    "confirmed": {
-      "type": "boolean",
-      "default": false,
-      "required": true
-    },
     "image": {
       "model": "file",
       "via": "related",
@@ -33,9 +28,19 @@
       "plugin": "upload",
       "required": false
     },
-    "owner": {
-      "plugin": "users-permissions",
-      "model": "user"
+    "monastery": {
+      "model": "monastery"
+    },
+    "streamUrl": {
+      "type": "string"
+    },
+    "previousStreamsUrl": {
+      "type": "string"
+    },
+    "embeddable": {
+      "type": "boolean",
+      "default": false,
+      "required": true
     }
   }
 }

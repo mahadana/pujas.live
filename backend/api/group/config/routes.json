@@ -3,7 +3,7 @@
     {
       "method": "GET",
       "path": "/groups",
-      "handler": "groups.find",
+      "handler": "group.find",
       "config": {
         "policies": []
       }
@@ -11,7 +11,7 @@
     {
       "method": "GET",
       "path": "/groups/count",
-      "handler": "groups.count",
+      "handler": "group.count",
       "config": {
         "policies": []
       }
@@ -19,7 +19,7 @@
     {
       "method": "GET",
       "path": "/groups/:id",
-      "handler": "groups.findOne",
+      "handler": "group.findOne",
       "config": {
         "policies": []
       }
@@ -27,7 +27,7 @@
     {
       "method": "POST",
       "path": "/groups",
-      "handler": "groups.create",
+      "handler": "group.create",
       "config": {
         "policies": []
       }
@@ -35,7 +35,7 @@
     {
       "method": "PUT",
       "path": "/groups/:id",
-      "handler": "groups.update",
+      "handler": "group.update",
       "config": {
         "policies": []
       }
@@ -43,7 +43,7 @@
     {
       "method": "DELETE",
       "path": "/groups/:id",
-      "handler": "groups.delete",
+      "handler": "group.delete",
       "config": {
         "policies": []
       }

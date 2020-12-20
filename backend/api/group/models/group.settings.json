@@ -1,8 +1,8 @@
 {
   "kind": "collectionType",
-  "collectionName": "monasteries",
+  "collectionName": "groups",
   "info": {
-    "name": "monasteries",
+    "name": "group",
     "description": ""
   },
   "options": {
@@ -17,10 +17,7 @@
       "unique": true
     },
     "description": {
-      "type": "richtext"
-    },
-    "url": {
-      "type": "string"
+      "type": "text"
     },
     "image": {
       "model": "file",
@@ -30,6 +27,16 @@
       ],
       "plugin": "upload",
       "required": false
+    },
+    "owner": {
+      "plugin": "users-permissions",
+      "model": "user",
+      "required": true
+    },
+    "confirmed": {
+      "type": "boolean",
+      "default": false,
+      "required": true
     }
   }
 }
