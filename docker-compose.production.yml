@@ -9,6 +9,8 @@ services:
       - db
     ports:
       - 127.0.0.1:1337:1337
+    volumes:
+      - uploads:/app/public/uploads
   db:
     image: postgres:latest
     restart: unless-stopped
@@ -16,6 +18,8 @@ services:
       POSTGRES_DB: strapi
       POSTGRES_PASSWORD: strapi
       POSTGRES_USER: strapi
+    volumes:
+      - db:/var/lib/postgresql/data
   frontend:
     build:
       context: ./frontend
@@ -28,7 +32,14 @@ services:
   redis:
     image: redis:latest
     restart: unless-stopped
+    volumes:
+      - redis:/var/lib/redis
   worker:
     build:
       context: ./worker
     restart: unless-stopped
+
+volumes:
+  db:
+  redis:
+  uploads:

@@ -7,6 +7,7 @@ RUN npm install --silent --production
 
 COPY --chown=node:node . /app
 RUN NODE_ENV=production npm run build
+RUN mkdir -p /app/public/uploads
 ENTRYPOINT NODE_ENV=production node scripts/seed.js && \
   NODE_ENV=production npm start
 EXPOSE 1337
