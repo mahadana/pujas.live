@@ -111,4 +111,5 @@ coverage
 license.txt
 exports
 .cache
+.strapi-updater.json
 build
