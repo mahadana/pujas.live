@@ -2,25 +2,24 @@
 
 set -eu
 
+cd /app
 uid=$(stat -c %u .)
 gid=$(stat -c %g .)
 
 if [ $uid = 0 ]; then
+  # Host is Mac/Windows, run as root...
   user=root
 else
-  if getent passwd node 2>&1 >/dev/null; then
-    userdel node
-  fi
-  if getent group node 2>&1 >/dev/null; then
-    groupdel node
-  fi
+  user=node
+  userdel node 2> /dev/null || true
+  groupdel node 2> /dev/null || true
   groupadd -g $gid node
   useradd -u $uid -g $gid -d /home/node -s /bin/bash node
   chown -R node:node /home/node
-  user=node
+  chown node:node node_modules
 fi
 
-if ! test -d node_modules; then
+if [ $(ls node_modules | wc -l) = 0 ]; then
   echo "Installing node modules..."
   su -c "npm install --silent" $user
 fi

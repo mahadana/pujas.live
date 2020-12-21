@@ -56,9 +56,9 @@ const Home = () => {
       {error && <p>Error loading data...</p>}
       <Container maxWidth="lg">
         <h2 className={classes.lead}>Livestreams</h2>
-        {!loading && <StreamList streams={data.streams} />}
+        {!loading && !error && <StreamList streams={data.streams} />}
         <h2 className={classes.lead}>Open Sitting Groups</h2>
-        {!loading && <GroupList groups={data.groups} />}
+        {!loading && !error && <GroupList groups={data.groups} />}
         <GroupFormDialog />
       </Container>
     </>

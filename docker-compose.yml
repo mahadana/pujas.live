@@ -9,6 +9,9 @@ services:
       - 127.0.0.1:1337:1337
     volumes:
       - ./backend:/app
+      - /app/.cache
+      - /app/build
+      - backend_nm:/app/node_modules
     working_dir: /app
     command: "/app/scripts/docker-development.sh"
   db:
@@ -20,13 +23,12 @@ services:
       POSTGRES_USER: strapi
   frontend:
     image: node:14
-    depends_on:
-      - db
-      - redis
     ports:
       - 127.0.0.1:3000:3000
     volumes:
       - ./frontend:/app
+      - /app/.next
+      - frontend_nm:/app/node_modules
     working_dir: /app
     command: "/app/scripts/docker-development.sh"
   redis:
@@ -37,5 +39,11 @@ services:
     restart: unless-stopped
     volumes:
       - ./worker:/app
+      - worker_nm:/app/node_modules
     working_dir: /app
     command: "/app/scripts/docker-development.sh"
+
+volumes:
+  backend_nm:
+  frontend_nm:
+  worker_nm:

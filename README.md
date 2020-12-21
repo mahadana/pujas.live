@@ -32,9 +32,6 @@ MAILTRAP_PASSWORD=...
 ## Useful Commands
 
 ```sh
-# Restart from scratch
-docker-compose down && docker-compose up
-
 # Spawn a shell on the frontend
 ./shell frontend # or backend, db, frontend, redis, worker
 
@@ -43,6 +40,16 @@ docker-compose down && docker-compose up
 
 # Spawn a strapi console
 ./shell backend npx -c 'PORT=1338 strapi console'
+
+# Restart from scratch
+docker-compose down
+docker volume rm $(docker volume ls -q | grep pujaslive)
+docker volume prune -f
+rm -rf backend/.cache backend/.tmp backend/build \
+       backend/exports backend/node_modules \
+       frontend/.next frontend/node_modules \
+       worker/build worker/node_modules
+docker-compose up
 ```
 
 ## Server Setup
