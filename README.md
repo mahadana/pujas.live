@@ -29,27 +29,20 @@ MAILTRAP_USER=...
 MAILTRAP_PASSWORD=...
 ```
 
-## Useful Commands
+## Shell Helper
 
 ```sh
-# Spawn a shell on the frontend
-./shell frontend # or backend, db, frontend, redis, worker
+# Run a bash shell on the frontend
+./shell frontend
 
-# Install an npm module on the frontend
+# Install a node module on the frontend
 ./shell frontend npm install --save <module>
 
-# Spawn a strapi console
-./shell backend npx -c 'PORT=1338 strapi console'
+# Show help and additional examples
+./shell -h
+```
 
-# Restart from scratch
-docker-compose down
-docker volume rm $(docker volume ls -q | grep pujaslive)
-docker volume prune -f
-rm -rf backend/.cache backend/.tmp backend/build \
-       backend/exports backend/node_modules \
-       frontend/.next frontend/node_modules \
-       worker/build worker/node_modules
-docker-compose up
+# Restart everything from scratch
 ```
 
 ## Server Setup

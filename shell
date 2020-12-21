@@ -1,7 +1,20 @@
-#!/bin/sh
+#!/bin/bash
 
-if [ $# = 0 ]; then
-  echo "Usage: $0 <backend|db|frontend|redis|worker> [command ...]"
+if [ $# = 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+  cat <<EOF
+Usage: $0 <service> [command...]
+
+Shortcuts:
+
+  Bash shell in frontend            $0 frontend
+  Bash shell in backend             $0 backend
+  Strapi console                    $0 strapi-console
+  PostgreSQL CLI                    $0 postgres-cli
+  Redis CLI                         $0 redis-cli
+  Clean containers, cache, etc...   $0 clean
+
+Note: Services must already be running (docker-compose up).
+EOF
   exit 1
 fi
 
@@ -9,8 +22,36 @@ SERVICE="$1"
 shift
 
 case "$SERVICE" in
+  strapi-console)
+    SERVICE="backend"
+    set npx -c 'PORT=1338 strapi console'
+    ;;
+  postgres-cli)
+    SERVICE="db"
+    set psql -U strapi
+    ;;
+  redis-cli)
+    SERVICE="redis"
+    set redis-cli
+    ;;
+  clean)
+    cd "$(dirname "$0")"
+      docker-compose down
+      if docker volume ls -q | grep pujaslive; then
+        docker volume rm $(docker volume ls -q | grep pujaslive)
+      fi
+      docker volume prune -f
+      rm -rf backend/.cache backend/.tmp backend/build \
+            backend/exports backend/node_modules \
+            frontend/.next frontend/node_modules \
+            worker/build worker/node_modules
+    exit 0
+    ;;
+esac
+
+case "$SERVICE" in
   backend|frontend|worker)
-    USER=node
+    USER="$(docker-compose exec "$SERVICE" stat -c %U /app | sed 's/[^[:print:]]//g')"
     ;;
   *)
     USER=root
@@ -21,4 +62,4 @@ if [ $# = 0 ]; then
   set bash
 fi
 
-docker-compose exec -u $USER "$SERVICE" "$@"
+docker-compose exec -u "$USER" "$SERVICE" "$@"
