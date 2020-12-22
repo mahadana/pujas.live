@@ -101,7 +101,7 @@ const Group = (props) => {
             <Button variant="contained">Join Practice</Button>
           </Link>
           <br />
-          <Link href="#">
+          <Link href={`/groups/${props.id}/message`}>
             <Button variant="contained">Message group</Button>
           </Link>
           <br />
