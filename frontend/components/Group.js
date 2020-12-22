@@ -1,5 +1,6 @@
 import { Box, Button, Grid, makeStyles } from "@material-ui/core";
 import Link from "next/link";
+const { zonedTimeToUtc, utcToZonedTime, format } = require("date-fns-tz");
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,11 +36,40 @@ const useStyles = makeStyles((theme) => ({
   links: {
     display: "flex",
     alignItems: "center",
+    textAlign: "center",
     "& button": {
       borderRadius: 20,
+      marginBottom: 20,
     },
   },
+  events: {
+    paddingInlineStart: 20,
+    fontSize: "1.1em",
+  },
 }));
+
+const zonedAndLocalTime = (timeString, timeZone) => {
+  const now = new Date();
+  const time = zonedTimeToUtc(
+    format(now, "yyyy-MM-dd") + " " + timeString,
+    timeZone
+  );
+
+  if (time < now) {
+    time.setDate(time.getDate() + 1);
+  }
+
+  const formatTime = (t, timeZone) => {
+    const mp = t.getMinutes() == 0 ? "" : ":mm";
+    return format(t, `h${mp}aaaaa'm' zzz`, { timeZone });
+  };
+
+  if (format(now, "xx") === format(now, "xx", { timeZone })) {
+    return formatTime(time);
+  } else {
+    return `${formatTime(time, timeZone)} (${formatTime(time)})`;
+  }
+};
 
 const Group = (props) => {
   const classes = useStyles();
@@ -54,12 +84,28 @@ const Group = (props) => {
       </Box>
       <Box className={classes.text}>
         <h3>{props.name}</h3>
+        <ul className={classes.events}>
+          {props.events.map((event) => (
+            <li key={event.id}>
+              {event.daysOfWeek} @{" "}
+              {zonedAndLocalTime(event.startAt, props.timezone)}
+              {event.duration && " for " + event.duration + " minutes"}
+            </li>
+          ))}
+        </ul>
         <p>{props.description}</p>
       </Box>
       <Box className={classes.links}>
-        <Link href={`/groups/${props.id}`}>
-          <Button variant="contained">Message group</Button>
-        </Link>
+        <Box>
+          <Link href={`/groups/${props.id}`}>
+            <Button variant="contained">Join Practice</Button>
+          </Link>
+          <br />
+          <Link href="#">
+            <Button variant="contained">Message group</Button>
+          </Link>
+          <br />
+        </Box>
       </Box>
     </Box>
   );

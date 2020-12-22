@@ -26,6 +26,13 @@ const QUERY = gql`
       image {
         formats
       }
+      timezone
+      events {
+        id
+        startAt
+        duration
+        daysOfWeek
+      }
     }
   }
 `;

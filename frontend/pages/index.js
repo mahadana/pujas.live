@@ -19,19 +19,23 @@ const useStyles = makeStyles((theme) => ({
 
 const QUERY = gql`
   {
-    streams(sort: "updated_at:desc") {
+    streams(sort: "startAt") {
       id
       name
       description
-      streamUrl
-      previousStreamsUrl
       image {
         formats
       }
       monastery {
         name
-        url
+        websiteUrl
+        channelUrl
       }
+      streamUrl
+      embeddable
+      startAt
+      duration
+      historyUrl
     }
     groups(sort: "updated_at:desc", where: { confirmed: true }) {
       id
@@ -39,6 +43,13 @@ const QUERY = gql`
       description
       image {
         formats
+      }
+      timezone
+      events {
+        id
+        startAt
+        duration
+        daysOfWeek
       }
     }
   }

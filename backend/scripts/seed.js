@@ -3,6 +3,7 @@
 const fetch = require("cross-fetch");
 const fs = require("fs");
 const mime = require("mime-types");
+const moment = require("moment-timezone");
 const path = require("path");
 const tmp = require("tmp");
 
@@ -75,7 +76,6 @@ const seedAdminUser = async () => {
   if (adminUser) {
     console.log(`  email: ${adminUser.email} (already exists)`);
   } else {
-    console.log("adminRole", adminRole.id);
     adminUser = await strapi.query("user", "admin").create({
       username: adminEmail,
       email: adminEmail,
@@ -217,26 +217,41 @@ const seedTables = async () => {
         name: "Abhayagiri",
         description: "A fine monastery",
         image: await getImageId("abhayagiri.jpg"),
-        url: "https://www.abhayagiri.org/",
+        websiteUrl: "https://www.abhayagiri.org/",
+        channelUrl: "https://www.youtube.com/AbhayagiriBuddhistMonastery",
         state: "published",
       },
       {
         name: "Pacific Hermitage",
         description: "A fine hermitage",
         image: await getImageId("pacific-hermitage.jpg"),
-        url: "https://pacifichermitage.org/",
+        websiteUrl: "https://pacifichermitage.org/",
+        channelUrl: "https://www.youtube.com/PacificHermitage",
         state: "published",
       },
       {
         name: "Amaravati",
         description: "A fine monastery",
         image: await getImageId("amaravati.jpg"),
-        url: "https://www.amaravati.org/",
+        websiteUrl: "https://www.amaravati.org/",
+        channelUrl: "https://www.youtube.com/AmaravatiBuddhistMonastery",
         state: "published",
       },
     ],
     "name"
   );
+
+  const getNextSevenPmPst = () => {
+    let d = moment().tz("US/Pacific");
+    if (d.hours() >= 19) d.add(1, "day");
+    return d.startOf("hour").hour(19).utc().toDate();
+  };
+
+  const getNextSundayTenThirtyGmt = () => {
+    let d = moment().tz("GMT");
+    if (d.day() > 0 || d.hour() >= 11) d.day(7);
+    return d.startOf("hour").hour(10).minute(30).utc().toDate();
+  };
 
   await seedTable(
     "stream",
@@ -246,35 +261,38 @@ const seedTables = async () => {
         description:
           "Streamed daily at 7pm Pacific Time, with some exceptions.\nDhamma talks follow puja 1-2 times per week",
         image: await getImageId("abhayagiri.jpg"),
-        streamUrl:
-          "https://www.youtube.com/embed/live_stream?channel=UCFAuQ5fmYYVv5_Dim0EQpVA",
-        previousStreamsUrl:
-          "https://www.youtube.com/playlist?list=PLa-KRFyPjreSeLAusZUEWIpVqTOWsJzCQ",
-        embeddable: 0,
         monastery: (await getOne({ name: "Abhayagiri" }, "monastery")).id,
         state: "published",
+        streamUrl: "https://youtu.be/HIy1c5C7-dU",
+        embeddable: true,
+        startAt: getNextSevenPmPst(),
+        duration: 90,
+        historyUrl:
+          "https://www.youtube.com/playlist?list=PLa-KRFyPjreSeLAusZUEWIpVqTOWsJzCQ",
       },
       {
         name: "Pacific Hermitage weekly morning livestream",
         description:
           "Streamed daily at __, currently on pause. Returning in the next few weeks",
         image: await getImageId("pacific-hermitage.jpg"),
-        streamUrl:
-          "https://www.youtube.com/embed/live_stream?channel=UCXQFa-qxHE26J_B5i22HCwA",
-        embeddable: 0,
         monastery: (await getOne({ name: "Pacific Hermitage" }, "monastery"))
           .id,
         state: "published",
+        streamUrl:
+          "https://www.youtube.com/embed/live_stream?channel=UCXQFa-qxHE26J_B5i22HCwA",
+        embeddable: true,
       },
       {
         name: "Amaravati Sunday Livestream",
         description: "Streamed Sundays at 10:30am GMT(?)",
         image: await getImageId("amaravati.jpg"),
-        streamUrl:
-          "https://www.youtube.com/embed/live_stream?channel=UCsgmmAelfZ2kfXZ08xlHpDw",
-        embeddable: 1,
         monastery: (await getOne({ name: "Amaravati" }, "monastery")).id,
         state: "published",
+        streamUrl:
+          "https://www.youtube.com/embed/live_stream?channel=UCsgmmAelfZ2kfXZ08xlHpDw",
+        embeddable: false,
+        startAt: getNextSundayTenThirtyGmt(),
+        duration: 90,
       },
     ],
     "name"
@@ -291,6 +309,11 @@ const seedTables = async () => {
         confirmed: true,
         state: "published",
         owner: user.id,
+        timezone: "US/Pacific",
+        events: [
+          { startAt: "06:00:00", duration: 90, daysOfWeek: "everyday" },
+          { startAt: "19:00:00", duration: 90, daysOfWeek: "everyday" },
+        ],
       },
       {
         name: "Amaravati Weekly Dhamma talk followers",
@@ -300,6 +323,8 @@ const seedTables = async () => {
         confirmed: true,
         state: "published",
         owner: user.id,
+        timezone: "GMT",
+        events: [{ startAt: "16:00:00", daysOfWeek: "fridays" }],
       },
       {
         name: "Daily morning sit and aspiration group",
@@ -309,6 +334,8 @@ const seedTables = async () => {
         confirmed: true,
         state: "published",
         owner: user.id,
+        timezone: "US/Eastern",
+        events: [{ startAt: "07:00:00", duration: 60, daysOfWeek: "everyday" }],
       },
     ],
     "name"

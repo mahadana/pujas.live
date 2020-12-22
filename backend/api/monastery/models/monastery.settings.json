@@ -28,7 +28,10 @@
       "plugin": "upload",
       "required": false
     },
-    "url": {
+    "websiteUrl": {
+      "type": "string"
+    },
+    "channelUrl": {
       "type": "string"
     }
   }

@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_event_group_events",
+  "info": {
+    "name": "group event",
+    "icon": "layer-group",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "startAt": {
+      "type": "time",
+      "required": true
+    },
+    "duration": {
+      "type": "integer",
+      "min": 0
+    },
+    "daysOfWeek": {
+      "type": "enumeration",
+      "enum": [
+        "everyday",
+        "weekdays",
+        "weekends",
+        "sundays",
+        "mondays",
+        "tuesdays",
+        "wednesdays",
+        "thursdays",
+        "fridays",
+        "saturdays"
+      ],
+      "default": "everyday"
+    }
+  }
+}

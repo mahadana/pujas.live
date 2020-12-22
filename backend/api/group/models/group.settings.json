@@ -13,8 +13,7 @@
   "attributes": {
     "name": {
       "type": "string",
-      "required": true,
-      "unique": true
+      "required": true
     },
     "description": {
       "type": "text"
@@ -28,15 +27,24 @@
       "plugin": "upload",
       "required": false
     },
-    "owner": {
-      "plugin": "users-permissions",
-      "model": "user",
-      "required": true
-    },
     "confirmed": {
       "type": "boolean",
       "default": false,
       "required": true
+    },
+    "owner": {
+      "plugin": "users-permissions",
+      "model": "user"
+    },
+    "timezone": {
+      "type": "string",
+      "required": true,
+      "default": "UTC"
+    },
+    "events": {
+      "type": "component",
+      "repeatable": true,
+      "component": "event.group-event"
     }
   }
 }

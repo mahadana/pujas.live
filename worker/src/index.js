@@ -29,16 +29,6 @@ import { GraphQLClient, gql } from "graphql-request";
         streams {
           id
           name
-          description
-          streamUrl
-          previousStreamsUrl
-          image {
-            formats
-          }
-          monastery {
-            name
-            url
-          }
         }
       }
     `);

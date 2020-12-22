@@ -11,6 +11,7 @@ Shortcuts:
   Strapi console                    $0 strapi-console
   PostgreSQL CLI                    $0 postgres-cli
   Redis CLI                         $0 redis-cli
+  Reload database                   $0 reload-db
   Clean containers, cache, etc...   $0 clean
 
 Note: Services must already be running (docker-compose up).
@@ -34,17 +35,25 @@ case "$SERVICE" in
     SERVICE="redis"
     set redis-cli
     ;;
+  reload-db)
+    cd "$(dirname "$0")"
+    docker-compose stop backend db
+    docker-compose rm -f db
+    docker volume prune -f
+    docker-compose up -d backend db
+    exit 0
+    ;;
   clean)
     cd "$(dirname "$0")"
-      docker-compose down
-      if docker volume ls -q | grep pujaslive; then
-        docker volume rm $(docker volume ls -q | grep pujaslive)
-      fi
-      docker volume prune -f
-      rm -rf backend/.cache backend/.tmp backend/build \
-            backend/exports backend/node_modules \
-            frontend/.next frontend/node_modules \
-            worker/build worker/node_modules
+    docker-compose down
+    if docker volume ls -q | grep pujaslive; then
+      docker volume rm $(docker volume ls -q | grep pujaslive)
+    fi
+    docker volume prune -f
+    rm -rf backend/.cache backend/.tmp backend/build \
+          backend/exports backend/node_modules \
+          frontend/.next frontend/node_modules \
+          worker/build worker/node_modules
     exit 0
     ;;
 esac
