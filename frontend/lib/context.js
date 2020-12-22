@@ -23,7 +23,6 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
   const jwt = JsCookie.get("jwt");
-  console.log('authLink', jwt);
   if (jwt) {
     return {
       headers: {

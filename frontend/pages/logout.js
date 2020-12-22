@@ -14,7 +14,6 @@ function Logout() {
 }
 
 Logout.getInitialProps = async ({ req, res }) => {
-  console.log('getinitialprops');
   if (req) {
     const cookies = new Cookies(req, res);
     cookies.set("jwt");

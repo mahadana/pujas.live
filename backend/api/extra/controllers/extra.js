@@ -90,7 +90,7 @@ module.exports = {
       console.log(`created user ${email} ${password}`);
     }
 
-    const group = await strapi.services.groups.create({
+    const group = await strapi.query("group").create({
       name,
       description,
       confirmed: false,

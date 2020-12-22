@@ -16,9 +16,7 @@ Group.getInitialProps = async ({ pathname, query, req, res }) => {
     const cookies = new Cookies(req, res);
     let jwt = cookies.get("jwt");
     const loginToken = query.token;
-    console.log(query);
     if (loginToken) {
-      console.log("fetching jwt");
       const response = await fetch(`${apiUrl}/auth/token`, {
         method: "POST",
         body: JSON.stringify({ loginToken }),
@@ -28,7 +26,6 @@ Group.getInitialProps = async ({ pathname, query, req, res }) => {
         const data = await response.json();
         jwt = data.jwt;
         cookies.set("jwt", jwt, { httpOnly: false });
-        console.log("got jwt", jwt);
       }
     }
     if (jwt && query.id) {
@@ -40,9 +37,6 @@ Group.getInitialProps = async ({ pathname, query, req, res }) => {
           "Content-Type": "application/json",
         },
       });
-      if (response.ok) {
-        console.log("confirmed group");
-      }
     }
     res.writeHead(302, { Location: `/groups/${query.id}` });
     res.end();
