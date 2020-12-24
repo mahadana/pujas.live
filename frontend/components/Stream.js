@@ -1,5 +1,7 @@
 import { Box, Button, makeStyles } from "@material-ui/core";
-import Link from "next/link";
+import VideoIframeModal from "./VideoIframeModal";
+import { useState } from "react";
+import { getChannelIdFromChannelUrl } from "../lib/util";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,6 +58,21 @@ const Stream = (props) => {
     return new Date(ds).toLocaleString();
   };
 
+  const [open, setOpen] = useState(false);
+  const [videoUrl, setVideoUrl] = useState(null);
+
+
+
+  const openVideo = (event, url) => {
+    event.preventDefault();
+    setVideoUrl(url);
+    setOpen(true);
+  };
+
+  const onCloseVideoModal = () => {
+    setOpen(false);
+  };
+
   let live = false;
   if (props.startAt) {
     let min = new Date(props.startAt);
@@ -101,19 +118,28 @@ const Stream = (props) => {
       </Box>
       <Box className={classes.links}>
         {props.streamUrl && (
-          <Button
-            color={live ? "primary" : undefined}
-            variant="contained"
-            onClick={(event) => {
-              event.preventDefault();
-              const w = window.open(props.streamUrl, "_blank");
-              w.focus();
-            }}
-          >
-            {live ? "Join Livestream" : "Livestream Page"}
-          </Button>
+          <>
+            <Button
+              color={live ? "primary" : undefined}
+              variant="contained"
+              onClick={(event) => {
+                if(props.embeddable) {
+                  const channelId = getChannelIdFromChannelUrl(props.monastery.channelUrl);
+                  openVideo(event, "https://www.youtube.com/embed/live_stream?channel="+channelId);
+                } else {
+                  event.preventDefault();
+                  const w = window.open(props.streamUrl, "_blank");
+                  w.focus();
+                }
+              }}
+            >
+              {live ? "Join Livestream" : "Livestream Page"}
+            </Button>
+            <VideoIframeModal url={videoUrl} open={open} onClose={onCloseVideoModal} />
+          </>
         )}
       </Box>
+
     </Box>
   );
 };
