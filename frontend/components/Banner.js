@@ -1,5 +1,6 @@
-import Link from "next/link";
-import { makeStyles, withTheme } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
+
+import Link from "./Link";
 
 const useStyles = makeStyles((theme) => ({
   container: {

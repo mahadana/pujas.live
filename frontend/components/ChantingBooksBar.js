@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Box, makeStyles } from "@material-ui/core";
-import Link from "next/link";
+import Link from "./Link";
 import IframeModal from "./IframeModal";
 
 const useStyles = makeStyles((theme) => ({
@@ -45,19 +45,15 @@ const ChantingBooksBar = () => {
   return (
     <Box className={classes.root}>
       <Box className={classes.book}>
-        <Link href="#">
-          <a onClick={(e) => openChantingBook(e, 1)}>
-            <span>Chanting Book 1</span>
-            <img src="/chanting1.jpg" />
-          </a>
+        <Link href="/#" onClick={(e) => openChantingBook(e, 1)}>
+          <span>Chanting Book 1</span>
+          <img src="/chanting1.jpg" />
         </Link>
       </Box>
       <Box className={classes.book}>
-        <Link href="#">
-          <a onClick={(e) => openChantingBook(e, 2)}>
-            <span>Chanting Book 2</span>
-            <img src="/chanting2.jpg" />
-          </a>
+        <Link href="/#" onClick={(e) => openChantingBook(e, 2)}>
+          <span>Chanting Book 2</span>
+          <img src="/chanting2.jpg" />
         </Link>
       </Box>
       <IframeModal url={url} open={open} onClose={onClose} />

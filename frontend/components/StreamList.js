@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Box, makeStyles } from "@material-ui/core";
-import Link from "next/link";
+
+import Link from "./Link";
 import Stream from "./Stream";
 
 const MAX_INITIAL = 3;
@@ -36,8 +37,8 @@ function StreamList({ streams }) {
       </Box>
       {showMore && hasMore && (
         <Box className={classes.showMore}>
-          <Link href="#">
-            <a onClick={handleShowMore}>Show more streams</a>
+          <Link href="#" onClick={handleShowMore}>
+            Show more streams
           </Link>
         </Box>
       )}

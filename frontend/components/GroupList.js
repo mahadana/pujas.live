@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Box, makeStyles } from "@material-ui/core";
-import Link from "next/link";
+
 import Group from "./Group";
+import Link from "./Link";
 
 const MAX_INITIAL = 3;
 
@@ -36,8 +37,8 @@ function GroupList({ groups }) {
       </Box>
       {showMore && hasMore && (
         <Box className={classes.showMore}>
-          <Link href="#">
-            <a onClick={handleShowMore}>Show more groups</a>
+          <Link href="#" onClick={handleShowMore}>
+            Show more groups
           </Link>
         </Box>
       )}
