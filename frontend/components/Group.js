@@ -1,6 +1,8 @@
 import { Box, Button, Grid, makeStyles } from "@material-ui/core";
-import Link from "next/link";
-const { zonedTimeToUtc, utcToZonedTime, format } = require("date-fns-tz");
+import { zonedTimeToUtc, utcToZonedTime, format } from "date-fns-tz";
+
+import Link from "./Link";
+import { useUser } from "../lib/user";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     "& button": {
       borderRadius: 20,
-      marginBottom: 20,
+      marginTop: 20,
     },
   },
   events: {
@@ -73,6 +75,7 @@ const zonedAndLocalTime = (timeString, timeZone) => {
 
 const Group = (props) => {
   const classes = useStyles();
+  const { user } = useUser();
   const imageUrl = props.image
     ? `${process.env.NEXT_PUBLIC_API_URL}${props.image?.formats?.thumbnail?.url}`
     : "https://placekitten.com/g/100/100";
@@ -102,9 +105,16 @@ const Group = (props) => {
           </Link>
           <br />
           <Link href={`/groups/${props.id}/message`}>
-            <Button variant="contained">Message group</Button>
+            <Button variant="contained">Message Group</Button>
           </Link>
-          <br />
+          {user && (
+            <>
+              <br />
+              <Link href={`/groups/${props.id}/edit`}>
+                <Button variant="contained">Edit Group</Button>
+              </Link>
+            </>
+          )}
         </Box>
       </Box>
     </Box>

@@ -1,114 +1,99 @@
-import React, { useContext, useState } from "react";
-import { useFormik } from "formik";
-import * as yup from "yup";
-import fetch from "cross-fetch";
-import { Button, Container, Grid, TextField } from "@material-ui/core";
-import { apiUrl, UserContext } from "../lib/context";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import { FieldArray, Form, Formik } from "formik";
 
-const validationSchema = yup.object({
-  email: yup.string().email("Invalid email address").required("Required"),
-  emailConfirmation: yup
-    .string()
-    .oneOf([yup.ref("email"), null], "Emails must match")
-    .email("Invalid email address")
-    .required("Required"),
-  name: yup.string().required("Required"),
-});
+import GroupEventFormFragment from "./GroupEventFormFragment";
+import { FormHelper, FormTextField, SubmitButton } from "../lib/form";
+import { groupSchema } from "../lib/validation";
 
-function GroupForm(props) {
-  const { user } = useContext(UserContext);
-  const [loading, setLoading] = useState(false);
-  const formik = useFormik({
-    initialValues: {
-      email: user?.email || "",
-      emailConfirmation: user?.email || "",
-      name: "",
-      description: "",
-    },
-    validationSchema,
-    onSubmit: async (data) => {
-      setLoading(true);
-      const response = await fetch(`${apiUrl}/groups/prepare`, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
-      });
-      setLoading(false);
-      props.onSuccess(data);
-    },
-  });
+const EVENT_DEFAULTS = {
+  startAt: "12:00",
+  duration: "60",
+  daysOfWeek: "everyday",
+};
 
+const useStyles = makeStyles((theme) => ({
+  submitRow: {
+    marginTop: "2em",
+  },
+}));
+
+const GroupForm = ({ group, onSubmit }) => {
+  const classes = useStyles();
   return (
-    <Container maxWidth="md">
-      <form onSubmit={formik.handleSubmit}>
+    <Formik
+      initialValues={group}
+      validationSchema={groupSchema}
+      validateOnChange={false}
+      onSubmit={async (values) => onSubmit(values)}
+    >
+      <Form>
+        <FormHelper invalidFormSnackbar="Please correct the errors." />
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              name="email"
-              label="Your email"
-              error={formik.errors.email && formik.touched.email}
-              helperText={formik.touched.email && formik.errors.email}
-              required
-              fullWidth
-              variant="outlined"
-              {...formik.getFieldProps("email")}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              name="emailConfirmation"
-              label="Confirm email"
-              error={
-                formik.errors.emailConfirmation &&
-                formik.touched.emailConfirmation
-              }
-              helperText={
-                formik.touched.emailConfirmation &&
-                formik.errors.emailConfirmation
-              }
-              required
-              fullWidth
-              variant="outlined"
-              {...formik.getFieldProps("emailConfirmation")}
-            />
-          </Grid>
           <Grid item xs={12}>
-            <TextField
+            <Typography variant="h5">Group</Typography>
+          </Grid>
+          <Grid item xs={12} sm={9}>
+            <FormTextField
               name="name"
-              label="Group Name"
-              error={formik.errors.name && formik.touched.name}
-              helperText={formik.touched.name && formik.errors.name}
+              label="Name"
               required
               fullWidth
               variant="outlined"
-              {...formik.getFieldProps("name")}
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <FormTextField
+              name="timezone"
+              label="Time Zone"
+              required
+              fullWidth
+              variant="outlined"
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <FormTextField
               name="description"
               label="Description"
               multiline
               fullWidth
-              rows="4"
+              rowsMax="8"
               variant="outlined"
-              {...formik.getFieldProps("description")}
             />
           </Grid>
           <Grid item xs={12}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={formik.handleSubmit}
-              disabled={loading}
-            >
-              Save
-            </Button>
+            <Typography variant="h5">Events</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <FieldArray name="events">
+              {({ form, push, remove }) => (
+                <>
+                  {(form.values?.events || []).map((event, index) => (
+                    <GroupEventFormFragment
+                      key={index}
+                      namePrefix={`events.${index}`}
+                      onRemove={() => remove(index)}
+                    />
+                  ))}
+                  <Button
+                    variant="contained"
+                    onClick={() => push({ ...EVENT_DEFAULTS })}
+                  >
+                    Add Event
+                  </Button>
+                </>
+              )}
+            </FieldArray>
+          </Grid>
+          <Grid item xs={12} className={classes.submitRow}>
+            <SubmitButton>{group?.id ? "Update" : "Create"} Group</SubmitButton>
           </Grid>
         </Grid>
-      </form>
-    </Container>
+      </Form>
+    </Formik>
   );
-}
+};
 
 export default GroupForm;

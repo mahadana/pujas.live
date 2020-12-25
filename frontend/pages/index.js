@@ -1,13 +1,14 @@
 import { gql, useQuery } from "@apollo/client";
-import { Container, makeStyles } from "@material-ui/core";
+import Container from "@material-ui/core/Container";
+import { makeStyles } from "@material-ui/core/styles";
 
 import Banner from "../components/Banner";
 import ChantingBooksBar from "../components/ChantingBooksBar";
-import GroupFormDialog from "../components/GroupFormDialog";
 import GroupList from "../components/GroupList";
+import Link from "../components/Link";
 import StreamList from "../components/StreamList";
 import UserBar from "../components/UserBar";
-import { withApollo } from "../lib/context";
+import { withApolloAndUser } from "../lib/apollo";
 
 const useStyles = makeStyles((theme) => ({
   lead: {
@@ -70,10 +71,12 @@ const Home = () => {
         {!loading && !error && <StreamList streams={data.streams} />}
         <h2 className={classes.lead}>Open Sitting Groups</h2>
         {!loading && !error && <GroupList groups={data.groups} />}
-        <GroupFormDialog />
+        <p>
+          <Link href="/groups/create">+ Click here to post new group</Link>
+        </p>
       </Container>
     </>
   );
 };
 
-export default withApollo({ ssr: true })(Home);
+export default withApolloAndUser()(Home);

@@ -70,7 +70,6 @@ export default function Test() {
             </Typography>
           </Toolbar>
         </AppBar>
-        <GroupForm onSuccess={onSuccess} />
       </Dialog>
     </>
   );

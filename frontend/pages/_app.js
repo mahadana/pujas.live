@@ -1,19 +1,17 @@
 // See https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
 
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import Head from "next/head";
-import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import JsCookie from "js-cookie";
-import { UserContext } from "../lib/context";
+import { ThemeProvider } from "@material-ui/core/styles";
+import Head from "next/head";
+import PropTypes from "prop-types";
+import { useEffect } from "react";
+
+import { SnackbarProvider } from "../lib/snackbar";
 import theme from "../lib/theme";
+import { UserProvider } from "../lib/user";
 
 const MyApp = ({ Component, pageProps }) => {
-  const [user, setUser] = useState(null);
-  const [alert, setAlert] = useState(null);
-
-  React.useEffect(() => {
+  useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector("#jss-server-side");
     if (jssStyles) {
@@ -21,26 +19,8 @@ const MyApp = ({ Component, pageProps }) => {
     }
   }, []);
 
-  const userContext = {
-    alert,
-    alertUser: (message, severity = "info") => {
-      setAlert({ message, severity, key: new Date().getTime() });
-    },
-    loginUser: (user, jwt) => {
-      JsCookie.set("jwt", jwt);
-      setUser(user);
-    },
-    logoutUser: () => {
-      JsCookie.remove("jwt");
-      setUser(null);
-    },
-    setAlert,
-    setUser,
-    user,
-  };
-
   return (
-    <React.Fragment>
+    <>
       <Head>
         <title>Pujas.live</title>
         <meta
@@ -49,13 +29,14 @@ const MyApp = ({ Component, pageProps }) => {
         />
       </Head>
       <ThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline />
-        <UserContext.Provider value={userContext}>
-          <Component {...pageProps} />
-        </UserContext.Provider>
+        <UserProvider>
+          <SnackbarProvider>
+            <CssBaseline />
+            <Component {...pageProps} />
+          </SnackbarProvider>
+        </UserProvider>
       </ThemeProvider>
-    </React.Fragment>
+    </>
   );
 };
 

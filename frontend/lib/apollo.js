@@ -1,4 +1,3 @@
-import { createContext, useContext } from "react";
 import { withApollo as nextApollo } from "next-apollo";
 import {
   ApolloClient,
@@ -9,6 +8,8 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import JsCookie from "js-cookie";
+
+import { useUser } from "./user";
 
 export const apiUrl =
   typeof window === "undefined"
@@ -35,18 +36,18 @@ const authLink = setContext((_, { headers }) => {
   }
 });
 
-export const withApollo = nextApollo(
-  new ApolloClient({
-    link: authLink.concat(httpLink),
-    cache: new InMemoryCache(),
-  })
-);
+export const apolloClient = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache(),
+});
+
+export const withApollo = nextApollo(apolloClient);
 
 export const withApolloAndUser = (params) => {
   return (Component) => {
     const wrapper = (props) => {
-      const { user, setUser } = useContext(UserContext);
-      useQuery(
+      const { setUser, setUserLoading, user, userLoading } = useUser();
+      const { loading } = useQuery(
         gql`
           {
             me {
@@ -58,6 +59,11 @@ export const withApolloAndUser = (params) => {
         {
           onCompleted: (data) => {
             setUser(data.me);
+            setUserLoading(false);
+          },
+          onError: (error) => {
+            console.error(error);
+            setUserLoading(false);
           },
           skip: !!user || !JsCookie.get("jwt"),
           ssr: false,
@@ -65,12 +71,10 @@ export const withApolloAndUser = (params) => {
       );
       return <Component {...props} />;
     };
-
     if (process.env.NODE_ENV !== "production") {
       const name = Component.displayName || Component.name || "Component";
       wrapper.displayName = `withApolloAndUser(${name})`;
     }
-
     if (Component.getInitialProps) {
       wrapper.getInitialProps = async (ctx) => {
         return await Component.getInitialProps(ctx);
@@ -79,13 +83,3 @@ export const withApolloAndUser = (params) => {
     return withApollo(params)(wrapper);
   };
 };
-
-export const UserContext = createContext({
-  alert: null,
-  alertUser: () => {},
-  loginUser: () => {},
-  logoutUser: () => {},
-  setAlert: () => {},
-  setUser: () => {},
-  user: null,
-});

@@ -1,10 +1,13 @@
-import { gql, useQuery } from "@apollo/client";
-import { useRouter } from "next/router";
+import { useQuery } from "@apollo/client";
 import { Container, makeStyles } from "@material-ui/core";
+import { useRouter } from "next/router";
+
 import Banner from "../../components/Banner";
 import Group from "../../components/Group";
+import Loading from "../../components/Loading";
 import UserBar from "../../components/UserBar";
-import { withApollo } from "../../lib/context";
+import { withApolloAndUser } from "../../lib/apollo";
+import { GROUP_QUERY } from "../../lib/schema";
 
 const useStyles = makeStyles((theme) => ({
   video: {
@@ -17,39 +20,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const QUERY = gql`
-  query Group($id: ID!) {
-    group(id: $id) {
-      id
-      name
-      description
-      image {
-        formats
-      }
-      timezone
-      events {
-        id
-        startAt
-        duration
-        daysOfWeek
-      }
-    }
-  }
-`;
-
 const GroupPage = () => {
   const classes = useStyles();
   const router = useRouter();
-  const { loading, error, data } = useQuery(QUERY, {
-    variables: { id: router.query.id },
+  const groupId = router.query.id;
+  const { loading, data } = useQuery(GROUP_QUERY, {
+    skip: !groupId,
+    variables: { id: groupId },
   });
+  const group = data?.group;
 
   return (
     <>
       <Banner />
       <UserBar />
       <Container maxWidth="lg">
-        {!loading && (
+        {loading || !group ? (
+          <Loading />
+        ) : (
           <>
             <Group {...data.group} />
             <p>
@@ -68,4 +56,4 @@ const GroupPage = () => {
   );
 };
 
-export default withApollo({ ssr: true })(GroupPage);
+export default withApolloAndUser()(GroupPage);

@@ -1,40 +1,56 @@
-import { useContext } from "react";
-import { gql, useQuery } from "@apollo/client";
-import { Container } from "@material-ui/core";
+import { useQuery } from "@apollo/client";
+import Container from "@material-ui/core/Container";
 import { useRouter } from "next/router";
-import Banner from "../../../components/Banner";
-import GroupMessage from "../../../components/GroupMessage";
-import UserBar from "../../../components/UserBar";
-import { withApolloAndUser, UserContext } from "../../../lib/context";
+import { useState } from "react";
 
-const QUERY = gql`
-  query Group($id: ID!) {
-    group(id: $id) {
-      id
-      name
-      description
-    }
-  }
-`;
+import Banner from "../../../components/Banner";
+import GroupMessageForm from "../../../components/GroupMessageForm";
+import Loading from "../../../components/Loading";
+import NotLoggedIn from "../../../components/NotLoggedIn";
+import UserBar from "../../../components/UserBar";
+import { withApolloAndUser } from "../../../lib/apollo";
+import { GROUP_QUERY } from "../../../lib/schema";
+import { useUser } from "../../../lib/user";
 
 const GroupMessagePage = () => {
   const router = useRouter();
+  const { user, userLoading } = useUser();
+  const [complete, setComplete] = useState(false);
+
   const groupId = router.query.id;
-  const { user } = useContext(UserContext);
-  const { loading, error, data } = useQuery(QUERY, {
+  const { loading, data } = useQuery(GROUP_QUERY, {
     skip: !groupId,
     variables: { id: groupId },
   });
+  const group = data?.group;
+
+  const onSubmit = async (values) => {
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+    await sleep(2000);
+    setComplete(true);
+  };
 
   return (
     <>
       <Banner />
       <UserBar />
-      {!loading && !error && data && data.group && (
-        <Container maxWidth="lg">
-          <GroupMessage groupId={data.group.id} groupName={data.group.name} user={user} />
-        </Container>
-      )}
+      <Container maxWidth="sm">
+        {loading || userLoading || !group ? (
+          <Loading />
+        ) : !user ? (
+          <NotLoggedIn />
+        ) : !complete ? (
+          <GroupMessageForm
+            disabled={complete}
+            group={group}
+            onSubmit={onSubmit}
+          />
+        ) : (
+          <p>Your message has been sent TODO</p>
+        )}
+      </Container>
     </>
   );
 };
