@@ -22,6 +22,30 @@ const getOne = async (params, modelName, plugin) => {
   }
 };
 
+const seedSettings = async () => {
+  console.log("Seeding settings:");
+
+  const pluginStore = await strapi.store({
+    environment: "",
+    type: "plugin",
+    name: "users-permissions",
+  });
+
+  await pluginStore.set({
+    key: "advanced",
+    value: {
+      unique_email: true,
+      allow_register: true,
+      email_confirmation: false,
+      email_reset_password: null,
+      email_confirmation_redirection: null,
+      default_role: "authenticated",
+    },
+  });
+
+  console.log("  plugin:users-permissions:advanced");
+};
+
 const seedPermissions = async () => {
   console.log("Seeding permissions:");
 
@@ -348,6 +372,7 @@ const run = async () => {
   adminEmail = strapi.config.server.admin.auth.email;
   adminPassword = strapi.config.server.admin.auth.password;
 
+  await seedSettings();
   await seedAdminUser();
   await seedUsers();
   await seedPermissions();
