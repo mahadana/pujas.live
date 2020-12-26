@@ -8,10 +8,12 @@ Shortcuts:
 
   Bash shell in frontend            $0 frontend
   Bash shell in backend             $0 backend
-  Strapi (re)build                  $0 strapi-build
-  Strapi console                    $0 strapi-console
-  PostgreSQL CLI                    $0 postgres-cli
-  Redis CLI                         $0 redis-cli
+  Run tests in frontend             $0 frontend test
+  Watch tests in frontend           $0 frontend watch
+  Strapi (re)build                  $0 backend build
+  Strapi console                    $0 backend console
+  PostgreSQL console                $0 db console
+  Redis console                     $0 redis console
   Reload database                   $0 reload-db
   Clean containers, cache, etc...   $0 clean
 
@@ -24,21 +26,31 @@ SERVICE="$1"
 shift
 
 case "$SERVICE" in
-  strapi-build)
-    SERVICE="backend"
-    set bash -c 'rm -rf build/* cache/* && npx strapi build'
+  frontend)
+    if [ "$*" == "test" ]; then
+      set npm run test
+    elif [ "$*" == "watch" ]; then
+      set npm run watch
+    fi
     ;;
-  strapi-console)
+  backend|strapi)
     SERVICE="backend"
-    set npx -c 'PORT=1338 strapi console'
+    if [ "$*" == "build" ]; then
+      set bash -c 'rm -rf build/* cache/* && npx strapi build'
+    elif [ "$*" == "console" ]; then
+      set npx -c 'PORT=1338 strapi console'
+    fi
     ;;
-  postgres-cli)
+  db|postgres)
     SERVICE="db"
-    set psql -U strapi
+    if [ "$*" == "console" ]; then
+      set psql -U strapi
+    fi
     ;;
-  redis-cli)
-    SERVICE="redis"
-    set redis-cli
+  redis)
+    if [ "$*" == "console" ]; then
+      set redis-cli
+    fi
     ;;
   reload-db)
     cd "$(dirname "$0")"
