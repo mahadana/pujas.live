@@ -6,6 +6,7 @@ import Banner from "../components/Banner";
 import ChantingBooksBar from "../components/ChantingBooksBar";
 import GroupList from "../components/GroupList";
 import Link from "../components/Link";
+import Loading from "../components/Loading";
 import StreamList from "../components/StreamList";
 import UserBar from "../components/UserBar";
 import { withApollo } from "../lib/apollo";
@@ -57,20 +58,31 @@ const QUERY = gql`
 `;
 
 const Home = () => {
+  const { loading, error, data } = useQuery(QUERY, {
+    fetchPolicy: "cache-and-network",
+  });
   const classes = useStyles();
-  const { loading, error, data } = useQuery(QUERY);
+  const streams = data?.streams;
+  const groups = data?.groups;
 
   return (
     <>
       <Banner />
       <ChantingBooksBar />
       <UserBar />
-      {error && <p>Error loading data...</p>}
       <Container maxWidth="lg">
-        <h2 className={classes.lead}>Livestreams</h2>
-        {!loading && !error && <StreamList streams={data.streams} />}
-        <h2 className={classes.lead}>Open Sitting Groups</h2>
-        {!loading && !error && <GroupList groups={data.groups} />}
+        {error ? (
+          <p>Error loading data...</p>
+        ) : loading || !streams || !groups ? (
+          <Loading />
+        ) : (
+          <>
+            <h2 className={classes.lead}>Livestreams</h2>
+            <StreamList streams={streams} />
+            <h2 className={classes.lead}>Open Sitting Groups</h2>
+            <GroupList groups={groups} />
+          </>
+        )}
         <p>
           <Link href="/groups/create">+ Click here to post new group</Link>
         </p>

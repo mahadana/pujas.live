@@ -42,7 +42,10 @@ const loadUser = ({ setUser, setUserLoading, user }) => {
   }
   (async () => {
     try {
-      const result = await apolloClient.query({ query: ME_QUERY });
+      const result = await apolloClient.query({
+        fetchPolicy: "network-only",
+        query: ME_QUERY,
+      });
       setUser(result.data.me);
     } catch (error) {
       console.error(error);

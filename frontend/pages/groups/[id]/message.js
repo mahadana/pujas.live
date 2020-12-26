@@ -19,6 +19,7 @@ const GroupMessagePage = () => {
 
   const groupId = router.query.id;
   const { loading, data } = useQuery(GROUP_QUERY, {
+    fetchPolicy: "cache-and-network",
     skip: !groupId,
     variables: { id: groupId },
   });
@@ -37,7 +38,7 @@ const GroupMessagePage = () => {
       <Banner />
       <UserBar />
       <Container maxWidth="sm">
-        {loading || userLoading || !group ? (
+        {!user || userLoading || loading || !group ? (
           <Loading />
         ) : !user ? (
           <NotLoggedIn />

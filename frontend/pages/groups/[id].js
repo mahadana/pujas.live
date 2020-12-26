@@ -25,6 +25,7 @@ const GroupPage = () => {
   const router = useRouter();
   const groupId = router.query.id;
   const { loading, data } = useQuery(GROUP_QUERY, {
+    fetchPolicy: "cache-and-network",
     skip: !groupId,
     variables: { id: groupId },
   });

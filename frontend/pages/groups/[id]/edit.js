@@ -23,6 +23,7 @@ const GroupEditPage = () => {
   const groupId = parseInt(router.query?.id);
 
   const { loading } = useQuery(GROUP_QUERY, {
+    fetchPolicy: "network-only",
     skip: !groupId,
     variables: { id: groupId },
     onCompleted: (data) => {
