@@ -27,7 +27,9 @@ const GroupEditPage = () => {
     skip: !groupId,
     variables: { id: groupId },
     onCompleted: (data) => {
-      setGroup(groupSchema.cast(data.group));
+      if (data.group) {
+        setGroup(groupSchema.cast(data.group));
+      }
     },
   });
 

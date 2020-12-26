@@ -8,6 +8,7 @@ Shortcuts:
 
   Bash shell in frontend            $0 frontend
   Bash shell in backend             $0 backend
+  Strapi (re)build                  $0 strapi-build
   Strapi console                    $0 strapi-console
   PostgreSQL CLI                    $0 postgres-cli
   Redis CLI                         $0 redis-cli
@@ -23,6 +24,10 @@ SERVICE="$1"
 shift
 
 case "$SERVICE" in
+  strapi-build)
+    SERVICE="backend"
+    set bash -c 'rm -rf build/* cache/* && npx strapi build'
+    ;;
   strapi-console)
     SERVICE="backend"
     set npx -c 'PORT=1338 strapi console'
