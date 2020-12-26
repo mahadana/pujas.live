@@ -1,10 +1,12 @@
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import { FieldArray, Form, Formik } from "formik";
 
 import GroupEventFormFragment from "./GroupEventFormFragment";
+import TimeZoneField from "./TimeZoneField";
 import { FormHelper, FormTextField, SubmitButton } from "../lib/form";
 import { groupSchema } from "../lib/validation";
 
@@ -15,6 +17,9 @@ const EVENT_DEFAULTS = {
 };
 
 const useStyles = makeStyles((theme) => ({
+  groupPaper: {
+    padding: "1em",
+  },
   submitRow: {
     marginTop: "2em",
   },
@@ -35,33 +40,39 @@ const GroupForm = ({ group, onSubmit }) => {
           <Grid item xs={12}>
             <Typography variant="h5">Group</Typography>
           </Grid>
-          <Grid item xs={12} sm={9}>
-            <FormTextField
-              name="name"
-              label="Name"
-              required
-              fullWidth
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <FormTextField
-              name="timezone"
-              label="Time Zone"
-              required
-              fullWidth
-              variant="outlined"
-            />
-          </Grid>
           <Grid item xs={12}>
-            <FormTextField
-              name="description"
-              label="Description"
-              multiline
-              fullWidth
-              rowsMax="8"
-              variant="outlined"
-            />
+            <Paper className={classes.groupPaper}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <FormTextField
+                    name="name"
+                    label="Name"
+                    required
+                    fullWidth
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormTextField
+                    name="description"
+                    label="Description"
+                    multiline
+                    fullWidth
+                    rowsMax="8"
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TimeZoneField
+                    name="timezone"
+                    label="Time Zone"
+                    required
+                    fullWidth
+                    variant="outlined"
+                  />
+                </Grid>
+              </Grid>
+            </Paper>
           </Grid>
           <Grid item xs={12}>
             <Typography variant="h5">Events</Typography>

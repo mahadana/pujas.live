@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "1em",
   },
   container: {
-    height: "5em",
+    minHeight: "5em",
     alignItems: "flex-start",
     justifyContent: "space-between",
   },

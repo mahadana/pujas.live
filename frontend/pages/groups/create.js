@@ -10,10 +10,8 @@ import { apolloClient, withApollo } from "../../lib/apollo";
 import { CREATE_GROUP_MUTATION } from "../../lib/schema";
 import { useSnackbar } from "../../lib/snackbar";
 import { useUser } from "../../lib/user";
-import { translateStrapiError } from "../../lib/util";
+import { getLocalTimeZone, translateStrapiError } from "../../lib/util";
 import { groupSchema, groupCreateDbCast } from "../../lib/validation";
-
-const newGroup = groupSchema.cast();
 
 const GroupCreatePage = () => {
   const router = useRouter();
@@ -37,6 +35,9 @@ const GroupCreatePage = () => {
       console.error(error);
     }
   };
+
+  const newGroup = groupSchema.cast();
+  newGroup.timezone = getLocalTimeZone();
 
   return (
     <>

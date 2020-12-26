@@ -1,3 +1,5 @@
+import { listTimeZones } from "timezone-support";
+
 export const getChannelIdFromChannelUrl = (url) => {
   const urlObject = new URL(url);
   return urlObject.pathname.split("/").pop(); //searchParams.get("")
@@ -29,5 +31,15 @@ export const translateStrapiError = (error) => {
     return strapiError.message;
   } else {
     return "Unknown server error";
+  }
+};
+
+export const TIMEZONES = listTimeZones();
+
+export const getLocalTimeZone = () => {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  } catch {
+    return "Etc/UTC";
   }
 };
