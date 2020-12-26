@@ -11,6 +11,7 @@ import { useRef, useState } from "react";
 import ButtonLink from "./ButtonLink";
 import { useSnackbar } from "../lib/snackbar";
 import { useUser } from "../lib/user";
+import { getPushBackUrl } from "../lib/util";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,7 +29,7 @@ const UserBar = () => {
   const anchor = useRef();
   const [open, setOpen] = useState(false);
   const { snackInfo } = useSnackbar();
-  const { logout, user } = useUser();
+  const { logout, user, userLoading } = useUser();
 
   const openMenu = () => setOpen(true);
   const closeMenu = () => setOpen(false);
@@ -39,16 +40,18 @@ const UserBar = () => {
   const doLogout = () => {
     closeMenu();
     logout();
-    snackInfo("You were logged out.");
+    snackInfo("You were logged out");
   };
 
-  const loginUrl =
-    "/auth/login" +
-    (router.asPath ? "?back=" + encodeURIComponent(router.asPath) : "");
+  const loginUrl = getPushBackUrl(router);
 
   return (
     <Toolbar className={classes.root}>
-      {user ? (
+      {!user || userLoading ? null : !user ? (
+        <ButtonLink href={loginUrl} color="primary">
+          Login
+        </ButtonLink>
+      ) : (
         <>
           <Typography variant="h6" className={classes.email} onClick={openMenu}>
             {user.email}
@@ -71,10 +74,6 @@ const UserBar = () => {
             <MenuItem onClick={doLogout}>Logout</MenuItem>
           </Menu>
         </>
-      ) : (
-        <ButtonLink href={loginUrl} color="primary">
-          Login
-        </ButtonLink>
       )}
     </Toolbar>
   );

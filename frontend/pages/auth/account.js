@@ -4,17 +4,16 @@ import Banner from "../../components/Banner";
 import Loading from "../../components/Loading";
 import NotLoggedIn from "../../components/NotLoggedIn";
 import UserBar from "../../components/UserBar";
-import { withApolloAndUser } from "../../lib/apollo";
 import { useUser } from "../../lib/user";
 
-const Account = () => {
+const AccountPage = () => {
   const { user, userLoading } = useUser();
   return (
     <>
       <Banner />
       <UserBar />
       <Container maxWidth="sm">
-        {userLoading ? (
+        {!user && userLoading ? (
           <Loading />
         ) : !user ? (
           <NotLoggedIn />
@@ -38,4 +37,4 @@ const Account = () => {
   );
 };
 
-export default withApolloAndUser()(Account);
+export default AccountPage;

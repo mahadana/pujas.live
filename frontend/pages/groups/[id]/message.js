@@ -8,7 +8,7 @@ import GroupMessageForm from "../../../components/GroupMessageForm";
 import Loading from "../../../components/Loading";
 import NotLoggedIn from "../../../components/NotLoggedIn";
 import UserBar from "../../../components/UserBar";
-import { withApolloAndUser } from "../../../lib/apollo";
+import { withApollo } from "../../../lib/apollo";
 import { GROUP_QUERY } from "../../../lib/schema";
 import { useUser } from "../../../lib/user";
 
@@ -55,4 +55,4 @@ const GroupMessagePage = () => {
   );
 };
 
-export default withApolloAndUser()(GroupMessagePage);
+export default withApollo()(GroupMessagePage);

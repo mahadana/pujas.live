@@ -6,7 +6,7 @@ import GroupForm from "../../components/GroupForm";
 import Loading from "../../components/Loading";
 import NotLoggedIn from "../../components/NotLoggedIn";
 import UserBar from "../../components/UserBar";
-import { apolloClient, withApolloAndUser } from "../../lib/apollo";
+import { apolloClient, withApollo } from "../../lib/apollo";
 import { CREATE_GROUP_MUTATION } from "../../lib/schema";
 import { useSnackbar } from "../../lib/snackbar";
 import { useUser } from "../../lib/user";
@@ -55,4 +55,4 @@ const GroupCreatePage = () => {
   );
 };
 
-export default withApolloAndUser()(GroupCreatePage);
+export default withApollo()(GroupCreatePage);

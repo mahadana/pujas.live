@@ -56,6 +56,15 @@ export const LOGIN_MUTATION = gql`
   }
 `;
 
+export const ME_QUERY = gql`
+  query Me {
+    me {
+      id
+      email
+    }
+  }
+`;
+
 export const REGISTER_MUTATION = gql`
   mutation Register($input: UsersPermissionsRegisterInput!) {
     register(input: $input) {

@@ -8,7 +8,7 @@ import GroupForm from "../../../components/GroupForm";
 import Loading from "../../../components/Loading";
 import NotLoggedIn from "../../../components/NotLoggedIn";
 import UserBar from "../../../components/UserBar";
-import { apolloClient, withApolloAndUser } from "../../../lib/apollo";
+import { apolloClient, withApollo } from "../../../lib/apollo";
 import { GROUP_QUERY, UPDATE_GROUP_MUTATION } from "../../../lib/schema";
 import { useSnackbar } from "../../../lib/snackbar";
 import { useUser } from "../../../lib/user";
@@ -52,7 +52,7 @@ const GroupEditPage = () => {
       <Banner />
       <UserBar />
       <Container maxWidth="sm">
-        {loading || userLoading || !group ? (
+        {!user || userLoading || loading || !group ? (
           <Loading />
         ) : !user ? (
           <NotLoggedIn />
@@ -64,4 +64,4 @@ const GroupEditPage = () => {
   );
 };
 
-export default withApolloAndUser()(GroupEditPage);
+export default withApollo()(GroupEditPage);

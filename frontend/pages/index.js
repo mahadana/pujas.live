@@ -8,7 +8,7 @@ import GroupList from "../components/GroupList";
 import Link from "../components/Link";
 import StreamList from "../components/StreamList";
 import UserBar from "../components/UserBar";
-import { withApolloAndUser } from "../lib/apollo";
+import { withApollo } from "../lib/apollo";
 
 const useStyles = makeStyles((theme) => ({
   lead: {
@@ -79,4 +79,4 @@ const Home = () => {
   );
 };
 
-export default withApolloAndUser()(Home);
+export default withApollo()(Home);

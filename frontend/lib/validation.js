@@ -88,7 +88,7 @@ export const groupMessageSchema = yup.object({
 });
 
 export const loginSchema = yup.object({
-  email: yup.string().required("Required"),
+  email: yup.string().required("Required").email("Invalid email address"),
   password: yup.string().required("Required"),
 });
 

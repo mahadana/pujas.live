@@ -6,7 +6,7 @@ import Banner from "../../components/Banner";
 import Group from "../../components/Group";
 import Loading from "../../components/Loading";
 import UserBar from "../../components/UserBar";
-import { withApolloAndUser } from "../../lib/apollo";
+import { withApollo } from "../../lib/apollo";
 import { GROUP_QUERY } from "../../lib/schema";
 
 const useStyles = makeStyles((theme) => ({
@@ -56,4 +56,4 @@ const GroupPage = () => {
   );
 };
 
-export default withApolloAndUser()(GroupPage);
+export default withApollo()(GroupPage);

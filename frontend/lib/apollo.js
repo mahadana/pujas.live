@@ -1,15 +1,7 @@
 import { withApollo as nextApollo } from "next-apollo";
-import {
-  ApolloClient,
-  createHttpLink,
-  gql,
-  InMemoryCache,
-  useQuery,
-} from "@apollo/client";
+import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import JsCookie from "js-cookie";
-
-import { useUser } from "./user";
 
 export const apiUrl =
   typeof window === "undefined"
@@ -42,44 +34,3 @@ export const apolloClient = new ApolloClient({
 });
 
 export const withApollo = nextApollo(apolloClient);
-
-export const withApolloAndUser = (params) => {
-  return (Component) => {
-    const wrapper = (props) => {
-      const { setUser, setUserLoading, user, userLoading } = useUser();
-      const { loading } = useQuery(
-        gql`
-          {
-            me {
-              id
-              email
-            }
-          }
-        `,
-        {
-          onCompleted: (data) => {
-            setUser(data.me);
-            setUserLoading(false);
-          },
-          onError: (error) => {
-            console.error(error);
-            setUserLoading(false);
-          },
-          skip: !!user || !JsCookie.get("jwt"),
-          ssr: false,
-        }
-      );
-      return <Component {...props} />;
-    };
-    if (process.env.NODE_ENV !== "production") {
-      const name = Component.displayName || Component.name || "Component";
-      wrapper.displayName = `withApolloAndUser(${name})`;
-    }
-    if (Component.getInitialProps) {
-      wrapper.getInitialProps = async (ctx) => {
-        return await Component.getInitialProps(ctx);
-      };
-    }
-    return withApollo(params)(wrapper);
-  };
-};

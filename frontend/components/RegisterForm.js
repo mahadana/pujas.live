@@ -78,6 +78,8 @@ const RegisterForm = ({ disabled, onSubmit }) => {
               <FormTextField
                 label="Email"
                 name="email"
+                type="email"
+                autoComplete="username"
                 variant="outlined"
                 autoFocus
                 disabled={disabled}
@@ -88,6 +90,7 @@ const RegisterForm = ({ disabled, onSubmit }) => {
                 label="Password"
                 name="password"
                 type="password"
+                autoComplete="new-password"
                 variant="outlined"
                 disabled={disabled}
               />

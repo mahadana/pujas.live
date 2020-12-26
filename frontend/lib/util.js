@@ -11,7 +11,7 @@ export const getPushBackUrl = (router, path) =>
   path + (router.asPath ? "?back=" + encodeURIComponent(router.asPath) : "");
 
 export const pushBack = (router, defaultPath = "/") => {
-  router.push(getBackFromQuery(router.query));
+  router.push(getBackFromQuery(router.query, defaultPath));
 };
 
 export const getStrapiError = (error) => {
@@ -22,7 +22,7 @@ export const getStrapiError = (error) => {
 export const translateStrapiError = (error) => {
   const strapiError = getStrapiError(error);
   if (strapiError?.id === "Auth.form.error.invalid") {
-    return "Invalid email or password";
+    return "Incorrect email or password";
   } else if (error?.message === "Forbidden") {
     return "You are not logged in";
   } else if (strapiError?.message) {
