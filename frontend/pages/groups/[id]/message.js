@@ -5,15 +5,19 @@ import { useState } from "react";
 
 import Banner from "../../../components/Banner";
 import GroupMessageForm from "../../../components/GroupMessageForm";
+import GroupMessageSuccess from "../../../components/GroupMessageSuccess";
 import Loading from "../../../components/Loading";
 import NotLoggedIn from "../../../components/NotLoggedIn";
 import UserBar from "../../../components/UserBar";
-import { withApollo } from "../../../lib/apollo";
-import { GROUP_QUERY } from "../../../lib/schema";
+import { apolloClient, withApollo } from "../../../lib/apollo";
+import { GROUP_QUERY, MESSAGE_GROUP_MUTATION } from "../../../lib/schema";
+import { useSnackbar } from "../../../lib/snackbar";
 import { useUser } from "../../../lib/user";
+import { translateStrapiError } from "../../../lib/util";
 
 const GroupMessagePage = () => {
   const router = useRouter();
+  const { snackError, snackSuccess } = useSnackbar();
   const { user, userLoading } = useUser();
   const [complete, setComplete] = useState(false);
 
@@ -25,12 +29,28 @@ const GroupMessagePage = () => {
   });
   const group = data?.group;
 
-  const onSubmit = async (values) => {
-    function sleep(ms) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
+  const onSubmit = async (values, form) => {
+    const variables = {
+      input: {
+        where: { id: groupId },
+        data: {
+          name: values.name,
+          email: values.email,
+          message: values.message,
+        },
+      },
+    };
+    try {
+      const result = await apolloClient.mutate({
+        mutation: MESSAGE_GROUP_MUTATION,
+        variables,
+      });
+      snackSuccess("Successfully sent the message.");
+      setComplete(true);
+    } catch (error) {
+      snackError(translateStrapiError(error));
+      console.error(error);
     }
-    await sleep(2000);
-    setComplete(true);
   };
 
   return (
@@ -38,7 +58,7 @@ const GroupMessagePage = () => {
       <Banner />
       <UserBar />
       <Container maxWidth="sm">
-        {!user || userLoading || loading || !group ? (
+        {(!user && userLoading) || loading || !group ? (
           <Loading />
         ) : !user ? (
           <NotLoggedIn />
@@ -49,7 +69,7 @@ const GroupMessagePage = () => {
             onSubmit={onSubmit}
           />
         ) : (
-          <p>Your message has been sent TODO</p>
+          <GroupMessageSuccess />
         )}
       </Container>
     </>

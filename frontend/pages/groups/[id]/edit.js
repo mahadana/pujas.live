@@ -55,7 +55,7 @@ const GroupEditPage = () => {
       <Banner />
       <UserBar />
       <Container maxWidth="sm">
-        {!user || userLoading || loading || !group ? (
+        {(!user && userLoading) || loading || !group ? (
           <Loading />
         ) : !user ? (
           <NotLoggedIn />

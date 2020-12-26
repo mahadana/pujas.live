@@ -18,6 +18,19 @@ const useStyles = makeStyles((theme) => ({
 const GroupMessageForm = ({ disabled, group, onSubmit }) => {
   const classes = useStyles();
   const { user } = useUser();
+  const myOnSubmit = async (values, actions) => {
+    values = {
+      ...values,
+      message: `Q. What are you looking for in a meditation group?
+
+${values.interest}
+
+Q. Please describe your experience/interest in the Thai Forest tradition:
+
+${values.experience}`,
+    };
+    return await onSubmit(values, actions);
+  };
   const initialValues = {
     name: "",
     email: user?.email || "",
@@ -29,7 +42,7 @@ const GroupMessageForm = ({ disabled, group, onSubmit }) => {
       initialValues={initialValues}
       validationSchema={groupMessageSchema}
       validateOnChange={false}
-      onSubmit={onSubmit}
+      onSubmit={myOnSubmit}
     >
       <Form>
         <FormHelper invalidFormSnackbar="There were one or more errors in your message." />
@@ -50,6 +63,7 @@ const GroupMessageForm = ({ disabled, group, onSubmit }) => {
               fullWidth
               variant="outlined"
               autoFocus
+              disabled={disabled}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -59,6 +73,7 @@ const GroupMessageForm = ({ disabled, group, onSubmit }) => {
               required
               fullWidth
               variant="outlined"
+              disabled={disabled}
             />
           </Grid>
           <Grid item xs={12} className={classes.leader}>
@@ -72,6 +87,7 @@ const GroupMessageForm = ({ disabled, group, onSubmit }) => {
               required
               fullWidth
               variant="outlined"
+              disabled={disabled}
             />
           </Grid>
           <Grid item xs={12} className={classes.leader}>
@@ -86,6 +102,7 @@ const GroupMessageForm = ({ disabled, group, onSubmit }) => {
               required
               fullWidth
               variant="outlined"
+              disabled={disabled}
             />
           </Grid>
           <Grid item xs={12}>

@@ -44,6 +44,14 @@ export const UPDATE_GROUP_MUTATION = gql`
   }
 `;
 
+export const MESSAGE_GROUP_MUTATION = gql`
+  mutation MessageGroup($input: messageGroupInput!) {
+    messageGroup(input: $input) {
+      ok
+    }
+  }
+`;
+
 export const LOGIN_MUTATION = gql`
   mutation Login($input: UsersPermissionsLoginInput!) {
     login(input: $input) {
