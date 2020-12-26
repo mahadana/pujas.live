@@ -24,11 +24,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const UserBar = () => {
-  const classes = useStyles();
-  const router = useRouter();
   const anchor = useRef();
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
   const { snackInfo } = useSnackbar();
+  const [open, setOpen] = useState(false);
+  const classes = useStyles();
   const { logout, user, userLoading } = useUser();
 
   const openMenu = () => setOpen(true);
@@ -43,12 +43,13 @@ const UserBar = () => {
     snackInfo("You were logged out");
   };
 
-  const loginUrl = getPushBackUrl(router);
-
   return (
     <Toolbar className={classes.root}>
-      {!user || userLoading ? null : !user ? (
-        <ButtonLink href={loginUrl} color="primary">
+      {!user && userLoading ? null : !user ? (
+        <ButtonLink
+          href={getPushBackUrl(router, "/auth/login")}
+          color="primary"
+        >
           Login
         </ButtonLink>
       ) : (
