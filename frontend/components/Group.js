@@ -1,5 +1,4 @@
 import Box from "@material-ui/core/Box";
-import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -7,7 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import capitalize from "lodash/capitalize";
 
-import Link from "./Link";
+import ButtonLink from "./ButtonLink";
 import Upcoming from "./Upcoming";
 import { dayjs } from "../lib/time";
 import { useUser } from "../lib/user";
@@ -47,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     textAlign: "center",
-    "& button": {
+    "& a": {
       borderRadius: 20,
       marginTop: 20,
     },
@@ -113,23 +112,23 @@ const Group = ({
         <Typography variant="body2">{description}</Typography>
       </Box>
       <Box className={classes.links}>
-        <Box>
-          <Link href={`/groups/${id}`}>
-            <Button variant="contained">Join Practice</Button>
-          </Link>
+        <Typography variant="body2">
+          <ButtonLink href={`/groups/${id}`} variant="contained">
+            Join Practice
+          </ButtonLink>
           <br />
-          <Link href={`/groups/${id}/message`}>
-            <Button variant="contained">Message Group</Button>
-          </Link>
+          <ButtonLink href={`/groups/${id}/message`} variant="contained">
+            Message Group
+          </ButtonLink>
           {user && (
             <>
               <br />
-              <Link href={`/groups/${id}/edit`}>
-                <Button variant="contained">Edit Group</Button>
-              </Link>
+              <ButtonLink href={`/groups/${id}/edit`} variant="contained">
+                Edit Group
+              </ButtonLink>
             </>
           )}
-        </Box>
+        </Typography>
       </Box>
     </Box>
   );
