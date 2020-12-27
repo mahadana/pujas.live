@@ -9,8 +9,9 @@ import UserBar from "../../components/UserBar";
 import { apolloClient, withApollo } from "../../lib/apollo";
 import { CREATE_GROUP_MUTATION } from "../../lib/schema";
 import { useSnackbar } from "../../lib/snackbar";
+import { dayjs } from "../../lib/time";
 import { useUser } from "../../lib/user";
-import { getLocalTimeZone, translateStrapiError } from "../../lib/util";
+import { translateStrapiError } from "../../lib/util";
 import { groupSchema, groupCreateDbCast } from "../../lib/validation";
 
 const GroupCreatePage = () => {
@@ -37,7 +38,7 @@ const GroupCreatePage = () => {
   };
 
   const newGroup = groupSchema.cast();
-  newGroup.timezone = getLocalTimeZone();
+  newGroup.timezone = dayjs.tz.guess();
 
   return (
     <>

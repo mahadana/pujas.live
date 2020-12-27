@@ -10,6 +10,7 @@ import Loading from "../components/Loading";
 import StreamList from "../components/StreamList";
 import UserBar from "../components/UserBar";
 import { withApollo } from "../lib/apollo";
+import { dayjs, getNextGroupEventTime } from "../lib/time";
 
 const useStyles = makeStyles((theme) => ({
   lead: {
@@ -57,13 +58,46 @@ const QUERY = gql`
   }
 `;
 
+const extendAndSortGroupsWithNextEvent = (groups) => {
+  const localTz = dayjs.tz.guess();
+  groups = groups.map((group) => {
+    return {
+      ...group,
+      nextEventTime: dayjs.min(
+        (group.events || []).map((event) =>
+          getNextGroupEventTime({
+            ...event,
+            duration: event.duration || 60,
+            timezone: group.timezone,
+          })
+        )
+      ),
+    };
+  });
+  return groups.sort((a, b) => {
+    if (a.nextEventTime && b.nextEventTime) {
+      return a.nextEventTime.diff(b.nextEventTime);
+    } else if (a.nextEventTime && !b.nextEventTime) {
+      return -1;
+    } else if (!a.nextEventTie && b.nextEventTime) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+};
+
 const Home = () => {
   const { loading, error, data } = useQuery(QUERY, {
     fetchPolicy: "cache-and-network",
   });
   const classes = useStyles();
   const streams = data?.streams;
-  const groups = data?.groups;
+  let groups = data?.groups;
+
+  if (groups) {
+    groups = extendAndSortGroupsWithNextEvent(groups);
+  }
 
   return (
     <>

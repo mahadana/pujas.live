@@ -1,6 +1,12 @@
-import { Box, Button, makeStyles } from "@material-ui/core";
-import VideoIframeModal from "./VideoIframeModal";
+import Box from "@material-ui/core/Box";
+import Button from "@material-ui/core/Button";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 import { useState } from "react";
+
+import Upcoming from "./Upcoming";
+import VideoIframeModal from "./VideoIframeModal";
+import { dayjs } from "../lib/time";
 import { getChannelIdFromChannelUrl } from "../lib/util";
 
 const useStyles = makeStyles((theme) => ({
@@ -61,8 +67,6 @@ const Stream = (props) => {
   const [open, setOpen] = useState(false);
   const [videoUrl, setVideoUrl] = useState(null);
 
-
-
   const openVideo = (event, url) => {
     event.preventDefault();
     setVideoUrl(url);
@@ -73,15 +77,12 @@ const Stream = (props) => {
     setOpen(false);
   };
 
-  let live = false;
-  if (props.startAt) {
-    let min = new Date(props.startAt);
-    min.setMinutes(min.getMinutes() - 15);
-    let max = new Date(props.startAt);
-    max.setMinutes(max.getMinutes() + (props.duration || 240));
-    const now = new Date();
-    live = min < now && now < max;
-  }
+  const live = ((startAt, duration) => {
+    const min = dayjs(startAt).utc().subtract(15, "minute");
+    const max = dayjs(startAt).utc().add(duration, "minute");
+    const now = dayjs().utc();
+    return min.isBefore(now) && now.isBefore(max);
+  })(props.startAt, props.duration || 240);
 
   return (
     <Box className={classes.root}>
@@ -90,14 +91,12 @@ const Stream = (props) => {
       </Box>
       <Box className={classes.text}>
         <h3>{props.name}</h3>
-        <p>{props.description}</p>
         {props.streamUrl && props.startAt && (
-          <p>
-            <strong>{live ? "Streaming now" : "Next stream"}</strong>
-            {": "}{formatDate(props.startAt)}
-            {props.duration && " - " + props.duration + " minutes"}
-          </p>
+          <Typography variant="subtitle2">
+            <Upcoming time={props.startAt} duration={props.duration} />
+          </Typography>
         )}
+        <p>{props.description}</p>
         <p className={classes.monasteryLinks}>
           {props.monastery && props.monastery.websiteUrl && (
             <a href={props.monastery.websiteUrl} target="_blank">
@@ -123,9 +122,15 @@ const Stream = (props) => {
               color={live ? "primary" : undefined}
               variant="contained"
               onClick={(event) => {
-                if(props.embeddable) {
-                  const channelId = getChannelIdFromChannelUrl(props.monastery.channelUrl);
-                  openVideo(event, "https://www.youtube.com/embed/live_stream?channel="+channelId);
+                if (props.embeddable) {
+                  const channelId = getChannelIdFromChannelUrl(
+                    props.monastery.channelUrl
+                  );
+                  openVideo(
+                    event,
+                    "https://www.youtube.com/embed/live_stream?channel=" +
+                      channelId
+                  );
                 } else {
                   event.preventDefault();
                   const w = window.open(props.streamUrl, "_blank");
@@ -135,11 +140,14 @@ const Stream = (props) => {
             >
               {live ? "Join Livestream" : "Livestream Page"}
             </Button>
-            <VideoIframeModal url={videoUrl} open={open} onClose={onCloseVideoModal} />
+            <VideoIframeModal
+              url={videoUrl}
+              open={open}
+              onClose={onCloseVideoModal}
+            />
           </>
         )}
       </Box>
-
     </Box>
   );
 };

@@ -1,7 +1,15 @@
-import { Box, Button, Grid, makeStyles } from "@material-ui/core";
-import { zonedTimeToUtc, utcToZonedTime, format } from "date-fns-tz";
+import Box from "@material-ui/core/Box";
+import Button from "@material-ui/core/Button";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import capitalize from "lodash/capitalize";
 
 import Link from "./Link";
+import Upcoming from "./Upcoming";
+import { dayjs } from "../lib/time";
 import { useUser } from "../lib/user";
 
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     flex: "1 1 20em",
     marginRight: "2em",
     "& > h3": {
-      margin: 0,
+      margin: "0 0 .2rem",
       fontSize: "1.5em",
       fontWeight: 400,
     },
@@ -45,40 +53,40 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   events: {
-    paddingInlineStart: 20,
-    fontSize: "1.1em",
+    margin: ".6em",
+    padding: 0,
+  },
+  event: {
+    padding: 0,
+    "& > div": {
+      margin: 0,
+    },
   },
 }));
 
-const zonedAndLocalTime = (timeString, timeZone) => {
-  const now = new Date();
-  const time = zonedTimeToUtc(
-    format(now, "yyyy-MM-dd") + " " + timeString,
-    timeZone
-  );
-
-  if (time < now) {
-    time.setDate(time.getDate() + 1);
-  }
-
-  const formatTime = (t, timeZone) => {
-    const mp = t.getMinutes() == 0 ? "" : ":mm";
-    return format(t, `h${mp}aaaaa'm' zzz`, { timeZone });
-  };
-
-  if (format(now, "xx") === format(now, "xx", { timeZone })) {
-    return formatTime(time);
-  } else {
-    return `${formatTime(time, timeZone)} (${formatTime(time)})`;
-  }
-};
-
-const Group = (props) => {
+const Group = ({
+  description,
+  events,
+  id,
+  image,
+  name,
+  nextEventTime,
+  timezone,
+}) => {
   const classes = useStyles();
   const { user } = useUser();
-  const imageUrl = props.image
-    ? `${process.env.NEXT_PUBLIC_API_URL}${props.image?.formats?.thumbnail?.url}`
+
+  const imageUrl = image
+    ? `${process.env.NEXT_PUBLIC_API_URL}${image?.formats?.thumbnail?.url}`
     : "https://placekitten.com/g/100/100";
+  const localEvents = (events || []).map((event) => ({
+    day: capitalize(
+      event.daysOfWeek === "everyday" ? "Every day" : event.daysOfWeek
+    ),
+    time: dayjs().tz(timezone).timeString(event.startAt).format("h:mma z"),
+    duration:
+      event.duration && dayjs.duration(event.duration, "minutes").humanize(),
+  }));
 
   return (
     <Box className={classes.root}>
@@ -86,31 +94,37 @@ const Group = (props) => {
         <img src={imageUrl} />
       </Box>
       <Box className={classes.text}>
-        <h3>{props.name}</h3>
-        <ul className={classes.events}>
-          {props.events.map((event) => (
-            <li key={event.id}>
-              {event.daysOfWeek} @{" "}
-              {zonedAndLocalTime(event.startAt, props.timezone)}
-              {event.duration && " for " + event.duration + " minutes"}
-            </li>
+        <Typography variant="h3">{name}</Typography>
+        {nextEventTime && (
+          <Typography variant="subtitle2">
+            <Upcoming time={nextEventTime} />
+          </Typography>
+        )}
+        <List dense className={classes.events}>
+          {localEvents.map((event, index) => (
+            <ListItem key={index} className={classes.event}>
+              <ListItemText>
+                · {event.day} · {event.time}
+                {event.duration && " · " + event.duration}
+              </ListItemText>
+            </ListItem>
           ))}
-        </ul>
-        <p>{props.description}</p>
+        </List>
+        <Typography variant="body2">{description}</Typography>
       </Box>
       <Box className={classes.links}>
         <Box>
-          <Link href={`/groups/${props.id}`}>
+          <Link href={`/groups/${id}`}>
             <Button variant="contained">Join Practice</Button>
           </Link>
           <br />
-          <Link href={`/groups/${props.id}/message`}>
+          <Link href={`/groups/${id}/message`}>
             <Button variant="contained">Message Group</Button>
           </Link>
           {user && (
             <>
               <br />
-              <Link href={`/groups/${props.id}/edit`}>
+              <Link href={`/groups/${id}/edit`}>
                 <Button variant="contained">Edit Group</Button>
               </Link>
             </>
