@@ -23,6 +23,7 @@ module.exports = {
       messageGroup: {
         description: "Send a message to the owner of a group",
         resolver: "application::group.group.message",
+        policies: ["global::captcha"],
       },
     },
   },

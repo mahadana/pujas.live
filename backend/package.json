@@ -11,6 +11,7 @@
   },
   "devDependencies": {},
   "dependencies": {
+    "hcaptcha": "0.0.2",
     "knex": "^0.21.14",
     "pg": "^8.5.1",
     "strapi": "3.4.1",

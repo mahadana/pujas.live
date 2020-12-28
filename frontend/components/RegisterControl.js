@@ -14,7 +14,7 @@ const RegisterControl = ({ onSuccess }) => {
   const [complete, setComplete] = useState(false);
   const { login, logout } = useUser();
 
-  const onSubmit = async (values, form) => {
+  const onSubmit = async (values, formik, token) => {
     const variables = {
       input: {
         email: values.email,
@@ -27,6 +27,11 @@ const RegisterControl = ({ onSuccess }) => {
     let user, jwt;
     try {
       const result = await apolloClient.mutate({
+        context: {
+          headers: {
+            "X-Captcha-Token": token,
+          },
+        },
         mutation: REGISTER_MUTATION,
         variables,
       });
@@ -34,8 +39,8 @@ const RegisterControl = ({ onSuccess }) => {
     } catch (error) {
       const strapiError = getStrapiError(error);
       if (strapiError?.id === "Auth.form.error.email.taken") {
-        form.setFieldValue("existingEmail", values.email);
-        form.validateForm();
+        formik.setFieldValue("existingEmail", values.email);
+        formik.validateForm();
       } else {
         snackError(translateStrapiError(error));
         console.error(error);

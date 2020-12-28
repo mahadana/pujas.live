@@ -63,7 +63,10 @@ case "$SERVICE" in
   clean)
     cd "$(dirname "$0")"
     docker-compose down
-    if docker volume ls -q | grep pujaslive; then
+    if docker image ls | grep -q pujaslive; then
+      docker image rm $(docker image ls | grep pujaslive | tr -s ' ' | cut -d ' ' -f 3)
+    fi
+    if docker volume ls -q | grep -q pujaslive; then
       docker volume rm $(docker volume ls -q | grep pujaslive)
     fi
     docker volume prune -f

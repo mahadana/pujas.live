@@ -53,7 +53,7 @@
       "path": "/groups/:id/message",
       "handler": "group.message",
       "config": {
-        "policies": []
+        "policies": ["global::captcha"]
       }
     }
   ]

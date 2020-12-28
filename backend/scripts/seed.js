@@ -86,6 +86,7 @@ const seedPermissions = async () => {
     ["create", "find", "findone", "update"],
     true
   );
+  await updatePermissions("Public", ["group"], ["message"], true);
   await updatePermissions("Authenticated", ["group"], ["message"], true);
 };
 

@@ -7,7 +7,6 @@ import Banner from "../../../components/Banner";
 import GroupMessageForm from "../../../components/GroupMessageForm";
 import GroupMessageSuccess from "../../../components/GroupMessageSuccess";
 import Loading from "../../../components/Loading";
-import NotLoggedIn from "../../../components/NotLoggedIn";
 import UserBar from "../../../components/UserBar";
 import { apolloClient, withApollo } from "../../../lib/apollo";
 import { GROUP_QUERY, MESSAGE_GROUP_MUTATION } from "../../../lib/schema";
@@ -29,7 +28,7 @@ const GroupMessagePage = () => {
   });
   const group = data?.group;
 
-  const onSubmit = async (values, form) => {
+  const onSubmit = async (values, formik, token) => {
     const variables = {
       input: {
         where: { id: groupId },
@@ -42,6 +41,11 @@ const GroupMessagePage = () => {
     };
     try {
       const result = await apolloClient.mutate({
+        context: {
+          headers: {
+            "X-Captcha-Token": token,
+          },
+        },
         mutation: MESSAGE_GROUP_MUTATION,
         variables,
       });
@@ -60,13 +64,12 @@ const GroupMessagePage = () => {
       <Container maxWidth="sm">
         {(!user && userLoading) || loading || !group ? (
           <Loading />
-        ) : !user ? (
-          <NotLoggedIn />
         ) : !complete ? (
           <GroupMessageForm
             disabled={complete}
             group={group}
             onSubmit={onSubmit}
+            user={user}
           />
         ) : (
           <GroupMessageSuccess />

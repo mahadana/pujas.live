@@ -49,6 +49,7 @@ const GroupForm = ({ group, onSubmit }) => {
                     label="Name"
                     required
                     fullWidth
+                    autoFocus
                     variant="outlined"
                   />
                 </Grid>
