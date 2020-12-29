@@ -31,3 +31,6 @@ export const translateStrapiError = (error) => {
     return "Unknown server error";
   }
 };
+
+export const sleep = (time) =>
+  new Promise((resolve) => setTimeout(resolve, time));

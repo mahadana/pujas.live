@@ -4,10 +4,9 @@ import { useRef, useState } from "react";
 
 import Form from "@/components/Form";
 import { useSnackbar } from "@/lib/snackbar";
+import { sleep } from "@/lib/util";
 
-const sitekey =
-  process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY ||
-  "10000000-ffff-ffff-ffff-000000000001"; // Dummy key
+const sitekey = process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY;
 
 const CaptchaForm = ({
   children,
@@ -20,6 +19,8 @@ const CaptchaForm = ({
   const submitRef = useRef(() => {});
   const { snackError } = useSnackbar();
   const [mounted, setMounted] = useState(false);
+
+  if (!sitekey) disableCaptcha = true;
 
   const onError = () => {
     submitRef.current(false);
@@ -44,12 +45,14 @@ const CaptchaForm = ({
         setMounted(true);
         let i = 0;
         while (!window.hcaptcha) {
-          await new Promise((resolve) => setTimeout(resolve, 100));
           // Wait up to 10 seconds...
+          await sleep(100);
           if (i++ > 100) {
             snackError("Could not load Captcha. Please try again.");
             return;
           }
+          // Wait a little more to be safe.
+          await sleep(500);
         }
         captchaRef.current.execute();
         token = await new Promise((resolve) => {
@@ -78,7 +81,7 @@ const CaptchaForm = ({
       }}
     >
       {children}
-      {mounted && (
+      {!disableCaptcha && mounted && (
         <Box style={{ display: "none" }}>
           <HCaptcha
             ref={captchaRef}

@@ -41,10 +41,6 @@ module.exports = {
   async prepareGroup(ctx) {
     const { email, name, description } = ctx.request.body;
     console.log("prepareGroup", email, name, description);
-    const baseUrl = strapi.config.get(
-      "server.frontendBaseUrl",
-      "http://localhost:3000"
-    );
 
     const password = crypto
       .randomBytes(16)
@@ -100,7 +96,9 @@ module.exports = {
 
     const text = `To validate your new group posting, please click on the following link:
 
-${baseUrl}/groups/${group.id}/verify?token=${loginToken}
+${strapi.config.get("server.frontendUrl")}/groups/${
+      group.id
+    }/verify?token=${loginToken}
 
 Have fun!
 `;

@@ -106,3 +106,11 @@ export const registerSchema = yup.object({
   existingEmail: yup.string(), // only used after server response
   password: yup.string().required("Required"),
 });
+
+export const forgotPasswordSchema = yup.object({
+  email: yup.string().required("Required").email("Invalid email address"),
+});
+
+export const resetPasswordSchema = yup.object({
+  password: yup.string().required("Required"),
+});

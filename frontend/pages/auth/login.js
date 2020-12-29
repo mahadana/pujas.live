@@ -1,7 +1,8 @@
 import Container from "@material-ui/core/Container";
 
 import Banner from "@/components/Banner";
-import LoginControl from "@/components/LoginControl";
+import LoginControl from "@/components/auth/LoginControl";
+import { withApollo } from "@/lib/apollo";
 
 const LoginPage = () => (
   <>
@@ -12,4 +13,4 @@ const LoginPage = () => (
   </>
 );
 
-export default LoginPage;
+export default withApollo()(LoginPage);

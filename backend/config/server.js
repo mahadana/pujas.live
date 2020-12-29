@@ -8,8 +8,5 @@ module.exports = ({ env }) => ({
       password: env("ADMIN_PASSWORD", "Password1"),
     },
   },
-  hcaptchaSecret: env(
-    "HCAPTCHA_SECRET",
-    "0x0000000000000000000000000000000000000000"
-  ),
+  hcaptchaSecret: env("HCAPTCHA_SECRET"),
 });

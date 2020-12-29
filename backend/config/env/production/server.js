@@ -1,3 +1,3 @@
 module.exports = ({ env }) => ({
-  frontendBaseUrl: 'https://neo.pujas.live'
+  frontendUrl: env("FRONTEND_URL", "https://neo.pujas.live"),
 });

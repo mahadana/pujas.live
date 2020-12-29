@@ -1,3 +1,3 @@
 module.exports = ({ env }) => ({
-  frontendBaseUrl: 'http://localhost:3000'
+  frontendUrl: env("FRONTEND_URL", "http://localhost:3000"),
 });

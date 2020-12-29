@@ -27,16 +27,13 @@ module.exports = {
       return { ok: false };
     }
 
-    const baseUrl = strapi.config.get(
-      "server.frontendBaseUrl",
-      "http://localhost:3000"
-    );
+    const frontendUrl = strapi.config.get("server.frontendUrl");
     const text = `${message}
 
 ---
-The above message originated from ${name} <${email}> on ${baseUrl}/
+The above message originated from ${name} <${email}> on ${frontendUrl}/
 directed to the owner of the group "${group.name}".
-To update this group, please visit ${baseUrl}/groups/${id}/edit .
+To update this group, please visit ${frontendUrl}/groups/${id}/edit .
 `;
 
     await strapi.plugins["email"].services.email.send({

@@ -1,20 +1,21 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-import RegisterForm from "@/components/RegisterForm";
+import RegisterForm from "@/components/auth/RegisterForm";
 import { apolloClient } from "@/lib/apollo";
 import { REGISTER_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
 import { useUser } from "@/lib/user";
 import { pushBack, getStrapiError, translateStrapiError } from "@/lib/util";
 
-const RegisterControl = ({ onSuccess }) => {
+const RegisterControl = () => {
   const router = useRouter();
   const { snackError, snackSuccess } = useSnackbar();
   const [complete, setComplete] = useState(false);
   const { login, logout } = useUser();
 
   const onSubmit = async (values, formik, token) => {
+    logout();
     const variables = {
       input: {
         email: values.email,
@@ -22,7 +23,6 @@ const RegisterControl = ({ onSuccess }) => {
         password: values.password,
       },
     };
-    logout();
 
     let user, jwt;
     try {

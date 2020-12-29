@@ -11,13 +11,49 @@ cd neo.pujas.live
 docker-compose up
 ```
 
-Browse to http://localhost:3000/ for the application.  
-Browse to http://localhost:1337/admin/ for the admin.
+Then browse:
+
+- Frontend: http://localhost:3000/
+- Backend: http://localhost:1337/admin/
 
 The default credentials (for both):
 
 - Email: `admin@pujas.live`
 - Password: `Password1`
+
+## Local Development
+
+Working with email and captchas requires a few more steps:
+
+1.  Create an account with [Mailtrap](https://mailtrap.io/).
+
+2.  Create an account with [hCaptcha](https://www.hcaptcha.com/).
+
+3.  Edit `/etc/hosts` (or the equivalent):
+
+    ```
+    127.0.0.1 pujas.test
+    ```
+
+4.  Edit `backend/.env`:
+
+    ```
+    FRONTEND_URL=http://pujas.test:3000
+    HCAPTCHA_SECRET=...
+    MAILTRAP_USER=...
+    MAILTRAP_PASSWORD=...
+    ```
+
+5.  Edit `frontend/.env`:
+
+    ```
+    NEXT_PUBLIC_HCAPTCHA_SITE_KEY=...
+    ```
+
+6.  Finally, use the following URLs when browsing:
+
+    - Frontend: http://pujas.test:3000/
+    - Backend: http://pujas.test:1337/admin/
 
 ## Shell Helper
 
@@ -25,30 +61,9 @@ The default credentials (for both):
 # Run a bash shell on the frontend
 ./shell frontend
 
-# Install a node module on the frontend
-./shell frontend npm install --save <module>
-
 # Show help and additional examples
 ./shell -h
 ```
-
-## Email
-
-If you wish to test the email functionality, create an account with
-[Mailtrap](https://mailtrap.io/) and add the secrets to `backend/.env`:
-
-```
-MAILTRAP_USER=...
-MAILTRAP_PASSWORD=...
-```
-
-## Captcha
-
-Captchas will not work on development using localhost due to CORS restrictions.
-As a workaround, create a entry for a development hostname, e.g., `pujas.test`,
-and add that to `/etc/hosts`.
-
-## Restart everything from scratch
 
 ## Server Setup
 

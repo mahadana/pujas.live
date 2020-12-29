@@ -83,8 +83,34 @@ export const REGISTER_MUTATION = gql`
       user {
         id
         email
-        confirmed
-        blocked
+      }
+    }
+  }
+`;
+
+export const FORGOT_PASSWORD_MUTATION = gql`
+  mutation ForgotPassword($email: String!) {
+    forgotPassword(email: $email) {
+      ok
+    }
+  }
+`;
+
+export const RESET_PASSWORD_MUTATION = gql`
+  mutation ResetPassword(
+    $password: String!
+    $passwordConfirmation: String!
+    $code: String!
+  ) {
+    resetPassword(
+      password: $password
+      passwordConfirmation: $passwordConfirmation
+      code: $code
+    ) {
+      jwt
+      user {
+        id
+        email
       }
     }
   }

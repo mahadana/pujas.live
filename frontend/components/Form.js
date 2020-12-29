@@ -16,14 +16,11 @@ const Form = ({
       const [prevSubmitCount, setPrevSubmitCount] = useState(0);
 
       useEffect(() => {
-        if (submitCount == 0) {
-          const el = document.querySelector(`[autofocus]`);
-          if (el) {
-            el.focus();
-            el.select();
-          }
+        const el = document.querySelector(`[autofocus]`);
+        if (el) {
+          el.focus();
         }
-      }, [submitCount]);
+      }, []);
 
       useEffect(() => {
         if (!isSubmitting && submitCount > prevSubmitCount) {

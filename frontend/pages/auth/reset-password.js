@@ -1,16 +1,16 @@
 import Container from "@material-ui/core/Container";
 
 import Banner from "@/components/Banner";
-import RegisterControl from "@/components/auth/RegisterControl";
+import ResetPasswordControl from "@/components/auth/ResetPasswordControl";
 import { withApollo } from "@/lib/apollo";
 
-const RegisterPage = () => (
+const ResetPasswordPage = () => (
   <>
     <Banner />
     <Container maxWidth="sm">
-      <RegisterControl />
+      <ResetPasswordControl />
     </Container>
   </>
 );
 
-export default withApollo()(RegisterPage);
+export default withApollo()(ResetPasswordPage);

@@ -14,7 +14,7 @@ Shortcuts:
   Strapi console                    $0 backend console
   PostgreSQL console                $0 db console
   Redis console                     $0 redis console
-  Reload database                   $0 reload-db
+  Reset database                    $0 reset-db
   Clean containers, cache, etc...   $0 clean
 
 Note: Services must already be running (docker-compose up).
@@ -52,7 +52,7 @@ case "$SERVICE" in
       set redis-cli
     fi
     ;;
-  reload-db)
+  reset-db|reload-db)
     cd "$(dirname "$0")"
     docker-compose stop -t 1 backend db
     docker-compose rm -f db
