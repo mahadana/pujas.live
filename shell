@@ -10,6 +10,8 @@ Shortcuts:
   Bash shell in backend             $0 backend
   Run tests in frontend             $0 frontend test
   Watch tests in frontend           $0 frontend watch
+  Run tests in worker               $0 worker test
+  Watch tests in worker             $0 worker watch
   Strapi (re)build                  $0 backend build
   Strapi console                    $0 backend console
   PostgreSQL console                $0 db console
@@ -50,6 +52,13 @@ case "$SERVICE" in
   redis)
     if [ "$*" == "console" ]; then
       set redis-cli
+    fi
+    ;;
+  worker)
+    if [ "$*" == "test" ]; then
+      set npm run test
+    elif [ "$*" == "watch" ]; then
+      set npm run watch
     fi
     ;;
   reset-db|reload-db)
