@@ -8,12 +8,12 @@ services:
     ports:
       - 127.0.0.1:1337:1337
     volumes:
-      - ./backend:/app
-      - /app/.cache
-      - /app/build
-      - backend_nm:/app/node_modules
-    working_dir: /app
-    command: "/app/scripts/docker-development.sh"
+      - .:/app
+      - /app/backend/.cache
+      - /app/backend/build
+      - backend_nm:/app/backend/node_modules
+    working_dir: /app/backend
+    command: /app/shared/start-docker-dev.sh backend
   db:
     image: postgres:latest
     restart: unless-stopped
@@ -26,11 +26,11 @@ services:
     ports:
       - 127.0.0.1:3000:3000
     volumes:
-      - ./frontend:/app
-      - /app/.next
-      - frontend_nm:/app/node_modules
-    working_dir: /app
-    command: "/app/scripts/docker-development.sh"
+      - .:/app
+      - /app/frontend/.next
+      - frontend_nm:/app/frontend/node_modules
+    working_dir: /app/frontend
+    command: /app/shared/start-docker-dev.sh frontend
   redis:
     image: redis:latest
     restart: unless-stopped
@@ -38,10 +38,10 @@ services:
     image: node:14
     restart: unless-stopped
     volumes:
-      - ./worker:/app
-      - worker_nm:/app/node_modules
-    working_dir: /app
-    command: "/app/scripts/docker-development.sh"
+      - .:/app
+      - worker_nm:/app/worker/node_modules
+    working_dir: /app/worker
+    command: /app/shared/start-docker-dev.sh worker
 
 volumes:
   backend_nm:

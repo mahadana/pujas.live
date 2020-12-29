@@ -3,14 +3,15 @@ version: "3.7"
 services:
   backend:
     build:
-      context: ./backend
+      context: .
+      dockerfile: ./backend/Dockerfile
     restart: unless-stopped
     depends_on:
       - db
     ports:
       - 127.0.0.1:1337:1337
     volumes:
-      - uploads:/app/public/uploads
+      - uploads:/app/backend/public/uploads
   db:
     image: postgres:latest
     restart: unless-stopped
@@ -22,7 +23,8 @@ services:
       - db:/var/lib/postgresql/data
   frontend:
     build:
-      context: ./frontend
+      context: .
+      dockerfile: ./frontend/Dockerfile
     restart: unless-stopped
     depends_on:
       - db
@@ -36,10 +38,11 @@ services:
       - redis:/var/lib/redis
   worker:
     build:
-      context: ./worker
+      context: .
+      dockerfile: ./worker/Dockerfile
     restart: unless-stopped
 
 volumes:
+  uploads:
   db:
   redis:
-  uploads:
