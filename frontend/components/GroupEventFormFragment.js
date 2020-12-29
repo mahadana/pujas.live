@@ -1,4 +1,5 @@
 import FormControl from "@material-ui/core/FormControl";
+import FormHelperText from "@material-ui/core/FormHelperText";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -7,10 +8,10 @@ import Paper from "@material-ui/core/Paper";
 import Select from "@material-ui/core/Select";
 import { makeStyles } from "@material-ui/core/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { FastField, useFormik } from "formik";
+import { FastField } from "formik";
 import capitalize from "lodash/capitalize";
 
-import { FormTextField } from "@/lib/form";
+import FormTextField from "@/components/FormTextField";
 import { DAYS_OF_WEEK_OPTIONS } from "@/lib/validation";
 
 const useStyles = makeStyles((theme) => ({

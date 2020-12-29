@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Box, makeStyles } from "@material-ui/core";
 
-import Link from "./Link";
-import Stream from "./Stream";
+import Link from "@/components/Link";
+import Stream from "@/components/Stream";
 
 const MAX_INITIAL = 3;
 

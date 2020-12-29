@@ -1,7 +1,5 @@
 import * as yup from "yup";
 
-import { TIMEZONES } from "./util";
-
 export const DAYS_OF_WEEK_OPTIONS = [
   "everyday",
   "weekdays",

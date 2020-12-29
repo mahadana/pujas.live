@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Box, makeStyles } from "@material-ui/core";
 
-import Group from "./Group";
-import Link from "./Link";
+import Group from "@/components/Group";
+import Link from "@/components/Link";
 
 const MAX_INITIAL = 3;
 

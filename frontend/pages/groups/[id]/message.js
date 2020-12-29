@@ -49,8 +49,12 @@ const GroupMessagePage = () => {
         mutation: MESSAGE_GROUP_MUTATION,
         variables,
       });
-      snackSuccess("Successfully sent the message.");
-      setComplete(true);
+      if (result?.data?.messageGroup?.ok) {
+        snackSuccess("Successfully sent the message.");
+        setComplete(true);
+      } else {
+        snackError("Unknown server error.");
+      }
     } catch (error) {
       snackError(translateStrapiError(error));
       console.error(error);
@@ -62,7 +66,7 @@ const GroupMessagePage = () => {
       <Banner />
       <UserBar />
       <Container maxWidth="sm">
-        {(!user && userLoading) || loading || !group ? (
+        {(!user && userLoading) || loading || !group || !group.owner ? (
           <Loading />
         ) : !complete ? (
           <GroupMessageForm

@@ -6,10 +6,11 @@ import EmojiPeopleIcon from "@material-ui/icons/EmojiPeople";
 import Alert from "@material-ui/lab/Alert";
 import { useRouter } from "next/router";
 
-import ButtonLink from "./ButtonLink";
-import CaptchaForm from "./CaptchaForm";
-import Link from "./Link";
-import { FormHelper, FormTextField, SubmitButton } from "@/lib/form";
+import ButtonLink from "@/components/ButtonLink";
+import CaptchaForm from "@/components/CaptchaForm";
+import FormTextField from "@/components/FormTextField";
+import FormSubmitButton from "@/components/FormSubmitButton";
+import Link from "@/components/Link";
 import { useUser } from "@/lib/user";
 import { registerSchema } from "@/lib/validation";
 
@@ -46,14 +47,13 @@ const RegisterForm = ({ disabled, onSubmit }) => {
 
   return (
     <CaptchaForm
-      className={classes.root}
+      formProps={{ className: classes.root }}
       initialValues={{ email: "", password: "" }}
       onSubmit={onSubmit}
       validateOnBlur={false}
       validateOnChange={false}
       validationSchema={registerSchema}
     >
-      <FormHelper />
       <Paper m={4} className={classes.paper}>
         <Typography variant="h3">Pujas.live</Typography>
         <Typography variant="subtitle1" className={classes.lead}>
@@ -94,14 +94,14 @@ const RegisterForm = ({ disabled, onSubmit }) => {
             />
           </Grid>
           <Grid item xs={12} className={classes.row}>
-            <SubmitButton
+            <FormSubmitButton
               size="large"
               color="secondary"
               disabled={disabled}
               startIcon={<EmojiPeopleIcon />}
             >
               Create Account
-            </SubmitButton>
+            </FormSubmitButton>
           </Grid>
           <Grid item xs={12} className={classes.row}>
             <Typography variant="body2">

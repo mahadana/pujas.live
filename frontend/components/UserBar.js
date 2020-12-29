@@ -8,7 +8,7 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 
-import ButtonLink from "./ButtonLink";
+import ButtonLink from "@/components/ButtonLink";
 import { useSnackbar } from "@/lib/snackbar";
 import { useUser } from "@/lib/user";
 import { getPushBackUrl } from "@/lib/util";

@@ -7,6 +7,9 @@ const GROUP_FIELDS = `
   image {
     formats
   }
+  owner {
+    id
+  }
   timezone
   events {
     id

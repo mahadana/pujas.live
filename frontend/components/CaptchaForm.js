@@ -1,8 +1,8 @@
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import Box from "@material-ui/core/Box";
-import { Form, Formik } from "formik";
 import { useRef, useState } from "react";
 
+import Form from "@/components/Form";
 import { useSnackbar } from "@/lib/snackbar";
 
 const sitekey =
@@ -11,8 +11,8 @@ const sitekey =
 
 const CaptchaForm = ({
   children,
-  className,
   disableCaptcha,
+  formProps,
   onSubmit,
   ...props
 }) => {
@@ -68,27 +68,29 @@ const CaptchaForm = ({
   };
 
   return (
-    <Formik {...props} onSubmit={wrappedOnSubmit}>
-      <Form
-        className={className}
-        onMouseDown={closeCaptcha}
-        onTouchStart={closeCaptcha}
-      >
-        {children}
-        {mounted && (
-          <Box style={{ display: "none" }}>
-            <HCaptcha
-              ref={captchaRef}
-              sitekey={sitekey}
-              size="invisible"
-              onError={onError}
-              onExpire={onExpire}
-              onVerify={onVerify}
-            />
-          </Box>
-        )}
-      </Form>
-    </Formik>
+    <Form
+      {...props}
+      onSubmit={wrappedOnSubmit}
+      formProps={{
+        ...formProps,
+        onMouseDown: closeCaptcha,
+        onTouchStart: closeCaptcha,
+      }}
+    >
+      {children}
+      {mounted && (
+        <Box style={{ display: "none" }}>
+          <HCaptcha
+            ref={captchaRef}
+            sitekey={sitekey}
+            size="invisible"
+            onError={onError}
+            onExpire={onExpire}
+            onVerify={onVerify}
+          />
+        </Box>
+      )}
+    </Form>
   );
 };
 

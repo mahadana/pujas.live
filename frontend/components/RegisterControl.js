@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-import RegisterForm from "./RegisterForm";
+import RegisterForm from "@/components/RegisterForm";
 import { apolloClient } from "@/lib/apollo";
 import { REGISTER_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";

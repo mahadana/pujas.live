@@ -19,9 +19,10 @@ const GroupCreatePage = () => {
   const { snackError, snackSuccess } = useSnackbar();
   const { user, userLoading } = useUser();
 
-  const onSubmit = async (values, form) => {
+  const onSubmit = async (values) => {
     const data = groupCreateDbCast.cast(values);
     data.confirmed = true;
+    data.owner = user.id;
     const variables = { input: { data } };
     try {
       const result = await apolloClient.mutate({

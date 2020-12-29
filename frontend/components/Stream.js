@@ -4,8 +4,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import { useState } from "react";
 
-import Upcoming from "./Upcoming";
-import VideoIframeModal from "./VideoIframeModal";
+import Upcoming from "@/components/Upcoming";
+import VideoIframeModal from "@/components/VideoIframeModal";
 import { dayjs } from "@/lib/time";
 import { getChannelIdFromChannelUrl } from "@/lib/util";
 

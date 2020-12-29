@@ -3,7 +3,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import HomeIcon from "@material-ui/icons/Home";
 
-import ButtonLink from "./ButtonLink";
+import ButtonLink from "@/components/ButtonLink";
 
 const GroupMessageSuccess = () => (
   <Paper style={{ marginTop: "2rem" }}>

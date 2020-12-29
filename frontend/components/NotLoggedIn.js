@@ -5,7 +5,7 @@ import EmojiPeopleIcon from "@material-ui/icons/EmojiPeople";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { useRouter } from "next/router";
 
-import ButtonLink from "./ButtonLink";
+import ButtonLink from "@/components/ButtonLink";
 import { getPushBackUrl } from "@/lib/util";
 
 const useStyles = makeStyles((theme) => ({

@@ -4,7 +4,8 @@ import Typography from "@material-ui/core/Typography";
 import SendIcon from "@material-ui/icons/Send";
 
 import CaptchaForm from "@/components/CaptchaForm";
-import { FormHelper, FormTextField, SubmitButton } from "@/lib/form";
+import FormTextField from "@/components/FormTextField";
+import FormSubmitButton from "@/components/FormSubmitButton";
 import { useUser } from "@/lib/user";
 import { groupMessageSchema } from "@/lib/validation";
 
@@ -42,11 +43,11 @@ ${values.experience}`,
     <CaptchaForm
       disableCaptcha={!!user}
       initialValues={initialValues}
+      invalidFormSnackbar="Please check your message"
       onSubmit={myOnSubmit}
       validateOnChange={false}
       validationSchema={groupMessageSchema}
     >
-      <FormHelper invalidFormSnackbar="There were one or more errors in your message." />
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography variant="h4">
@@ -106,9 +107,9 @@ ${values.experience}`,
           />
         </Grid>
         <Grid item xs={12}>
-          <SubmitButton disabled={disabled} startIcon={<SendIcon />}>
+          <FormSubmitButton disabled={disabled} startIcon={<SendIcon />}>
             Send Message
-          </SubmitButton>
+          </FormSubmitButton>
         </Grid>
       </Grid>
     </CaptchaForm>

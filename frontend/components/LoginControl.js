@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-import LoginForm from "./LoginForm";
+import LoginForm from "@/components/LoginForm";
 import { apolloClient } from "@/lib/apollo";
 import { LOGIN_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";

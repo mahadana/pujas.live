@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, makeStyles } from "@material-ui/core";
-import Link from "./Link";
-import IframeModal from "./IframeModal";
+import Link from "@/components/Link";
+import IframeModal from "@/components/IframeModal";
 
 const useStyles = makeStyles((theme) => ({
   root: {

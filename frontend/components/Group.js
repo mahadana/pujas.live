@@ -6,8 +6,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import capitalize from "lodash/capitalize";
 
-import ButtonLink from "./ButtonLink";
-import Upcoming from "./Upcoming";
+import ButtonLink from "@/components/ButtonLink";
+import Upcoming from "@/components/Upcoming";
 import { dayjs } from "@/lib/time";
 import { useUser } from "@/lib/user";
 

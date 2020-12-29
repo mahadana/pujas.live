@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core";
 
-import Link from "./Link";
+import Link from "@/components/Link";
 
 const useStyles = makeStyles((theme) => ({
   container: {

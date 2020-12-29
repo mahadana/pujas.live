@@ -54,7 +54,7 @@ case "$SERVICE" in
     ;;
   reload-db)
     cd "$(dirname "$0")"
-    docker-compose stop backend db
+    docker-compose stop -t 1 backend db
     docker-compose rm -f db
     docker volume prune -f
     docker-compose up -d backend db
