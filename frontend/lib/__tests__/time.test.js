@@ -1,4 +1,4 @@
-import { dayjs, getNextGroupEventTime } from "../time";
+import { dayjs, getNextGroupEventTime } from "@/lib/time";
 
 describe("getNextGroupEventTime", () => {
   test("everyday", () => {

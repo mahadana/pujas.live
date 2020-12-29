@@ -1,4 +1,4 @@
-import { getBackFromQuery } from "../util";
+import { getBackFromQuery } from "@/lib/util";
 
 describe("getBackFromQuery", () => {
   test("with query param", () => {

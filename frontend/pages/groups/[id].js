@@ -2,12 +2,12 @@ import { useQuery } from "@apollo/client";
 import { Container, makeStyles } from "@material-ui/core";
 import { useRouter } from "next/router";
 
-import Banner from "../../components/Banner";
-import Group from "../../components/Group";
-import Loading from "../../components/Loading";
-import UserBar from "../../components/UserBar";
-import { withApollo } from "../../lib/apollo";
-import { GROUP_QUERY } from "../../lib/schema";
+import Banner from "@/components/Banner";
+import Group from "@/components/Group";
+import Loading from "@/components/Loading";
+import UserBar from "@/components/UserBar";
+import { withApollo } from "@/lib/apollo";
+import { GROUP_QUERY } from "@/lib/schema";
 
 const useStyles = makeStyles((theme) => ({
   video: {

@@ -1,18 +1,18 @@
 import Container from "@material-ui/core/Container";
 import { useRouter } from "next/router";
 
-import Banner from "../../components/Banner";
-import GroupForm from "../../components/GroupForm";
-import Loading from "../../components/Loading";
-import NotLoggedIn from "../../components/NotLoggedIn";
-import UserBar from "../../components/UserBar";
-import { apolloClient, withApollo } from "../../lib/apollo";
-import { CREATE_GROUP_MUTATION } from "../../lib/schema";
-import { useSnackbar } from "../../lib/snackbar";
-import { dayjs } from "../../lib/time";
-import { useUser } from "../../lib/user";
-import { translateStrapiError } from "../../lib/util";
-import { groupSchema, groupCreateDbCast } from "../../lib/validation";
+import Banner from "@/components/Banner";
+import GroupForm from "@/components/GroupForm";
+import Loading from "@/components/Loading";
+import NotLoggedIn from "@/components/NotLoggedIn";
+import UserBar from "@/components/UserBar";
+import { apolloClient, withApollo } from "@/lib/apollo";
+import { CREATE_GROUP_MUTATION } from "@/lib/schema";
+import { useSnackbar } from "@/lib/snackbar";
+import { dayjs } from "@/lib/time";
+import { useUser } from "@/lib/user";
+import { translateStrapiError } from "@/lib/util";
+import { groupSchema, groupCreateDbCast } from "@/lib/validation";
 
 const GroupCreatePage = () => {
   const router = useRouter();

@@ -3,7 +3,7 @@ import Box from "@material-ui/core/Box";
 import { Form, Formik } from "formik";
 import { useRef, useState } from "react";
 
-import { useSnackbar } from "../lib/snackbar";
+import { useSnackbar } from "@/lib/snackbar";
 
 const sitekey =
   process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY ||

@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-import { useUser } from "../../lib/user";
-import { pushBack } from "../../lib/util";
+import { useUser } from "@/lib/user";
+import { pushBack } from "@/lib/util";
 
 const LogoutPage = () => {
   const router = useRouter();

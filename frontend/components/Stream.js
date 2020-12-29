@@ -6,8 +6,8 @@ import { useState } from "react";
 
 import Upcoming from "./Upcoming";
 import VideoIframeModal from "./VideoIframeModal";
-import { dayjs } from "../lib/time";
-import { getChannelIdFromChannelUrl } from "../lib/util";
+import { dayjs } from "@/lib/time";
+import { getChannelIdFromChannelUrl } from "@/lib/util";
 
 const useStyles = makeStyles((theme) => ({
   root: {

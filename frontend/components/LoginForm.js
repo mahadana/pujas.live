@@ -9,9 +9,9 @@ import { useRouter } from "next/router";
 import Link from "./Link";
 import ButtonLink from "./ButtonLink";
 import { useStyles } from "./RegisterForm";
-import { FormHelper, FormTextField, SubmitButton } from "../lib/form";
-import { useUser } from "../lib/user";
-import { loginSchema } from "../lib/validation";
+import { FormHelper, FormTextField, SubmitButton } from "@/lib/form";
+import { useUser } from "@/lib/user";
+import { loginSchema } from "@/lib/validation";
 
 function LoginForm({ disabled, onSubmit }) {
   const router = useRouter();

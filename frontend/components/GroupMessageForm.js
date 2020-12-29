@@ -3,10 +3,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import SendIcon from "@material-ui/icons/Send";
 
-import CaptchaForm from "../components/CaptchaForm";
-import { FormHelper, FormTextField, SubmitButton } from "../lib/form";
-import { useUser } from "../lib/user";
-import { groupMessageSchema } from "../lib/validation";
+import CaptchaForm from "@/components/CaptchaForm";
+import { FormHelper, FormTextField, SubmitButton } from "@/lib/form";
+import { useUser } from "@/lib/user";
+import { groupMessageSchema } from "@/lib/validation";
 
 const useStyles = makeStyles((theme) => ({
   leader: {

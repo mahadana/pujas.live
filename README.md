@@ -19,16 +19,6 @@ The default credentials (for both):
 - Email: `admin@pujas.live`
 - Password: `Password1`
 
-## Email
-
-If you wish to test the email functionality, create an account with
-[Mailtrap](https://mailtrap.io/) and add the secrets to `backend/.env`:
-
-```
-MAILTRAP_USER=...
-MAILTRAP_PASSWORD=...
-```
-
 ## Shell Helper
 
 ```sh
@@ -42,8 +32,23 @@ MAILTRAP_PASSWORD=...
 ./shell -h
 ```
 
-# Restart everything from scratch
+## Email
+
+If you wish to test the email functionality, create an account with
+[Mailtrap](https://mailtrap.io/) and add the secrets to `backend/.env`:
+
 ```
+MAILTRAP_USER=...
+MAILTRAP_PASSWORD=...
+```
+
+## Captcha
+
+Captchas will not work on development using localhost due to CORS restrictions.
+As a workaround, create a entry for a development hostname, e.g., `pujas.test`,
+and add that to `/etc/hosts`.
+
+## Restart everything from scratch
 
 ## Server Setup
 

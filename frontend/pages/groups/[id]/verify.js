@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import Cookies from "cookies";
 import fetch from "cross-fetch";
 
-import { apiUrl } from "../../../lib/apollo";
+import { apiUrl } from "@/lib/apollo";
 
 const Group = () => {
   const router = useRouter();

@@ -10,8 +10,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { FastField, useFormik } from "formik";
 import capitalize from "lodash/capitalize";
 
-import { FormTextField } from "../lib/form";
-import { DAYS_OF_WEEK_OPTIONS } from "../lib/validation";
+import { FormTextField } from "@/lib/form";
+import { DAYS_OF_WEEK_OPTIONS } from "@/lib/validation";
 
 const useStyles = makeStyles((theme) => ({
   root: {

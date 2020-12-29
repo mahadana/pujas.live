@@ -8,8 +8,8 @@ import capitalize from "lodash/capitalize";
 
 import ButtonLink from "./ButtonLink";
 import Upcoming from "./Upcoming";
-import { dayjs } from "../lib/time";
-import { useUser } from "../lib/user";
+import { dayjs } from "@/lib/time";
+import { useUser } from "@/lib/user";
 
 const useStyles = makeStyles((theme) => ({
   root: {

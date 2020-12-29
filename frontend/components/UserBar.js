@@ -9,9 +9,9 @@ import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 
 import ButtonLink from "./ButtonLink";
-import { useSnackbar } from "../lib/snackbar";
-import { useUser } from "../lib/user";
-import { getPushBackUrl } from "../lib/util";
+import { useSnackbar } from "@/lib/snackbar";
+import { useUser } from "@/lib/user";
+import { getPushBackUrl } from "@/lib/util";
 
 const useStyles = makeStyles((theme) => ({
   root: {

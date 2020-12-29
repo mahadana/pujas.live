@@ -1,7 +1,7 @@
 import Container from "@material-ui/core/Container";
 
-import Banner from "../../components/Banner";
-import LoginControl from "../../components/LoginControl";
+import Banner from "@/components/Banner";
+import LoginControl from "@/components/LoginControl";
 
 const LoginPage = () => (
   <>

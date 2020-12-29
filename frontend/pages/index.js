@@ -2,15 +2,15 @@ import { gql, useQuery } from "@apollo/client";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Banner from "../components/Banner";
-import ChantingBooksBar from "../components/ChantingBooksBar";
-import GroupList from "../components/GroupList";
-import Link from "../components/Link";
-import Loading from "../components/Loading";
-import StreamList from "../components/StreamList";
-import UserBar from "../components/UserBar";
-import { withApollo } from "../lib/apollo";
-import { dayjs, getNextGroupEventTime } from "../lib/time";
+import Banner from "@/components/Banner";
+import ChantingBooksBar from "@/components/ChantingBooksBar";
+import GroupList from "@/components/GroupList";
+import Link from "@/components/Link";
+import Loading from "@/components/Loading";
+import StreamList from "@/components/StreamList";
+import UserBar from "@/components/UserBar";
+import { withApollo } from "@/lib/apollo";
+import { dayjs, getNextGroupEventTime } from "@/lib/time";
 
 const useStyles = makeStyles((theme) => ({
   lead: {
@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 400,
   },
 }));
+
+const d = dayjs();
+
 
 const QUERY = gql`
   {

@@ -1,6 +1,6 @@
 import Tooltip from "@material-ui/core/Tooltip";
 
-import { dayjs } from "../lib/time";
+import { dayjs } from "@/lib/time";
 
 const Upcoming = ({ time, duration }) => {
   time = dayjs(time).utc();

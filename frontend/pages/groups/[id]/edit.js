@@ -3,17 +3,17 @@ import Container from "@material-ui/core/Container";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-import Banner from "../../../components/Banner";
-import GroupForm from "../../../components/GroupForm";
-import Loading from "../../../components/Loading";
-import NotLoggedIn from "../../../components/NotLoggedIn";
-import UserBar from "../../../components/UserBar";
-import { apolloClient, withApollo } from "../../../lib/apollo";
-import { GROUP_QUERY, UPDATE_GROUP_MUTATION } from "../../../lib/schema";
-import { useSnackbar } from "../../../lib/snackbar";
-import { useUser } from "../../../lib/user";
-import { translateStrapiError } from "../../../lib/util";
-import { groupSchema, groupUpdateDbCast } from "../../../lib/validation";
+import Banner from "@/components/Banner";
+import GroupForm from "@/components/GroupForm";
+import Loading from "@/components/Loading";
+import NotLoggedIn from "@/components/NotLoggedIn";
+import UserBar from "@/components/UserBar";
+import { apolloClient, withApollo } from "@/lib/apollo";
+import { GROUP_QUERY, UPDATE_GROUP_MUTATION } from "@/lib/schema";
+import { useSnackbar } from "@/lib/snackbar";
+import { useUser } from "@/lib/user";
+import { translateStrapiError } from "@/lib/util";
+import { groupSchema, groupUpdateDbCast } from "@/lib/validation";
 
 const GroupEditPage = () => {
   const router = useRouter();

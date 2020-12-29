@@ -2,11 +2,11 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 import LoginForm from "./LoginForm";
-import { apolloClient } from "../lib/apollo";
-import { LOGIN_MUTATION } from "../lib/schema";
-import { useSnackbar } from "../lib/snackbar";
-import { useUser } from "../lib/user";
-import { pushBack, translateStrapiError } from "../lib/util";
+import { apolloClient } from "@/lib/apollo";
+import { LOGIN_MUTATION } from "@/lib/schema";
+import { useSnackbar } from "@/lib/snackbar";
+import { useUser } from "@/lib/user";
+import { pushBack, translateStrapiError } from "@/lib/util";
 
 const LoginControl = ({ onSuccess }) => {
   const router = useRouter();

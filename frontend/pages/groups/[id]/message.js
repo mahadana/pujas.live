@@ -3,16 +3,16 @@ import Container from "@material-ui/core/Container";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-import Banner from "../../../components/Banner";
-import GroupMessageForm from "../../../components/GroupMessageForm";
-import GroupMessageSuccess from "../../../components/GroupMessageSuccess";
-import Loading from "../../../components/Loading";
-import UserBar from "../../../components/UserBar";
-import { apolloClient, withApollo } from "../../../lib/apollo";
-import { GROUP_QUERY, MESSAGE_GROUP_MUTATION } from "../../../lib/schema";
-import { useSnackbar } from "../../../lib/snackbar";
-import { useUser } from "../../../lib/user";
-import { translateStrapiError } from "../../../lib/util";
+import Banner from "@/components/Banner";
+import GroupMessageForm from "@/components/GroupMessageForm";
+import GroupMessageSuccess from "@/components/GroupMessageSuccess";
+import Loading from "@/components/Loading";
+import UserBar from "@/components/UserBar";
+import { apolloClient, withApollo } from "@/lib/apollo";
+import { GROUP_QUERY, MESSAGE_GROUP_MUTATION } from "@/lib/schema";
+import { useSnackbar } from "@/lib/snackbar";
+import { useUser } from "@/lib/user";
+import { translateStrapiError } from "@/lib/util";
 
 const GroupMessagePage = () => {
   const router = useRouter();

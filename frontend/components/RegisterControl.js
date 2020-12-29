@@ -2,11 +2,11 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 import RegisterForm from "./RegisterForm";
-import { apolloClient } from "../lib/apollo";
-import { REGISTER_MUTATION } from "../lib/schema";
-import { useSnackbar } from "../lib/snackbar";
-import { useUser } from "../lib/user";
-import { pushBack, getStrapiError, translateStrapiError } from "../lib/util";
+import { apolloClient } from "@/lib/apollo";
+import { REGISTER_MUTATION } from "@/lib/schema";
+import { useSnackbar } from "@/lib/snackbar";
+import { useUser } from "@/lib/user";
+import { pushBack, getStrapiError, translateStrapiError } from "@/lib/util";
 
 const RegisterControl = ({ onSuccess }) => {
   const router = useRouter();

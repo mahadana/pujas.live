@@ -7,8 +7,8 @@ import { FieldArray, Form, Formik } from "formik";
 
 import GroupEventFormFragment from "./GroupEventFormFragment";
 import TimeZoneField from "./TimeZoneField";
-import { FormHelper, FormTextField, SubmitButton } from "../lib/form";
-import { groupSchema } from "../lib/validation";
+import { FormHelper, FormTextField, SubmitButton } from "@/lib/form";
+import { groupSchema } from "@/lib/validation";
 
 const EVENT_DEFAULTS = {
   startAt: "12:00",

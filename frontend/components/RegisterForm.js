@@ -9,9 +9,9 @@ import { useRouter } from "next/router";
 import ButtonLink from "./ButtonLink";
 import CaptchaForm from "./CaptchaForm";
 import Link from "./Link";
-import { FormHelper, FormTextField, SubmitButton } from "../lib/form";
-import { useUser } from "../lib/user";
-import { registerSchema } from "../lib/validation";
+import { FormHelper, FormTextField, SubmitButton } from "@/lib/form";
+import { useUser } from "@/lib/user";
+import { registerSchema } from "@/lib/validation";
 
 export const useStyles = makeStyles((theme) => ({
   root: {

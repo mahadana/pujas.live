@@ -1,10 +1,10 @@
 import Container from "@material-ui/core/Container";
 
-import Banner from "../../components/Banner";
-import Loading from "../../components/Loading";
-import NotLoggedIn from "../../components/NotLoggedIn";
-import UserBar from "../../components/UserBar";
-import { useUser } from "../../lib/user";
+import Banner from "@/components/Banner";
+import Loading from "@/components/Loading";
+import NotLoggedIn from "@/components/NotLoggedIn";
+import UserBar from "@/components/UserBar";
+import { useUser } from "@/lib/user";
 
 const AccountPage = () => {
   const { user, userLoading } = useUser();

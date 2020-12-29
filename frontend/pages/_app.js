@@ -6,9 +6,9 @@ import Head from "next/head";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 
-import { SnackbarProvider } from "../lib/snackbar";
-import theme from "../lib/theme";
-import { UserProvider } from "../lib/user";
+import { SnackbarProvider } from "@/lib/snackbar";
+import theme from "@/lib/theme";
+import { UserProvider } from "@/lib/user";
 
 const MyApp = ({ Component, pageProps }) => {
   useEffect(() => {

@@ -1,7 +1,7 @@
 import Container from "@material-ui/core/Container";
 
-import Banner from "../../components/Banner";
-import RegisterControl from "../../components/RegisterControl";
+import Banner from "@/components/Banner";
+import RegisterControl from "@/components/RegisterControl";
 
 const RegisterPage = () => (
   <>
