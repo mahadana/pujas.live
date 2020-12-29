@@ -6,6 +6,9 @@ module.exports = {
       register: {
         policies: ["plugins::users-permissions.ratelimit", "global::captcha"],
       },
+      forgotPassword: {
+        policies: ["plugins::users-permissions.ratelimit", "global::captcha"],
+      }
     },
   },
 };
