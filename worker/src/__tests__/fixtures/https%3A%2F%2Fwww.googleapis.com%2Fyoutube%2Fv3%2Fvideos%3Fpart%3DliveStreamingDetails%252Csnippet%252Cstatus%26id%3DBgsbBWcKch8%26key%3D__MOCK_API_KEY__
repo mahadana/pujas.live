@@ -1,0 +1,64 @@
+{
+  "kind": "youtube#videoListResponse",
+  "etag": "ock9UBVBvOSOnwHFB-MqhbzKO2k",
+  "items": [
+    {
+      "kind": "youtube#video",
+      "etag": "ggm6uwidPMYzaJrjO73CBhmuM_A",
+      "id": "BgsbBWcKch8",
+      "snippet": {
+        "publishedAt": "2018-03-05T00:32:38Z",
+        "channelId": "UCFAuQ5fmYYVv5_Dim0EQpVA",
+        "title": "What Makes a Life Truly Worthwhile?  |  Bhikkhu Bodhi",
+        "description": "Venerable Bhikkhu Bodhi discusses Dhammapada verses 110-115 which address what should be the purpose of our life from a Buddhist perspective.   The verses mention moral restraint, meditation, samadhi, insight, and wisdom.  They compare a life of one hundred years without these to a life of one day with them.  \nMp3 Download of this talk available at: https://www.abhayagiri.org/talks/6887-what-makes-a-life-truly-worthwhile\n\n\n\n\nThis talk was offered on March 4, 2018 at Abhayagiri Buddhist Monastery.",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/BgsbBWcKch8/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/BgsbBWcKch8/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/BgsbBWcKch8/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/BgsbBWcKch8/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          }
+        },
+        "channelTitle": "Abhayagiri",
+        "categoryId": "27",
+        "liveBroadcastContent": "none",
+        "localized": {
+          "title": "What Makes a Life Truly Worthwhile?  |  Bhikkhu Bodhi",
+          "description": "Venerable Bhikkhu Bodhi discusses Dhammapada verses 110-115 which address what should be the purpose of our life from a Buddhist perspective.   The verses mention moral restraint, meditation, samadhi, insight, and wisdom.  They compare a life of one hundred years without these to a life of one day with them.  \nMp3 Download of this talk available at: https://www.abhayagiri.org/talks/6887-what-makes-a-life-truly-worthwhile\n\n\n\n\nThis talk was offered on March 4, 2018 at Abhayagiri Buddhist Monastery."
+        },
+        "defaultAudioLanguage": "en"
+      },
+      "status": {
+        "uploadStatus": "processed",
+        "privacyStatus": "public",
+        "license": "youtube",
+        "embeddable": true,
+        "publicStatsViewable": true,
+        "madeForKids": false
+      },
+      "liveStreamingDetails": {
+        "actualStartTime": "2018-03-04T23:01:31.459000Z",
+        "actualEndTime": "2018-03-05T00:05:32Z",
+        "scheduledStartTime": "2018-03-04T23:00:00Z"
+      }
+    }
+  ],
+  "pageInfo": {
+    "totalResults": 1,
+    "resultsPerPage": 1
+  }
+}

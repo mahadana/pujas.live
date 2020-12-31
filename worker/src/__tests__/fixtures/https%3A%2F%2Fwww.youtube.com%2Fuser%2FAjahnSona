@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html style="font-size: 10px;font-family: Roboto, Arial, sans-serif;" lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<link rel="shortcut icon" href="https://www.youtube.com/s/desktop/d743f786/img/favicon.ico" type="image/x-icon">
+<link rel="icon" href="https://www.youtube.com/s/desktop/d743f786/img/favicon_32.png" sizes="32x32">
+<link rel="icon" href="https://www.youtube.com/s/desktop/d743f786/img/favicon_48.png" sizes="48x48">
+<link rel="icon" href="https://www.youtube.com/s/desktop/d743f786/img/favicon_96.png" sizes="96x96">
+<link rel="icon" href="https://www.youtube.com/s/desktop/d743f786/img/favicon_144.png" sizes="144x144">
+<link rel='stylesheet' href='//fonts.googleapis.com/css?family=Roboto:500,300,700,400' name="www-roboto">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=YT%20Sans%3A300%2C500%2C700" name="www-webfont-yt-sans">
+<link rel="stylesheet" href="https://www.youtube.com/s/desktop/d743f786/cssbin/www-onepick.css">
+<meta name="theme-color" content="rgba(255, 255, 255, 0.98)">
+<link rel="search" type="application/opensearchdescription+xml" href="https://www.youtube.com/opensearch?locale=en_US" title="YouTube">
+<link rel="manifest" href="/s/notifications/manifest/manifest.json" crossorigin="use-credentials">
+</head>
+<body dir="ltr">
+<ytd-app>
+<ytd-masthead id="masthead" slot="masthead" class="shell ">
+<div id="search-container" class="ytd-searchbox-spt" slot="search-container">
+</div>
+<div id="search-input" class="ytd-searchbox-spt" slot="search-input">
+<input id="search" autocapitalize="none" autocomplete="off" autocorrect="off"  hidden name="search_query" tabindex="0" type="text" spellcheck="false">
+</div>
+<div id="masthead-logo" slot="masthead-logo">
+<a style="display: flex;" href="/" title="YouTube">
+</a>
+<a style="display: none;" href="/" title="YouTube">
+</a>
+<span id="country-code">
+</span>
+</div>
+<div id="masthead-skeleton-icons" slot="masthead-skeleton">
+<div class="masthead-skeleton-icon">
+</div>
+<div class="masthead-skeleton-icon">
+</div>
+<div class="masthead-skeleton-icon">
+</div>
+<div class="masthead-skeleton-icon">
+</div>
+</div>
+</ytd-masthead>
+<a slot="guide-links-primary" href="https://www.youtube.com/about/" style="display: none;">
+About</a>
+<a slot="guide-links-primary" href="https://www.youtube.com/about/press/" style="display: none;">
+Press</a>
+<a slot="guide-links-primary" href="https://www.youtube.com/about/copyright/" style="display: none;">
+Copyright</a>
+<a slot="guide-links-primary" href="/t/contact_us/" style="display: none;">
+Contact us</a>
+<a slot="guide-links-primary" href="https://www.youtube.com/creators/" style="display: none;">
+Creators</a>
+<a slot="guide-links-primary" href="https://www.youtube.com/ads/" style="display: none;">
+Advertise</a>
+<a slot="guide-links-primary" href="https://developers.google.com/youtube" style="display: none;">
+Developers</a>
+<a slot="guide-links-secondary" href="/t/terms" style="display: none;">
+Terms</a>
+<a slot="guide-links-secondary" href="https://policies.google.com/privacy?hl=en" style="display: none;">
+Privacy</a>
+<a slot="guide-links-secondary" href="https://www.youtube.com/about/policies/" style="display: none;">
+Policy &amp; Safety</a>
+<a slot="guide-links-secondary" href="https://www.youtube.com/howyoutubeworks?utm_campaign=ytgen&amp;utm_source=ythp&amp;utm_medium=LeftNav&amp;utm_content=txt&amp;u=https%3A%2F%2Fwww.youtube.com%2Fhowyoutubeworks%3Futm_source%3Dythp%26utm_medium%3DLeftNav%26utm_campaign%3Dytgen" style="display: none;">
+How YouTube works</a>
+<a slot="guide-links-secondary" href="/new" style="display: none;">
+Test new features</a>
+<div id="copyright" slot="copyright" style="display: none;">
+<div dir="ltr" style="display:inline">
+&copy; 2020 Google LLC</div>
+</div>
+</ytd-app>
+<link rel="canonical" href="https://www.youtube.com/channel/UCCRXOn6Tsrgm9gJR4z3qLZA">
+<link rel="alternate" media="handheld" href="https://m.youtube.com/user/AjahnSona">
+<link rel="alternate" media="only screen and (max-width: 640px)" href="https://m.youtube.com/user/AjahnSona">
+<title>
+Ajahn Sona - YouTube</title>
+<meta name="description" content="This channel features various talks given by Venerable Ajahn Sona, the Abbot of Birken Forest Buddhist Monastery - a Canadian Theravada Buddhist monastery fo...">
+<meta name="keywords" content="&quot;Ajahn Sona&quot; &quot;Birken Forest Monastery&quot; &quot;Ajahn Chah&quot; Buddhism Monk Meditation">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="https://www.youtube.com/feeds/videos.xml?channel_id=UCCRXOn6Tsrgm9gJR4z3qLZA">
+<meta property="og:title" content="Ajahn Sona">
+<link rel="image_src" href="https://yt3.ggpht.com/ytc/AAUvwnigiLwJmkQOP8G75uFxiImOE83GG264B5iBx5LFeQ=s900-c-k-c0x00ffffff-no-rj">
+<meta property="og:site_name" content="YouTube">
+<meta property="og:url" content="https://www.youtube.com/channel/UCCRXOn6Tsrgm9gJR4z3qLZA">
+<meta property="og:image" content="https://yt3.ggpht.com/ytc/AAUvwnigiLwJmkQOP8G75uFxiImOE83GG264B5iBx5LFeQ=s900-c-k-c0x00ffffff-no-rj">
+<meta property="og:image:width" content="900">
+<meta property="og:image:height" content="900">
+<meta property="og:description" content="This channel features various talks given by Venerable Ajahn Sona, the Abbot of Birken Forest Buddhist Monastery - a Canadian Theravada Buddhist monastery following the Thai Forest Tradition of Ajahn Chah. Also known by its Pali name, &#39;Sitavana&#39; (translated as &#39;cool forest grove&#39;), the monastery is located in the tranquil and secluded forests of British Columbia&#39;s interior region. The monastery provides a peaceful refuge for monastics and lay people seeking to deepen their practice of the Buddha&#39;s teachings. For more information, please see our website at: https://birken.ca/.
+
+The new series of short talks cover many aspects of meditation and Buddhism, focusing in particular on attitudes and techniques which give emotional benefit to the contemporary person. Audio downloads are available at https://anchor.fm/ajahn-sona">
+<meta property="al:ios:app_store_id" content="544007664">
+<meta property="al:ios:app_name" content="YouTube">
+<meta property="al:ios:url" content="vnd.youtube://www.youtube.com/channel/UCCRXOn6Tsrgm9gJR4z3qLZA">
+<meta property="al:android:url" content="https://www.youtube.com/channel/UCCRXOn6Tsrgm9gJR4z3qLZA?feature=applinks">
+<meta property="al:android:app_name" content="YouTube">
+<meta property="al:android:package" content="com.google.android.youtube">
+<meta property="al:web:url" content="https://www.youtube.com/channel/UCCRXOn6Tsrgm9gJR4z3qLZA?feature=applinks">
+<meta property="og:type" content="profile">
+<meta property="og:video:tag" content="Ajahn Sona">
+<meta property="og:video:tag" content="Birken Forest Monastery">
+<meta property="og:video:tag" content="Ajahn Chah">
+<meta property="og:video:tag" content="Buddhism">
+<meta property="og:video:tag" content="Monk">
+<meta property="og:video:tag" content="Meditation">
+<meta property="fb:app_id" content="87741124305">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@youtube">
+<meta name="twitter:url" content="https://www.youtube.com/channel/UCCRXOn6Tsrgm9gJR4z3qLZA">
+<meta name="twitter:title" content="Ajahn Sona">
+<meta name="twitter:description" content="This channel features various talks given by Venerable Ajahn Sona, the Abbot of Birken Forest Buddhist Monastery - a Canadian Theravada Buddhist monastery following the Thai Forest Tradition of Ajahn Chah. Also known by its Pali name, &#39;Sitavana&#39; (translated as &#39;cool forest grove&#39;), the monastery is located in the tranquil and secluded forests of British Columbia&#39;s interior region. The monastery provides a peaceful refuge for monastics and lay people seeking to deepen their practice of the Buddha&#39;s teachings. For more information, please see our website at: https://birken.ca/.
+
+The new series of short talks cover many aspects of meditation and Buddhism, focusing in particular on attitudes and techniques which give emotional benefit to the contemporary person. Audio downloads are available at https://anchor.fm/ajahn-sona">
+<meta name="twitter:image" content="https://yt3.ggpht.com/ytc/AAUvwnigiLwJmkQOP8G75uFxiImOE83GG264B5iBx5LFeQ=s900-c-k-c0x00ffffff-no-rj">
+<meta name="twitter:app:name:iphone" content="YouTube">
+<meta name="twitter:app:id:iphone" content="544007664">
+<meta name="twitter:app:name:ipad" content="YouTube">
+<meta name="twitter:app:id:ipad" content="544007664">
+<meta name="twitter:app:url:iphone" content="vnd.youtube://www.youtube.com/channel/UCCRXOn6Tsrgm9gJR4z3qLZA">
+<meta name="twitter:app:url:ipad" content="vnd.youtube://www.youtube.com/channel/UCCRXOn6Tsrgm9gJR4z3qLZA">
+<meta name="twitter:app:name:googleplay" content="YouTube">
+<meta name="twitter:app:id:googleplay" content="com.google.android.youtube">
+<meta name="twitter:app:url:googleplay" content="https://www.youtube.com/channel/UCCRXOn6Tsrgm9gJR4z3qLZA">
+<link itemprop="url" href="https://www.youtube.com/channel/UCCRXOn6Tsrgm9gJR4z3qLZA">
+<meta itemprop="name" content="Ajahn Sona">
+<meta itemprop="description" content="This channel features various talks given by Venerable Ajahn Sona, the Abbot of Birken Forest Buddhist Monastery - a Canadian Theravada Buddhist monastery following the Thai Forest Tradition of Ajahn Chah. Also known by its Pali name, &#39;Sitavana&#39; (translated as &#39;cool forest grove&#39;), the monastery is located in the tranquil and secluded forests of British Columbia&#39;s interior region. The monastery provides a peaceful refuge for monastics and lay people seeking to deepen their practice of the Buddha&#39;s teachings. For more information, please see our website at: https://birken.ca/.
+
+The new series of short talks cover many aspects of meditation and Buddhism, focusing in particular on attitudes and techniques which give emotional benefit to the contemporary person. Audio downloads are available at https://anchor.fm/ajahn-sona">
+<meta itemprop="paid" content="false">
+<meta itemprop="channelId" content="UCCRXOn6Tsrgm9gJR4z3qLZA">
+<span itemprop="author" itemscope itemtype="http://schema.org/Person">
+<link itemprop="url" href="https://www.youtube.com/channel/UCCRXOn6Tsrgm9gJR4z3qLZA">
+<link itemprop="name" content="Ajahn Sona">
+</span>
+<link itemprop="thumbnailUrl" href="https://yt3.ggpht.com/ytc/AAUvwnigiLwJmkQOP8G75uFxiImOE83GG264B5iBx5LFeQ=s900-c-k-c0x00ffffff-no-rj">
+<span itemprop="thumbnail" itemscope itemtype="http://schema.org/ImageObject">
+<link itemprop="url" href="https://yt3.ggpht.com/ytc/AAUvwnigiLwJmkQOP8G75uFxiImOE83GG264B5iBx5LFeQ=s900-c-k-c0x00ffffff-no-rj">
+<meta itemprop="width" content="900">
+<meta itemprop="height" content="900">
+</span>
+<meta itemprop="isFamilyFriendly" content="true">
+<meta itemprop="regionsAllowed" content="BA,PW,IT,SG,VE,LA,PA,DM,TF,SO,YE,IO,SH,AI,YT,CL,UZ,CY,ML,MZ,VI,ZA,MG,MV,SM,MX,SR,CG,MW,JM,EE,PG,RS,MP,VU,IQ,CM,DE,MO,VC,TM,BM,SJ,AU,GD,DK,MM,SZ,AE,MN,MD,MH,NU,TD,CW,MR,NI,CR,BI,HM,GL,DO,AG,UM,BB,SS,AS,VG,GW,TR,JE,RE,VN,GA,AL,UG,JO,IN,NA,BY,NG,FJ,NL,BO,PK,PH,WF,MQ,TN,TG,BN,PY,IM,MU,OM,SK,MY,TJ,NC,RW,EG,UY,TT,CK,PR,VA,IE,KE,CO,MF,CZ,AF,JP,BH,LS,IL,PE,DJ,GE,LT,CN,TL,GT,CX,TC,HN,TZ,SV,PN,AO,NF,GY,CV,MK,GI,IS,ZM,KW,KY,HT,ID,TW,KR,KZ,PL,ER,TK,NO,AX,LC,RO,SN,IR,BW,FI,FR,NP,GF,GM,TO,SL,LI,NR,DZ,HR,LR,FK,LU,UA,PT,ZW,BV,LB,LV,GP,MC,CU,PM,AM,CC,SI,TV,BT,GG,KM,SD,FM,HK,QA,AZ,PS,BZ,AT,GB,ET,MS,BL,BR,EC,LY,NZ,MT,LK,GQ,BF,BJ,EH,MA,AR,GN,KI,AW,AQ,ES,TH,AD,CD,SA,GH,GR,ME,SY,KP,GU,SC,BG,FO,CA,BS,HU,CH,KN,CF,SB,BE,ST,BD,WS,GS,BQ,CI,SX,NE,US,KH,PF,KG,RU,SE">
+<link rel="alternate" href="android-app://com.google.android.youtube/http/www.youtube.com/channel/UCCRXOn6Tsrgm9gJR4z3qLZA">
+<link rel="alternate" href="ios-app://544007664/vnd.youtube/www.youtube.com/channel/UCCRXOn6Tsrgm9gJR4z3qLZA">
+<link rel="stylesheet" href="https://www.youtube.com/s/desktop/d743f786/cssbin/www-main-desktop-watch-page-skeleton.css" name="www-main-desktop-watch-page-skeleton">
+<div id="watch-page-skeleton" class="watch-skeletonhidden">
+<div id="container">
+<div id="related">
+<div class="autoplay skeleton-light-border-bottom">
+<div id="upnext" class="skeleton-bg-color">
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="info-container">
+<div id="primary-info" class="skeleton-light-border-bottom">
+<div id="title" class="text-shell skeleton-bg-color">
+</div>
+<div id="info">
+<div id="count" class="text-shell skeleton-bg-color">
+</div>
+<div class="flex-1">
+</div>
+<div id="menu">
+<div class="menu-button skeleton-bg-color">
+</div>
+<div class="menu-button skeleton-bg-color">
+</div>
+<div class="menu-button skeleton-bg-color">
+</div>
+<div class="menu-button skeleton-bg-color">
+</div>
+<div class="menu-button skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div id="secondary-info" class="skeleton-light-border-bottom">
+<div id="top-row">
+<div id="video-owner" class="flex-1">
+<div id="channel-icon" class="skeleton-bg-color">
+</div>
+<div id="upload-info" class="flex-1">
+<div id="owner-name" class="text-shell skeleton-bg-color">
+</div>
+<div id="published-date" class="text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+<div id="subscribe-button" class="skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

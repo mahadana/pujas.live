@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+  <html lang="en" dir="ltr" data-cast-api-enabled="true">
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+  <link rel="stylesheet" href="/s/player/5dd3f3b2/www-player.css" name="www-player">
+
+  
+  
+  
+    <title>
+YouTube</title>
+
+    <link rel="canonical" href="https://www.youtube.com/watch?v=live_stream">
+
+  </head>
+
+
+
+
+  <body id="" class="date-20201221 en_US ltr  exp-invert-logo exp-kevlar-settings exp-responsive exp-search-big-thumbs   site-center-aligned site-as-giant-card  " dir="ltr">
+
+<div id="player">
+</div>
+  
+<noscript>
+<div class="player-unavailable">
+<h1 class="message">
+An error occurred.</h1>
+<div class="submessage">
+<a href="https://www.youtube.com/watch?v=live_stream" target="_blank">
+Try watching this video on www.youtube.com</a>
+, or enable JavaScript if it is disabled in your browser.</div>
+</div>
+</noscript>
+</body>
+</html>

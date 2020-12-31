@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html style="font-size: 10px;font-family: Roboto, Arial, sans-serif;" lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<link rel="shortcut icon" href="https://www.youtube.com/s/desktop/d743f786/img/favicon.ico" type="image/x-icon">
+<link rel="icon" href="https://www.youtube.com/s/desktop/d743f786/img/favicon_32.png" sizes="32x32">
+<link rel="icon" href="https://www.youtube.com/s/desktop/d743f786/img/favicon_48.png" sizes="48x48">
+<link rel="icon" href="https://www.youtube.com/s/desktop/d743f786/img/favicon_96.png" sizes="96x96">
+<link rel="icon" href="https://www.youtube.com/s/desktop/d743f786/img/favicon_144.png" sizes="144x144">
+<link rel='stylesheet' href='//fonts.googleapis.com/css?family=Roboto:500,300,700,400' name="www-roboto">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=YT%20Sans%3A300%2C500%2C700" name="www-webfont-yt-sans">
+<link rel="stylesheet" href="https://www.youtube.com/s/desktop/d743f786/cssbin/www-onepick.css">
+<meta name="theme-color" content="rgba(255, 255, 255, 0.98)">
+<link rel="search" type="application/opensearchdescription+xml" href="https://www.youtube.com/opensearch?locale=en_US" title="YouTube">
+<link rel="manifest" href="/s/notifications/manifest/manifest.json" crossorigin="use-credentials">
+</head>
+<body dir="ltr">
+<ytd-app>
+<ytd-masthead id="masthead" slot="masthead" class="shell ">
+<div id="search-container" class="ytd-searchbox-spt" slot="search-container">
+</div>
+<div id="search-input" class="ytd-searchbox-spt" slot="search-input">
+<input id="search" autocapitalize="none" autocomplete="off" autocorrect="off"  hidden name="search_query" tabindex="0" type="text" spellcheck="false">
+</div>
+<div id="masthead-logo" slot="masthead-logo">
+<a style="display: flex;" href="/" title="YouTube">
+</a>
+<a style="display: none;" href="/" title="YouTube">
+</a>
+<span id="country-code">
+</span>
+</div>
+<div id="masthead-skeleton-icons" slot="masthead-skeleton">
+<div class="masthead-skeleton-icon">
+</div>
+<div class="masthead-skeleton-icon">
+</div>
+<div class="masthead-skeleton-icon">
+</div>
+<div class="masthead-skeleton-icon">
+</div>
+</div>
+</ytd-masthead>
+<a slot="guide-links-primary" href="https://www.youtube.com/about/" style="display: none;">
+About</a>
+<a slot="guide-links-primary" href="https://www.youtube.com/about/press/" style="display: none;">
+Press</a>
+<a slot="guide-links-primary" href="https://www.youtube.com/about/copyright/" style="display: none;">
+Copyright</a>
+<a slot="guide-links-primary" href="/t/contact_us/" style="display: none;">
+Contact us</a>
+<a slot="guide-links-primary" href="https://www.youtube.com/creators/" style="display: none;">
+Creators</a>
+<a slot="guide-links-primary" href="https://www.youtube.com/ads/" style="display: none;">
+Advertise</a>
+<a slot="guide-links-primary" href="https://developers.google.com/youtube" style="display: none;">
+Developers</a>
+<a slot="guide-links-secondary" href="/t/terms" style="display: none;">
+Terms</a>
+<a slot="guide-links-secondary" href="https://policies.google.com/privacy?hl=en" style="display: none;">
+Privacy</a>
+<a slot="guide-links-secondary" href="https://www.youtube.com/about/policies/" style="display: none;">
+Policy &amp; Safety</a>
+<a slot="guide-links-secondary" href="https://www.youtube.com/howyoutubeworks?utm_campaign=ytgen&amp;utm_source=ythp&amp;utm_medium=LeftNav&amp;utm_content=txt&amp;u=https%3A%2F%2Fwww.youtube.com%2Fhowyoutubeworks%3Futm_source%3Dythp%26utm_medium%3DLeftNav%26utm_campaign%3Dytgen" style="display: none;">
+How YouTube works</a>
+<a slot="guide-links-secondary" href="/new" style="display: none;">
+Test new features</a>
+<div id="copyright" slot="copyright" style="display: none;">
+<div dir="ltr" style="display:inline">
+&copy; 2020 Google LLC</div>
+</div>
+</ytd-app>
+<link rel="canonical" href="https://www.youtube.com/channel/UC1-yHZcaml1m7T4VDzb_syQ">
+<link rel="alternate" media="handheld" href="https://m.youtube.com/user/VimuttiMonastery">
+<link rel="alternate" media="only screen and (max-width: 640px)" href="https://m.youtube.com/user/VimuttiMonastery">
+<title>
+Vimutti Buddhist Monastery - YouTube</title>
+<meta name="description" content="Vimutti Buddhist Monastery is situated in the midst of 150 acres of tranquil forest, streams, ponds and rolling hills 30km south of Auckland, New Zealand. Fo...">
+<meta name="keywords" content="video, sharing, camera phone, video phone, free, upload">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="https://www.youtube.com/feeds/videos.xml?channel_id=UC1-yHZcaml1m7T4VDzb_syQ">
+<meta property="og:title" content="Vimutti Buddhist Monastery">
+<link rel="image_src" href="https://yt3.ggpht.com/ytc/AAUvwniYZS53YnEY8_vIPXdyXasjpFwbvJHbtU1OpbZ1nA=s900-c-k-c0x00ffffff-no-rj">
+<meta property="og:site_name" content="YouTube">
+<meta property="og:url" content="https://www.youtube.com/channel/UC1-yHZcaml1m7T4VDzb_syQ">
+<meta property="og:image" content="https://yt3.ggpht.com/ytc/AAUvwniYZS53YnEY8_vIPXdyXasjpFwbvJHbtU1OpbZ1nA=s900-c-k-c0x00ffffff-no-rj">
+<meta property="og:image:width" content="900">
+<meta property="og:image:height" content="900">
+<meta property="og:description" content="Vimutti Buddhist Monastery is situated in the midst of 150 acres of tranquil forest, streams, ponds and rolling hills 30km south of Auckland, New Zealand. Founded in 2004 by the abbot, Ajahn Chandako, and the Auckland Theravada Buddhist Association, the monastery is a residence for both monastics and lay guests. Numerous secluded huts offer suitable environments for individual meditation, while senior teachers regularly lead workshops and retreats.">
+<meta property="al:ios:app_store_id" content="544007664">
+<meta property="al:ios:app_name" content="YouTube">
+<meta property="al:ios:url" content="vnd.youtube://www.youtube.com/channel/UC1-yHZcaml1m7T4VDzb_syQ">
+<meta property="al:android:url" content="https://www.youtube.com/channel/UC1-yHZcaml1m7T4VDzb_syQ?feature=applinks">
+<meta property="al:android:app_name" content="YouTube">
+<meta property="al:android:package" content="com.google.android.youtube">
+<meta property="al:web:url" content="https://www.youtube.com/channel/UC1-yHZcaml1m7T4VDzb_syQ?feature=applinks">
+<meta property="og:type" content="profile">
+<meta property="fb:app_id" content="87741124305">
+<meta property="fb:profile_id" content="VimuttiBuddhistMonastery">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@youtube">
+<meta name="twitter:url" content="https://www.youtube.com/channel/UC1-yHZcaml1m7T4VDzb_syQ">
+<meta name="twitter:title" content="Vimutti Buddhist Monastery">
+<meta name="twitter:description" content="Vimutti Buddhist Monastery is situated in the midst of 150 acres of tranquil forest, streams, ponds and rolling hills 30km south of Auckland, New Zealand. Founded in 2004 by the abbot, Ajahn Chandako, and the Auckland Theravada Buddhist Association, the monastery is a residence for both monastics and lay guests. Numerous secluded huts offer suitable environments for individual meditation, while senior teachers regularly lead workshops and retreats.">
+<meta name="twitter:image" content="https://yt3.ggpht.com/ytc/AAUvwniYZS53YnEY8_vIPXdyXasjpFwbvJHbtU1OpbZ1nA=s900-c-k-c0x00ffffff-no-rj">
+<meta name="twitter:app:name:iphone" content="YouTube">
+<meta name="twitter:app:id:iphone" content="544007664">
+<meta name="twitter:app:name:ipad" content="YouTube">
+<meta name="twitter:app:id:ipad" content="544007664">
+<meta name="twitter:app:url:iphone" content="vnd.youtube://www.youtube.com/channel/UC1-yHZcaml1m7T4VDzb_syQ">
+<meta name="twitter:app:url:ipad" content="vnd.youtube://www.youtube.com/channel/UC1-yHZcaml1m7T4VDzb_syQ">
+<meta name="twitter:app:name:googleplay" content="YouTube">
+<meta name="twitter:app:id:googleplay" content="com.google.android.youtube">
+<meta name="twitter:app:url:googleplay" content="https://www.youtube.com/channel/UC1-yHZcaml1m7T4VDzb_syQ">
+<link itemprop="url" href="https://www.youtube.com/channel/UC1-yHZcaml1m7T4VDzb_syQ">
+<meta itemprop="name" content="Vimutti Buddhist Monastery">
+<meta itemprop="description" content="Vimutti Buddhist Monastery is situated in the midst of 150 acres of tranquil forest, streams, ponds and rolling hills 30km south of Auckland, New Zealand. Founded in 2004 by the abbot, Ajahn Chandako, and the Auckland Theravada Buddhist Association, the monastery is a residence for both monastics and lay guests. Numerous secluded huts offer suitable environments for individual meditation, while senior teachers regularly lead workshops and retreats.">
+<meta itemprop="paid" content="false">
+<meta itemprop="channelId" content="UC1-yHZcaml1m7T4VDzb_syQ">
+<span itemprop="author" itemscope itemtype="http://schema.org/Person">
+<link itemprop="url" href="https://www.youtube.com/channel/UC1-yHZcaml1m7T4VDzb_syQ">
+<link itemprop="name" content="Vimutti Buddhist Monastery">
+</span>
+<link itemprop="thumbnailUrl" href="https://yt3.ggpht.com/ytc/AAUvwniYZS53YnEY8_vIPXdyXasjpFwbvJHbtU1OpbZ1nA=s900-c-k-c0x00ffffff-no-rj">
+<span itemprop="thumbnail" itemscope itemtype="http://schema.org/ImageObject">
+<link itemprop="url" href="https://yt3.ggpht.com/ytc/AAUvwniYZS53YnEY8_vIPXdyXasjpFwbvJHbtU1OpbZ1nA=s900-c-k-c0x00ffffff-no-rj">
+<meta itemprop="width" content="900">
+<meta itemprop="height" content="900">
+</span>
+<meta itemprop="isFamilyFriendly" content="true">
+<meta itemprop="regionsAllowed" content="AR,CG,GR,IN,JE,CL,KG,IO,HK,RS,SC,KR,ET,BM,TJ,MP,NL,YT,MT,SK,IR,GQ,MR,KY,PS,TK,AS,CV,TD,ME,MM,HU,PH,AM,OM,BJ,FJ,SX,PK,ZW,LA,TZ,SJ,ES,MQ,GT,GD,DK,VC,VI,HT,TG,NE,AZ,LI,LY,CU,WS,UY,AE,UA,VG,LK,AT,MY,BI,MZ,TT,BB,SL,SV,BY,CY,WF,MS,BH,GF,BT,QA,AL,IT,KP,TL,GU,BZ,CW,HM,CX,EC,DZ,PF,PG,TH,RE,BE,JM,EG,CR,MU,NZ,KW,UM,BS,CC,GL,CI,GH,MH,NG,MV,PL,SR,SN,FR,MW,CH,RU,BL,RW,NF,AW,PA,TW,KI,CD,IL,NR,GG,BN,SD,MF,SI,FK,SY,GW,KH,BQ,LB,AD,SA,ZM,GS,SB,LV,NU,KM,BF,SG,HR,DJ,PY,KN,LT,DO,TN,JO,CF,SS,VA,BW,CO,IS,CK,HN,EE,SE,PM,CZ,FI,AU,PW,NP,BA,VE,CM,BV,SZ,SO,TF,GB,MD,GA,NO,LR,MN,PE,MG,VN,BR,IE,UZ,AF,US,NI,TC,IM,MA,MK,PT,BD,LS,NC,CA,PR,NA,TM,VU,ER,KE,MO,TO,ZA,FM,TV,DM,GI,GE,YE,AO,ML,TR,MX,RO,JP,AI,AG,LU,IQ,AQ,CN,EH,MC,GN,SM,LC,PN,KZ,BO,FO,DE,GY,UG,BG,AX,ID,GM,SH,ST,GP">
+<link rel="alternate" href="android-app://com.google.android.youtube/http/www.youtube.com/channel/UC1-yHZcaml1m7T4VDzb_syQ">
+<link rel="alternate" href="ios-app://544007664/vnd.youtube/www.youtube.com/channel/UC1-yHZcaml1m7T4VDzb_syQ">
+<link rel="stylesheet" href="https://www.youtube.com/s/desktop/d743f786/cssbin/www-main-desktop-watch-page-skeleton.css" name="www-main-desktop-watch-page-skeleton">
+<div id="watch-page-skeleton" class="watch-skeletonhidden">
+<div id="container">
+<div id="related">
+<div class="autoplay skeleton-light-border-bottom">
+<div id="upnext" class="skeleton-bg-color">
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div class="video-skeleton">
+<div class="video-details">
+<div class="thumbnail skeleton-bg-color">
+</div>
+<div class="details flex-1">
+<div class="video-title text-shell skeleton-bg-color">
+</div>
+<div class="video-meta text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="info-container">
+<div id="primary-info" class="skeleton-light-border-bottom">
+<div id="title" class="text-shell skeleton-bg-color">
+</div>
+<div id="info">
+<div id="count" class="text-shell skeleton-bg-color">
+</div>
+<div class="flex-1">
+</div>
+<div id="menu">
+<div class="menu-button skeleton-bg-color">
+</div>
+<div class="menu-button skeleton-bg-color">
+</div>
+<div class="menu-button skeleton-bg-color">
+</div>
+<div class="menu-button skeleton-bg-color">
+</div>
+<div class="menu-button skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+<div id="secondary-info" class="skeleton-light-border-bottom">
+<div id="top-row">
+<div id="video-owner" class="flex-1">
+<div id="channel-icon" class="skeleton-bg-color">
+</div>
+<div id="upload-info" class="flex-1">
+<div id="owner-name" class="text-shell skeleton-bg-color">
+</div>
+<div id="published-date" class="text-shell skeleton-bg-color">
+</div>
+</div>
+</div>
+<div id="subscribe-button" class="skeleton-bg-color">
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
