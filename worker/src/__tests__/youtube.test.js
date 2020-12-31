@@ -2,33 +2,43 @@ import { getTextFromFixtureOrUrl } from "./helpers";
 import YouTube from "../youtube";
 
 describe("cached", () => {
-  let cyt;
+  let yt;
   beforeEach(() => {
-    cyt = new YouTube({
+    yt = new YouTube({
       cache: true,
       cacheTimeout: 1,
     });
   });
   afterEach(async () => {
-    await cyt.cache.quit();
+    await yt.cache.quit();
+  });
+
+  test("getChannelIdFromUrl", async () => {
+    yt._getTextFromUrl = getTextFromFixtureOrUrl;
+    yt._makeCacheKey = (url) => "test-cache-0";
+    expect(await yt.cache.get("test-cache-0")).toBeNull();
+    expect(
+      await yt.getChannelIdFromUrl("http://www.youtube.com/c/TrueLittleMonk")
+    ).toBe("UCGLC-euAIB3gHdPkTWNfg8g");
+    expect(await yt.cache.get("test-cache-0")).toBe("UCGLC-euAIB3gHdPkTWNfg8g");
   });
 
   test("getTextFromUrl", async () => {
-    cyt._makeCacheKey = (url) => "test-cache-1";
-    expect(await cyt.cache.get("test-cache-1")).toBeNull();
+    yt._makeCacheKey = (url) => "test-cache-1";
+    expect(await yt.cache.get("test-cache-1")).toBeNull();
     expect(
-      await cyt.getTextFromUrl("https://jsonplaceholder.typicode.com")
+      await yt.getTextFromUrl("https://jsonplaceholder.typicode.com")
     ).toMatch(/<!doctype html>/i);
-    expect(await cyt.cache.get("test-cache-1")).toMatch(/<!doctype html>/i);
+    expect(await yt.cache.get("test-cache-1")).toMatch(/<!doctype html>/i);
   });
 
   test("getJsonFromUrl", async () => {
-    cyt._makeCacheKey = (url) => "test-cache-2";
-    expect(await cyt.cache.get("test-cache-2")).toBeNull();
+    yt._makeCacheKey = (url) => "test-cache-2";
+    expect(await yt.cache.get("test-cache-2")).toBeNull();
     expect(
-      await cyt.getJsonFromUrl("https://jsonplaceholder.typicode.com/todos/1")
+      await yt.getJsonFromUrl("https://jsonplaceholder.typicode.com/todos/1")
     ).toHaveProperty("title");
-    expect(await cyt.cache.get("test-cache-2")).toMatch(/"title":/);
+    expect(await yt.cache.get("test-cache-2")).toMatch(/"title":/);
   });
 });
 
@@ -99,6 +109,17 @@ describe("fixtures", () => {
         "UCXQFa-qxHE26J_B5i22HCwA"
       )
     );
+  });
+
+  describe("getLatestVideoIdFromChannelId", () => {
+    const exp = (channelId, expected) => async () => {
+      expect(await yt.getLatestVideoIdFromChannelId(channelId)).toBe(expected);
+    };
+
+    test("null", exp(null, false));
+    test("invalid", exp("bubble", false));
+    test("correct", exp("UCFAuQ5fmYYVv5_Dim0EQpVA", "I0l5KDDIA0E"));
+    test("playlist", exp("PLovEdNVTK2lGAgk12lyJzjfr4vAxK8XQP", false));
   });
 
   describe("getVideoDataFromVideoIds", () => {
@@ -173,16 +194,5 @@ describe("fixtures", () => {
       "without scheme",
       exp("youtube.com/watch?v=BgsbBWcKch8", "BgsbBWcKch8")
     );
-  });
-
-  describe("getVideoIdFromChannelId", () => {
-    const exp = (channelId, expected) => async () => {
-      expect(await yt.getVideoIdFromChannelId(channelId)).toBe(expected);
-    };
-
-    test("null", exp(null, false));
-    test("invalid", exp("bubble", false));
-    test("correct", exp("UCFAuQ5fmYYVv5_Dim0EQpVA", "I0l5KDDIA0E"));
-    test("playlist", exp("PLovEdNVTK2lGAgk12lyJzjfr4vAxK8XQP", false));
   });
 });

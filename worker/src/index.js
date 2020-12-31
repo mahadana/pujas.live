@@ -1,37 +1,30 @@
 import Queue from "bull";
-import { GraphQLClient, gql } from "graphql-request";
+import { processStreams } from "./stream";
 
-(async () => {
+const setupQueues = async () => {
   const queueOptions = { redis: { host: "redis" } };
-  const testQueue = new Queue("test", queueOptions);
+  const processStreamsQueue = new Queue("processStreams", queueOptions);
 
-  const client = new GraphQLClient("http://backend:1337/graphql");
-
-  const jobs = await testQueue.getRepeatableJobs();
+  const jobs = await processStreamsQueue.getRepeatableJobs();
   jobs.forEach((job) => {
-    testQueue.removeRepeatableByKey(job.key);
+    processStreamsQueue.removeRepeatableByKey(job.key);
     console.log(`Removed repeatable job ${job.key}`);
   });
 
-  testQueue.add(
+  processStreamsQueue.add(
     {},
     {
       repeat: {
-        every: 60000, // 60 seconds
+        every: 60 * 1000, // 60 seconds
       },
     }
   );
 
-  testQueue.process(async (job) => {
-    console.log(`Start job ${job.id}`);
-    const result = await client.request(gql`
-      {
-        streams {
-          id
-          name
-        }
-      }
-    `);
-    console.log(`End job ${job.id} with ${result.streams.length} items`);
+  processStreamsQueue.process(async (job) => {
+    console.log(`Start processStream job ${job.id}`);
+    await processStreams();
+    console.log(`End processStream job ${job.id}`);
   });
-})();
+};
+
+setupQueues().then().catch(console.errro);

@@ -8,6 +8,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import weekday from "dayjs/plugin/weekday";
+import { listTimeZones } from "timezone-support";
 
 const relativeTimeConfig = {
   thresholds: [
@@ -35,8 +36,6 @@ dayjs.extend(timezone);
 dayjs.extend(utc);
 dayjs.extend(weekday);
 export { dayjs };
-
-import { listTimeZones } from "timezone-support";
 
 export const TIMEZONES = listTimeZones();
 

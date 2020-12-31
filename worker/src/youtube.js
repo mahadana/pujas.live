@@ -20,6 +20,12 @@ class YouTube {
     this.cacheTimeout = cacheTimeout;
   }
 
+  async destroy() {
+    if (this.cache) {
+      await this.cache.quit();
+    }
+  }
+
   async getChannelIdFromUrl(url) {
     const regex = /^\s*(?:(?:https?):\/\/)?(?:(?:www|m)\.)?youtube\.com\/(c\/|channel\/|u\/|user\/)?([a-zA-Z0-9\-_]+)(?:\/.+)??\s*$/;
     let channelId = false;
@@ -29,7 +35,15 @@ class YouTube {
     }
     const [_, type, arg] = m;
     if (type === "channel/") {
-      channelId = arg;
+      return arg;
+    }
+    let cacheKey;
+    if (this.cache) {
+      cacheKey = this._makeCacheKey("getChannelIdFromUrl:" + url);
+      channelId = await this.cache.get(cacheKey);
+      if (channelId) {
+        return channelId;
+      }
     }
     if (!channelId) {
       const s = type !== undefined ? type : "";
@@ -46,11 +60,37 @@ class YouTube {
       const data = await this.getJsonFromUrl(apiUrl);
       channelId = data?.items?.[0]?.id || false;
     }
+    if (this.cache) {
+      await this.cache.setex(cacheKey, this.cacheTimeout, channelId);
+    }
     return channelId;
+  }
+
+  getEmbedStreamUrlFromChannelId(channelId) {
+    return `https://www.youtube.com/embed/live_stream?channel=${channelId}`;
+  }
+
+  getEmbedVideoUrlFromVideoId(videoId) {
+    return `https://www.youtube.com/embed/${videoId}`;
   }
 
   async getJsonFromUrl(url) {
     return JSON.parse(await this.getTextFromUrl(url));
+  }
+
+  async getLatestVideoIdFromChannelId(channelId) {
+    const url = this.getEmbedStreamUrlFromChannelId(channelId);
+    const html = await this.getTextFromUrl(url);
+    const $ = cheerio.load(html);
+    const nodes = $('link[rel="canonical"]');
+    const videoUrl = nodes.first().attr("href");
+    if (videoUrl) {
+      const videoId = await this.getVideoIdFromUrl(videoUrl);
+      if (videoId !== "live_stream") {
+        return videoId;
+      }
+    }
+    return false;
   }
 
   async getTextFromUrl(url) {
@@ -88,19 +128,8 @@ class YouTube {
     return m ? m[1] : false;
   }
 
-  async getVideoIdFromChannelId(channelId) {
-    const url = `https://www.youtube.com/embed/live_stream?channel=${channelId}`;
-    const html = await this.getTextFromUrl(url);
-    const $ = cheerio.load(html);
-    const nodes = $('link[rel="canonical"]');
-    const videoUrl = nodes.first().attr("href");
-    if (videoUrl) {
-      const videoId = await this.getVideoIdFromUrl(videoUrl);
-      if (videoId !== "live_stream") {
-        return videoId;
-      }
-    }
-    return false;
+  getVideoUrlFromVideoId(videoId) {
+    return `https://youtu.be/${videoId}`;
   }
 
   async _getCachedTextFromUrl(url) {

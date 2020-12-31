@@ -123,14 +123,7 @@ const Stream = (props) => {
               variant="contained"
               onClick={(event) => {
                 if (props.embeddable) {
-                  const channelId = getChannelIdFromChannelUrl(
-                    props.monastery.channelUrl
-                  );
-                  openVideo(
-                    event,
-                    "https://www.youtube.com/embed/live_stream?channel=" +
-                      channelId
-                  );
+                  openVideo(event, props.streamUrl);
                 } else {
                   event.preventDefault();
                   const w = window.open(props.streamUrl, "_blank");

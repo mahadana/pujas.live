@@ -26,7 +26,7 @@ export const getTextFromFixtureOrUrl = async (url) => {
   console.log(`Downloading ${url} to fixture ${fixturePath}`);
   const apiKey = process.env.YOUTUBE_API_KEY;
   if (!process.env.YOUTUBE_API_KEY) {
-    throw new Error("YOUTUBE_API_KEY not defined in .env");
+    throw new Error("YOUTUBE_API_KEY not defined in worker/.env");
   }
   const apiUrl = url.replace("__MOCK_API_KEY__", apiKey);
   let text = await new YouTube()._getTextFromUrl(apiUrl);
