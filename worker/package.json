@@ -10,7 +10,8 @@
     "dotenv": "^8.2.0",
     "graphql": "^15.4.0",
     "graphql-request": "^3.4.0",
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "redis": "^3.0.2"
   },
   "scripts": {
     "dev": "nodemon --exec npx babel-node src/index.js",
