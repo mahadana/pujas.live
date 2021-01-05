@@ -1,30 +1,46 @@
 import Queue from "bull";
-import { processStreams } from "./stream";
+import dotenv from "dotenv";
+
+import { processAutomations } from "./automate";
+
+dotenv.config();
 
 const setupQueues = async () => {
   const queueOptions = { redis: { host: "redis" } };
-  const processStreamsQueue = new Queue("processStreams", queueOptions);
+  const automateQueue = new Queue("automateQueue", queueOptions);
 
-  const jobs = await processStreamsQueue.getRepeatableJobs();
+  const jobs = await automateQueue.getRepeatableJobs();
   jobs.forEach((job) => {
-    processStreamsQueue.removeRepeatableByKey(job.key);
+    automateQueue.removeRepeatableByKey(job.key);
     console.log(`Removed repeatable job ${job.key}`);
   });
 
-  processStreamsQueue.add(
-    {},
-    {
-      repeat: {
-        every: 60 * 1000, // 60 seconds
-      },
-    }
-  );
+  if (process.env.YOUTUBE_API_KEY) {
+    automateQueue.add(
+      {},
+      {
+        repeat: {
+          every: 60 * 1000, // 60 seconds
+        },
+      }
+    );
+  } else {
+    console.warn(
+      "YOUTUBE_API_KEY not defined in worker/.env" +
+        ", not scheduling automateQueue"
+    );
+    return;
+  }
 
-  processStreamsQueue.process(async (job) => {
-    console.log(`Start processStream job ${job.id}`);
-    await processStreams();
-    console.log(`End processStream job ${job.id}`);
+  automateQueue.process(async (job) => {
+    console.log(`Start automateQueue job ${job.id}`);
+    try {
+      await processAutomations();
+    } catch (error) {
+      console.error(error);
+    }
+    console.log(`End automateQueue job ${job.id}`);
   });
 };
 
-setupQueues().then().catch(console.errro);
+setupQueues().then().catch(console.error);

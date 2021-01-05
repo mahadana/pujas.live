@@ -1,16 +1,16 @@
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Banner from "@/components/Banner";
 import ChantingBooksBar from "@/components/ChantingBooksBar";
 import GroupList from "@/components/GroupList";
+import HomeChannelList from "@/components/HomeChannelList";
 import Link from "@/components/Link";
 import Loading from "@/components/Loading";
-import StreamList from "@/components/StreamList";
 import UserBar from "@/components/UserBar";
 import { withApollo } from "@/lib/apollo";
-import { dayjs, getNextGroupEventTime } from "@/lib/time";
+import { HOME_QUERY } from "@/lib/schema";
 
 const useStyles = makeStyles((theme) => ({
   lead: {
@@ -20,87 +20,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const d = dayjs();
-
-
-const QUERY = gql`
-  {
-    streams(sort: "startAt") {
-      id
-      name
-      description
-      image {
-        formats
-      }
-      monastery {
-        name
-        websiteUrl
-        channelUrl
-      }
-      streamUrl
-      embeddable
-      startAt
-      duration
-      historyUrl
-    }
-    groups(sort: "updated_at:desc", where: { confirmed: true }) {
-      id
-      name
-      description
-      image {
-        formats
-      }
-      timezone
-      events {
-        id
-        startAt
-        duration
-        daysOfWeek
-      }
-    }
-  }
-`;
-
-const extendAndSortGroupsWithNextEvent = (groups) => {
-  const localTz = dayjs.tz.guess();
-  groups = groups.map((group) => {
-    return {
-      ...group,
-      nextEventTime: dayjs.min(
-        (group.events || []).map((event) =>
-          getNextGroupEventTime({
-            ...event,
-            duration: event.duration || 60,
-            timezone: group.timezone,
-          })
-        )
-      ),
-    };
-  });
-  return groups.sort((a, b) => {
-    if (a.nextEventTime && b.nextEventTime) {
-      return a.nextEventTime.diff(b.nextEventTime);
-    } else if (a.nextEventTime && !b.nextEventTime) {
-      return -1;
-    } else if (!a.nextEventTie && b.nextEventTime) {
-      return 1;
-    } else {
-      return 0;
-    }
-  });
-};
-
 const Home = () => {
-  const { loading, error, data } = useQuery(QUERY, {
+  const { loading, error, data } = useQuery(HOME_QUERY, {
     fetchPolicy: "cache-and-network",
   });
   const classes = useStyles();
-  const streams = data?.streams;
-  let groups = data?.groups;
-
-  if (groups) {
-    groups = extendAndSortGroupsWithNextEvent(groups);
-  }
+  const channels = data?.channels;
+  const groups = data?.groups;
 
   return (
     <>
@@ -110,14 +36,22 @@ const Home = () => {
       <Container maxWidth="lg">
         {error ? (
           <p>Error loading data...</p>
-        ) : loading || !streams || !groups ? (
+        ) : loading ? (
           <Loading />
         ) : (
           <>
-            <h2 className={classes.lead}>Livestreams</h2>
-            <StreamList streams={streams} />
-            <h2 className={classes.lead}>Open Sitting Groups</h2>
-            <GroupList groups={groups} />
+            {channels && channels.length > 0 && (
+              <>
+                <h2 className={classes.lead}>Livestreams</h2>
+                <HomeChannelList channels={channels} />
+              </>
+            )}
+            {groups && groups.length > 0 && (
+              <>
+                <h2 className={classes.lead}>Open Sitting Groups</h2>
+                <GroupList groups={groups} />
+              </>
+            )}
           </>
         )}
         <p>

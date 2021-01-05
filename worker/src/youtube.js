@@ -27,7 +27,7 @@ class YouTube {
   }
 
   async getChannelIdFromUrl(url) {
-    const regex = /^\s*(?:(?:https?):\/\/)?(?:(?:www|m)\.)?youtube\.com\/(c\/|channel\/|u\/|user\/)?([a-zA-Z0-9\-_]+)(?:\/.+)??\s*$/;
+    const regex = /^\s*(?:(?:https?):\/\/)?(?:(?:www|m)\.)?youtube\.com\/(c\/|channel\/|u\/|user\/)?([a-zA-Z0-9\-_]+)(?:[\/?].+)??\s*$/;
     let channelId = false;
     const m = String(url).match(regex);
     if (!m) {

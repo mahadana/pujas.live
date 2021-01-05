@@ -1,5 +1,57 @@
 import { gql } from "@apollo/client";
 
+export const HOME_QUERY = gql`
+  {
+    channels(sort: "_activeStreams") {
+      id
+      title
+      description
+      image {
+        provider
+        formats
+      }
+      automate
+      channelUrl
+      historyUrl
+      monastery {
+        title
+        websiteUrl
+      }
+      activeStream {
+        title
+        description
+        image {
+          provider
+          formats
+        }
+        automate
+        recordingUrl
+        embed
+        live
+        startAt
+        endAt
+        duration
+        extra
+      }
+    }
+    groups(sort: "updated_at:desc", where: { confirmed: true }) {
+      id
+      name
+      description
+      image {
+        formats
+      }
+      timezone
+      events {
+        id
+        startAt
+        duration
+        daysOfWeek
+      }
+    }
+  }
+`;
+
 const GROUP_FIELDS = `
   id
   name

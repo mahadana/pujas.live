@@ -71,6 +71,10 @@ describe("fixtures", () => {
       exp("www.youtube.com/c/TrueLittleMonk/videos", "UCGLC-euAIB3gHdPkTWNfg8g")
     );
     test(
+      "with query",
+      exp("www.youtube.com/c/TrueLittleMonk?a=123", "UCGLC-euAIB3gHdPkTWNfg8g")
+    );
+    test(
       "channel ID",
       exp(
         "https://www.youtube.com/channel/UCIE4SeH_UJBNKqZvxkNFBDw",

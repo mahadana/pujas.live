@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Box, makeStyles } from "@material-ui/core";
 
+import HomeChannel from "@/components/HomeChannel";
 import Link from "@/components/Link";
-import Stream from "@/components/Stream";
 
 const MAX_INITIAL = 3;
 
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function StreamList({ streams }) {
+function HomeChannelList({ channels }) {
   const classes = useStyles();
   const [showMore, setShowMore] = useState(true);
   const handleShowMore = (event) => {
@@ -24,16 +24,16 @@ function StreamList({ streams }) {
     setShowMore(false);
   };
 
-  const hasMore = streams.length > MAX_INITIAL;
-  const shownStreams =
-    showMore && hasMore ? streams.slice(0, MAX_INITIAL) : streams;
+  const hasMore = channels.length > MAX_INITIAL;
+  const shownChannels =
+    showMore && hasMore ? channels.slice(0, MAX_INITIAL) : channels;
 
   return (
     <Box className={classes.root}>
       <Box>
-        {shownStreams.map((stream) => (
-          <Stream key={stream.id} {...stream} />
-        ))}
+        {shownChannels.map((channel) => (
+          <HomeChannel key={channel.id} {...channel} />
+        ))} 
       </Box>
       {showMore && hasMore && (
         <Box className={classes.showMore}>
@@ -46,4 +46,4 @@ function StreamList({ streams }) {
   );
 }
 
-export default StreamList;
+export default HomeChannelList;

@@ -11,8 +11,9 @@
     "draftAndPublish": true
   },
   "attributes": {
-    "name": {
+    "title": {
       "type": "string",
+      "minLength": 1,
       "required": true,
       "unique": true
     },
@@ -22,17 +23,14 @@
     "image": {
       "model": "file",
       "via": "related",
-      "allowedTypes": [
-        "images"
-      ],
+      "allowedTypes": ["images"],
       "plugin": "upload",
       "required": false
     },
     "websiteUrl": {
-      "type": "string"
-    },
-    "channelUrl": {
-      "type": "string"
+      "type": "string",
+      "regex": "^(https?://\\S+)?$",
+      "unique": true
     }
   }
 }

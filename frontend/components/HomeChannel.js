@@ -6,8 +6,10 @@ import { useState } from "react";
 
 import Upcoming from "@/components/Upcoming";
 import VideoIframeModal from "@/components/VideoIframeModal";
-import { dayjs } from "@/lib/time";
-import { getChannelIdFromChannelUrl } from "@/lib/util";
+import {
+  getYouTubeVideoIdFromUrl,
+  getYouTubeEmbedVideoUrlFromVideoId,
+} from "@/lib/util";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,35 +56,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Stream = (props) => {
+const HomeChannel = (props) => {
+  const [videoUrl, setVideoUrl] = useState(null);
   const classes = useStyles();
   const imageUrl = props.image
     ? `${process.env.NEXT_PUBLIC_API_URL}${props.image?.formats?.thumbnail?.url}`
     : "https://placekitten.com/g/150/150";
 
-  const formatDate = (ds) => {
-    return new Date(ds).toLocaleString();
-  };
-
-  const [open, setOpen] = useState(false);
-  const [videoUrl, setVideoUrl] = useState(null);
-
-  const openVideo = (event, url) => {
+  const onLivestreamClick = (event) => {
     event.preventDefault();
-    setVideoUrl(url);
-    setOpen(true);
+    if (props.activeStream.embed) {
+      const videoId = getYouTubeVideoIdFromUrl(props.activeStream.recordingUrl);
+      if (videoId) {
+        const embedUrl = getYouTubeEmbedVideoUrlFromVideoId(videoId);
+        setVideoUrl(embedUrl);
+      } else {
+        // TODO error notification?
+      }
+    } else {
+      const w = window.open(props.activeStream.recordingUrl, "_blank");
+      w.focus();
+    }
   };
 
   const onCloseVideoModal = () => {
-    setOpen(false);
+    setVideoUrl(null);
   };
-
-  const live = ((startAt, duration) => {
-    const min = dayjs(startAt).utc().subtract(15, "minute");
-    const max = dayjs(startAt).utc().add(duration, "minute");
-    const now = dayjs().utc();
-    return min.isBefore(now) && now.isBefore(max);
-  })(props.startAt, props.duration || 240);
 
   return (
     <Box className={classes.root}>
@@ -90,22 +89,25 @@ const Stream = (props) => {
         <img src={imageUrl} />
       </Box>
       <Box className={classes.text}>
-        <h3>{props.name}</h3>
-        {props.streamUrl && props.startAt && (
+        <h3>{props.title}</h3>
+        {props.activeStream?.startAt && (
           <Typography variant="subtitle2">
-            <Upcoming time={props.startAt} duration={props.duration} />
+            <Upcoming
+              time={props.activeStream.startAt}
+              duration={props.activeStream.duration}
+            />
           </Typography>
         )}
         <p>{props.description}</p>
         <p className={classes.monasteryLinks}>
           {props.monastery && props.monastery.websiteUrl && (
             <a href={props.monastery.websiteUrl} target="_blank">
-              {props.monastery.name} Website
+              {props.monastery.title} Website
             </a>
           )}
-          {props.monastery && props.monastery.channelUrl && (
-            <a href={props.monastery.channelUrl} target="_blank">
-              {props.monastery.name} Channel
+          {props.channelUrl && (
+            <a href={props.channelUrl} target="_blank">
+              {props.monastery.title} Channel
             </a>
           )}
           {props.historyUrl && (
@@ -116,26 +118,18 @@ const Stream = (props) => {
         </p>
       </Box>
       <Box className={classes.links}>
-        {props.streamUrl && (
+        {props.activeStream && (
           <>
             <Button
-              color={live ? "primary" : undefined}
+              color={props.activeStream?.live ? "primary" : undefined}
               variant="contained"
-              onClick={(event) => {
-                if (props.embeddable) {
-                  openVideo(event, props.streamUrl);
-                } else {
-                  event.preventDefault();
-                  const w = window.open(props.streamUrl, "_blank");
-                  w.focus();
-                }
-              }}
+              onClick={onLivestreamClick}
             >
-              {live ? "Join Livestream" : "Livestream Page"}
+              {props.activeStream?.live ? "Join Livestream" : "Livestream"}
             </Button>
             <VideoIframeModal
               url={videoUrl}
-              open={open}
+              open={!!videoUrl}
               onClose={onCloseVideoModal}
             />
           </>
@@ -145,4 +139,4 @@ const Stream = (props) => {
   );
 };
 
-export default Stream;
+export default HomeChannel;

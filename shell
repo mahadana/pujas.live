@@ -4,18 +4,28 @@ if [ $# = 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
   cat <<EOF
 Usage: $0 <service> [command...]
 
-Shortcuts:
+Consoles:
 
-  Bash shell in frontend            $0 frontend
   Bash shell in backend             $0 backend
+  Bash shell in frontend            $0 frontend
+  Bash shell in worker              $0 worker
+  Strapi console                    $0 backend console
+  PostgreSQL console                $0 db console
+  Redis console                     $0 redis console
+
+Testing:
+
+  Run tests in backend              $0 backend test
+  Watch tests in backend            $0 backend watch
   Run tests in frontend             $0 frontend test
   Watch tests in frontend           $0 frontend watch
   Run tests in worker               $0 worker test
   Watch tests in worker             $0 worker watch
+
+Other:
+
+  Add fake data                     $0 backend fake
   Strapi (re)build                  $0 backend build
-  Strapi console                    $0 backend console
-  PostgreSQL console                $0 db console
-  Redis console                     $0 redis console
   Reset database                    $0 reset-db
   Clean containers, cache, etc...   $0 clean
 
@@ -37,10 +47,16 @@ case "$SERVICE" in
     ;;
   backend|strapi)
     SERVICE="backend"
-    if [ "$*" == "build" ]; then
+    if [ "$*" == "test" ]; then
+      set npm run test
+    elif [ "$*" == "watch" ]; then
+      set npm run watch
+    elif [ "$*" == "build" ]; then
       set bash -c 'rm -rf build/* cache/* && npx strapi build'
     elif [ "$*" == "console" ]; then
       set npx -c 'PORT=1338 strapi console'
+    elif [ "$*" == "fake" ]; then
+      set bash -c 'node lib/fake.js'
     fi
     ;;
   db|postgres)

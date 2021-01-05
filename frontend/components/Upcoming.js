@@ -12,13 +12,15 @@ const Upcoming = ({ time, duration }) => {
   const from = time.from(now);
   const fullTime = tzTime.format("LLLL z");
   const shortTime = tzTime.format("h:mma z");
-  const ended = now.isAfter(time.add(duration, "minute"));
+  const endTime = duration ? time.add(duration, 'minute') : null;
+  const ended = duration ? now.isAfter(endTime) : false;
+  const endedFrom = ended ? endTime.from(now) : null;
 
   return (
     <Tooltip title={fullTime}>
       <span>
         {ended
-          ? `Ended ${from}`
+          ? `Ended ${endedFrom}`
           : diff > 1440
           ? `Upcoming · ${fullTime}`
           : diff > 0
