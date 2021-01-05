@@ -1,0 +1,68 @@
+{
+  "kind": "collectionType",
+  "collectionName": "recordings",
+  "info": {
+    "name": "recording",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "image": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": ["images"],
+      "plugin": "upload",
+      "required": false
+    },
+    "automate": {
+      "type": "enumeration",
+      "default": "manual",
+      "enum": ["manual", "youtube"],
+      "required": true
+    },
+    "recordingUrl": {
+      "type": "string",
+      "regex": "^https?://\\S+$",
+      "required": true,
+      "unique": true
+    },
+    "embed": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "live": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "startAt": {
+      "type": "datetime"
+    },
+    "endAt": {
+      "type": "datetime"
+    },
+    "duration": {
+      "type": "integer",
+      "min": 1
+    },
+    "extra": {
+      "type": "json"
+    },
+    "channel": {
+      "model": "channel"
+    }
+  }
+}

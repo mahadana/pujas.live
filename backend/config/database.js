@@ -13,6 +13,7 @@ module.exports = ({ env }) => ({
         schema: "public",
       },
       options: {
+        // debug: true,
         useNullAsDefault: true,
       },
     },

@@ -1,0 +1,52 @@
+{
+  "kind": "collectionType",
+  "collectionName": "channels",
+  "info": {
+    "name": "channel",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "required": true,
+      "unique": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "image": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": ["images"],
+      "plugin": "upload",
+      "required": false
+    },
+    "automate": {
+      "type": "enumeration",
+      "default": "manual",
+      "enum": ["manual", "youtube"],
+      "required": true
+    },
+    "channelUrl": {
+      "type": "string",
+      "regex": "^(https?://\\S+)?$",
+      "unique": true
+    },
+    "historyUrl": {
+      "type": "string",
+      "regex": "^(https?://\\S+)?$"
+    },
+    "monastery": {
+      "model": "monastery"
+    },
+    "activeStream": {
+      "model": "recording"
+    }
+  }
+}
