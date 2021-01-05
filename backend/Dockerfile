@@ -10,6 +10,6 @@ COPY --chown=node:node shared /app/shared
 COPY --chown=node:node backend /app/backend
 RUN NODE_ENV=production npm run build
 
-ENTRYPOINT NODE_ENV=production node scripts/seed.js && \
+ENTRYPOINT NODE_ENV=production node lib/seed.js && \
   NODE_ENV=production npm start
 EXPOSE 1337
