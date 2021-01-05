@@ -55,14 +55,14 @@ Working with email and captchas requires a few more steps:
     - Frontend: http://pujas.test:3000/
     - Backend: http://pujas.test:1337/admin/
 
-## Shell Helper
+## Task Helper
 
 ```sh
 # Run a bash shell on the frontend
-./shell frontend
+./task frontend
 
 # Show help and additional examples
-./shell -h
+./task -h
 ```
 
 ## Server Setup
