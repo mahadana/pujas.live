@@ -7,6 +7,23 @@
   },
   "options": {},
   "attributes": {
+    "day": {
+      "type": "enumeration",
+      "enum": [
+        "everyday",
+        "weekdays",
+        "weekends",
+        "sunday",
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday"
+      ],
+      "default": "everyday",
+      "required": true
+    },
     "startAt": {
       "type": "time",
       "required": true
@@ -14,22 +31,6 @@
     "duration": {
       "type": "integer",
       "min": 0
-    },
-    "daysOfWeek": {
-      "type": "enumeration",
-      "enum": [
-        "everyday",
-        "weekdays",
-        "weekends",
-        "sundays",
-        "mondays",
-        "tuesdays",
-        "wednesdays",
-        "thursdays",
-        "fridays",
-        "saturdays"
-      ],
-      "default": "everyday"
     }
   }
 }

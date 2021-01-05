@@ -107,7 +107,7 @@ const HomeChannel = (props) => {
           )}
           {props.channelUrl && (
             <a href={props.channelUrl} target="_blank">
-              {props.monastery.title} Channel
+              {props.monastery?.title || "Livestream"} Channel
             </a>
           )}
           {props.historyUrl && (

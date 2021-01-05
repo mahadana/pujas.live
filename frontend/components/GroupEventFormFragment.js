@@ -12,7 +12,7 @@ import { FastField } from "formik";
 import capitalize from "lodash/capitalize";
 
 import FormTextField from "@/components/FormTextField";
-import { DAYS_OF_WEEK_OPTIONS } from "@/lib/validation";
+import { GROUP_EVENT_DAY_OPTIONS } from "@/lib/validation";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,7 +38,7 @@ const GroupEventFormFragment = ({ namePrefix, onRemove }) => {
     <Paper className={classes.root}>
       <Grid container className={classes.container}>
         <Grid item className={classes.fieldItem}>
-          <FastField name={`${namePrefix}.daysOfWeek`}>
+          <FastField name={`${namePrefix}.day`}>
             {({ field, meta }) => (
               <FormControl>
                 <InputLabel shrink>Day</InputLabel>
@@ -48,7 +48,7 @@ const GroupEventFormFragment = ({ namePrefix, onRemove }) => {
                   error={meta.error && meta.touched}
                   {...field}
                 >
-                  {DAYS_OF_WEEK_OPTIONS.map((option, index) => (
+                  {GROUP_EVENT_DAY_OPTIONS.map((option, index) => (
                     <MenuItem key={index} value={option}>
                       {capitalize(option)}
                     </MenuItem>

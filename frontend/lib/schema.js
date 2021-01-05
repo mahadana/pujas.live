@@ -1,5 +1,25 @@
 import { gql } from "@apollo/client";
 
+const GROUP_FIELDS = `
+  id
+  title
+  description
+  image {
+    provider
+    formats
+  }
+  owner {
+    id
+  }
+  timezone
+  events {
+    id
+    day
+    startAt
+    duration
+  }
+`;
+
 export const HOME_QUERY = gql`
   {
     channels(sort: "_activeStreams") {
@@ -34,40 +54,9 @@ export const HOME_QUERY = gql`
         extra
       }
     }
-    groups(sort: "updated_at:desc", where: { confirmed: true }) {
-      id
-      name
-      description
-      image {
-        formats
-      }
-      timezone
-      events {
-        id
-        startAt
-        duration
-        daysOfWeek
-      }
+    groups(sort: "updated_at:desc", where: { listed: true }) {
+      ${GROUP_FIELDS}
     }
-  }
-`;
-
-const GROUP_FIELDS = `
-  id
-  name
-  description
-  image {
-    formats
-  }
-  owner {
-    id
-  }
-  timezone
-  events {
-    id
-    startAt
-    duration
-    daysOfWeek
   }
 `;
 

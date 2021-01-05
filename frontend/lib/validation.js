@@ -1,22 +1,22 @@
 import * as yup from "yup";
 
-export const DAYS_OF_WEEK_OPTIONS = [
+export const GROUP_EVENT_DAY_OPTIONS = [
   "everyday",
   "weekdays",
   "weekends",
-  "sundays",
-  "mondays",
-  "tuesdays",
-  "wednesdays",
-  "thursdays",
-  "fridays",
-  "saturdays",
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
 ];
 
 export const groupSchema = yup
   .object({
     id: yup.number().nullable(),
-    name: yup.string().ensure().required("Required"),
+    title: yup.string().ensure().required("Required"),
     description: yup.string().ensure(),
     timezone: yup.string().ensure().required("Required"),
     events: yup
@@ -26,6 +26,7 @@ export const groupSchema = yup
         yup
           .object({
             id: yup.number().nullable(),
+            day: yup.string().ensure().oneOf(GROUP_EVENT_DAY_OPTIONS),
             startAt: yup
               .string()
               .ensure()
@@ -38,7 +39,6 @@ export const groupSchema = yup
               .string()
               .ensure()
               .matches(/^[0-9]*$/, "Not a number"),
-            daysOfWeek: yup.string().ensure().oneOf(DAYS_OF_WEEK_OPTIONS),
           })
           .noUnknown()
       ),
@@ -61,14 +61,14 @@ const nullableNumber = yup
 
 const makeGroupDbCast = (update) => {
   const eventsFields = {
+    days: yup.string(),
     startAt: yup.string().transform(fixTime),
     duration: nullableNumber,
-    daysOfWeek: yup.string(),
   };
   if (update) eventsFields.id = yup.number();
   return yup
     .object({
-      name: yup.string(),
+      title: yup.string(),
       description: yup.string(),
       timezone: yup.string(),
       events: yup.array().of(yup.object(eventsFields).noUnknown()),

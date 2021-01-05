@@ -1,14 +1,19 @@
 const faker = require("faker");
+const moment = require("moment");
+const { listTimeZones } = require("timezone-support");
 
 const { addUrlToUploads } = require("./upload");
 
+const ADMIN_USER_COUNT = 1;
 const CHANNEL_COUNT = 10;
+const GROUP_COUNT = 10;
 const IMAGE_COUNT = 10;
 const MONASTERY_COUNT = 10;
 const RECORDING_COUNT = 100;
 const USER_COUNT = 1;
 
 const FAKE_IMAGE_URL = "https://picsum.photos/300";
+const TIMEZONES = listTimeZones();
 const YOUTUBE_CHANNELS = [
   "https://www.youtube.com/c/AbhayagiriBuddhistMonastery",
   "https://www.youtube.com/c/AmaravatiBuddhistMonastery",
@@ -29,9 +34,9 @@ const metaData = () => {
   }
   return {
     published_at: faker.random.number(10) ? faker.date.recent() : null,
-    updated_by: faker.random.number({ min: 1, max: USER_COUNT }),
+    updated_by: faker.random.number({ min: 1, max: ADMIN_USER_COUNT }),
     updated_at: updatedAt,
-    created_by: faker.random.number({ min: 1, max: USER_COUNT }),
+    created_by: faker.random.number({ min: 1, max: ADMIN_USER_COUNT }),
     created_at: createdAt,
   };
 };
@@ -128,11 +133,55 @@ const addFakeRecordings = async () => {
   }
 };
 
+const addFakeGroups = async () => {
+  strapi.log.info("Faking groups...");
+  const knex = strapi.connections.default;
+  await knex("upload_file_morph").where("related_type", "groups").delete();
+  await knex.raw(
+    "TRUNCATE TABLE groups, groups_components" +
+      ", components_group_events RESTART IDENTITY CASCADE"
+  );
+  for (let id = 1; id <= GROUP_COUNT; id++) {
+    const [gid] = await knex("groups")
+      .insert({
+        title: faker.lorem.words(4),
+        description: faker.lorem.paragraph(),
+        listed: !!faker.random.number(4),
+        owner: faker.random.number({ min: 1, max: USER_COUNT }),
+        timezone: faker.random.arrayElement(TIMEZONES),
+        ...metaData(),
+      })
+      .returning("id");
+    for (let n = 1; n <= faker.random.number(4); n++) {
+      const [cid] = await knex("components_group_events")
+        .insert({
+          day: faker.random.arrayElement(
+            strapi.components["event.group-event"].attributes.day.enum
+          ),
+          startAt: moment(faker.date.soon()).format("HH:mm:ss"),
+          duration: faker.random.boolean()
+            ? 10 + faker.random.number(100)
+            : null,
+        })
+        .returning("id");
+      await knex("groups_components").insert({
+        field: "events",
+        order: n,
+        component_type: "components_group_events",
+        component_id: cid,
+        group_id: gid,
+      });
+    }
+    await addFakeAssociatedImage("groups", "image", id);
+  }
+};
+
 const addFakes = async () => {
   await addFakeImages();
   await addFakeMonasteries();
   await addFakeChannels();
   await addFakeRecordings();
+  await addFakeGroups();
 };
 
 if (require.main === module) {

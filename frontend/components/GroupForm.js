@@ -13,9 +13,9 @@ import TimeZoneField from "@/components/TimeZoneField";
 import { groupSchema } from "@/lib/validation";
 
 const EVENT_DEFAULTS = {
+  day: "everyday",
   startAt: "12:00",
   duration: "60",
-  daysOfWeek: "everyday",
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -46,8 +46,8 @@ const GroupForm = ({ group, onSubmit }) => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <FormTextField
-                  name="name"
-                  label="Name"
+                  name="title"
+                  label="Title"
                   required
                   fullWidth
                   autoFocus

@@ -67,18 +67,18 @@ export const getNextGroupEventTime = (args) => {
 
   const eventMap = ((dow) => {
     const em = {
-      sundays: [1, 0, 0, 0, 0, 0, 0],
-      mondays: [0, 1, 0, 0, 0, 0, 0],
-      tuesdays: [0, 0, 1, 0, 0, 0, 0],
-      wednesdays: [0, 0, 0, 1, 0, 0, 0],
-      thursdays: [0, 0, 0, 0, 1, 0, 0],
-      fridays: [0, 0, 0, 0, 0, 1, 0],
-      saturdays: [0, 0, 0, 0, 0, 0, 1],
+      sunday: [1, 0, 0, 0, 0, 0, 0],
+      monday: [0, 1, 0, 0, 0, 0, 0],
+      tuesday: [0, 0, 1, 0, 0, 0, 0],
+      wednesday: [0, 0, 0, 1, 0, 0, 0],
+      thursday: [0, 0, 0, 0, 1, 0, 0],
+      friday: [0, 0, 0, 0, 0, 1, 0],
+      saturday: [0, 0, 0, 0, 0, 0, 1],
       weekdays: [0, 1, 1, 1, 1, 1, 0],
       weekends: [1, 0, 0, 0, 0, 0, 1],
     }[dow] || [1, 1, 1, 1, 1, 1, 1];
     return em.concat(em);
-  })(args.daysOfWeek);
+  })(args.day);
 
   let time = tzNow.timeString(args.startAt);
   let toAdd = eventMap.indexOf(1, time.day()) - time.day();

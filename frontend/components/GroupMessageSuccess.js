@@ -8,8 +8,13 @@ import ButtonLink from "@/components/ButtonLink";
 const GroupMessageSuccess = () => (
   <Paper style={{ marginTop: "2rem" }}>
     <Box p={3} textAlign="center">
-      <Typography variant="h3" style={{ marginBottom: "2rem" }}>
-        Your message has been sent. Thank you!
+      <Typography variant="h4" style={{ marginBottom: "1rem" }}>
+        Your message has been sent.
+      </Typography>
+      <Typography variant="body1" style={{ marginBottom: "2rem" }}>
+        Once the owner of the group reviews your information, they will provide
+        you with the links, etc. to participate in the group sittings. This may
+        take a few days.
       </Typography>
       <ButtonLink
         href="/"

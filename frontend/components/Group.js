@@ -8,7 +8,7 @@ import capitalize from "lodash/capitalize";
 
 import ButtonLink from "@/components/ButtonLink";
 import Upcoming from "@/components/Upcoming";
-import { dayjs } from "@/lib/time";
+import { dayjs, getNextGroupEventTime } from "@/lib/time";
 import { useUser } from "@/lib/user";
 
 const useStyles = makeStyles((theme) => ({
@@ -63,15 +63,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Group = ({
-  description,
-  events,
-  id,
-  image,
-  name,
-  nextEventTime,
-  timezone,
-}) => {
+const Group = ({ events, image, timezone, ...props }) => {
   const classes = useStyles();
   const { user } = useUser();
 
@@ -79,13 +71,22 @@ const Group = ({
     ? `${process.env.NEXT_PUBLIC_API_URL}${image?.formats?.thumbnail?.url}`
     : "https://placekitten.com/g/100/100";
   const localEvents = (events || []).map((event) => ({
-    day: capitalize(
-      event.daysOfWeek === "everyday" ? "Every day" : event.daysOfWeek
-    ),
+    day: capitalize(event.day === "everyday" ? "Every day" : event.day),
     time: dayjs().tz(timezone).timeString(event.startAt).format("h:mma z"),
     duration:
       event.duration && dayjs.duration(event.duration, "minutes").humanize(),
   }));
+  const nextEventTime = events.length
+    ? dayjs.min(
+        events.map((event) =>
+          getNextGroupEventTime({
+            ...event,
+            duration: event.duration || 60,
+            timezone: timezone,
+          })
+        )
+      )
+    : null;
 
   return (
     <Box className={classes.root}>
@@ -93,7 +94,7 @@ const Group = ({
         <img src={imageUrl} />
       </Box>
       <Box className={classes.text}>
-        <Typography variant="h3">{name}</Typography>
+        <Typography variant="h3">{props.title}</Typography>
         {nextEventTime && (
           <Typography variant="subtitle2">
             <Upcoming time={nextEventTime} />
@@ -109,25 +110,31 @@ const Group = ({
             </ListItem>
           ))}
         </List>
-        <Typography variant="body2">{description}</Typography>
+        <Typography variant="body2">{props.description}</Typography>
       </Box>
       <Box className={classes.links}>
         <Typography variant="body2">
-          <ButtonLink href={`/groups/${id}`} variant="contained">
-            Join Practice
-          </ButtonLink>
-          <br />
-          <ButtonLink href={`/groups/${id}/message`} variant="contained">
-            Message Group
-          </ButtonLink>
-          {user && (
-            <>
-              <br />
-              <ButtonLink href={`/groups/${id}/edit`} variant="contained">
-                Edit Group
-              </ButtonLink>
-            </>
+          {props.owner && (
+            <ButtonLink
+              href={`/groups/${props.id}/message`}
+              variant="contained"
+            >
+              Join Group
+            </ButtonLink>
           )}
+          {user &&
+            props.owner &&
+            parseInt(user.id) == parseInt(props.owner.id) && (
+              <>
+                <br />
+                <ButtonLink
+                  href={`/groups/${props.id}/edit`}
+                  variant="contained"
+                >
+                  Edit Group
+                </ButtonLink>
+              </>
+            )}
         </Typography>
       </Box>
     </Box>

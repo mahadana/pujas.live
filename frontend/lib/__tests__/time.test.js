@@ -4,7 +4,7 @@ describe("getNextGroupEventTime", () => {
   test("everyday", () => {
     const g = (now) =>
       getNextGroupEventTime({
-        daysOfWeek: "everyday",
+        day: "everyday",
         startAt: "19:00:00",
         duration: 90,
         timezone: "Australia/Melbourne",
@@ -21,7 +21,7 @@ describe("getNextGroupEventTime", () => {
   test("weekdays", () => {
     const g = (now) =>
       getNextGroupEventTime({
-        daysOfWeek: "weekdays",
+        day: "weekdays",
         startAt: "05:00:00",
         duration: 90,
         timezone: "US/Pacific",
@@ -40,7 +40,7 @@ describe("getNextGroupEventTime", () => {
   test("weekends", () => {
     const g = (now) =>
       getNextGroupEventTime({
-        daysOfWeek: "weekends",
+        day: "weekends",
         startAt: "12:00:00",
         duration: 60,
         timezone: "America/New_York",
@@ -56,10 +56,10 @@ describe("getNextGroupEventTime", () => {
     expect(g("2020-12-27T19:00:00Z")).toBe("2021-01-02T12:00:00-05:00");
   });
 
-  test("tuesdays", () => {
+  test("tuesday", () => {
     const g = (now) =>
       getNextGroupEventTime({
-        daysOfWeek: "tuesdays",
+        day: "tuesday",
         startAt: "01:00:00",
         duration: 15,
         timezone: "Asia/Yangon",
@@ -71,10 +71,10 @@ describe("getNextGroupEventTime", () => {
     expect(g("2020-12-25T12:00:00Z")).toBe("2020-12-29T01:00:00+06:30");
   });
 
-  test("fridays", () => {
+  test("friday", () => {
     const g = (now) =>
       getNextGroupEventTime({
-        daysOfWeek: "fridays",
+        day: "friday",
         startAt: "20:00:00",
         duration: 30,
         timezone: "America/Godthab",
@@ -85,10 +85,10 @@ describe("getNextGroupEventTime", () => {
     expect(g("2020-12-26T23:00:00Z")).toBe("2021-01-01T20:00:00-03:00");
   });
 
-  test("saturdays", () => {
+  test("saturday", () => {
     const g = (now) =>
       getNextGroupEventTime({
-        daysOfWeek: "saturdays",
+        day: "saturday",
         startAt: "14:00:00",
         duration: 30,
         timezone: "Europe/Athens",
@@ -102,7 +102,7 @@ describe("getNextGroupEventTime", () => {
   test("daylight savings", () => {
     const g = (now) =>
       getNextGroupEventTime({
-        daysOfWeek: "everyday",
+        day: "everyday",
         startAt: "01:15:00",
         duration: 60,
         timezone: "America/Chicago",
@@ -117,7 +117,7 @@ describe("getNextGroupEventTime", () => {
   test("edge cases", () => {
     expect(
       getNextGroupEventTime({
-        daysOfWeek: "everyday",
+        day: "everyday",
         startAt: "06:00:00",
         duration: 90,
         timezone: "America/Los_Angeles",
@@ -127,7 +127,7 @@ describe("getNextGroupEventTime", () => {
 
     expect(
       getNextGroupEventTime({
-        daysOfWeek: "everyday",
+        day: "everyday",
         startAt: "00:00:00",
         duration: 60,
         timezone: "America/Los_Angeles",

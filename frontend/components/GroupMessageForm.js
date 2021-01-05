@@ -10,6 +10,9 @@ import { useUser } from "@/lib/user";
 import { groupMessageSchema } from "@/lib/validation";
 
 const useStyles = makeStyles((theme) => ({
+  title: {
+    marginBottom: ".5em",
+  },
   leader: {
     fontSize: "1.14em",
     fontWeight: "bold",
@@ -50,8 +53,13 @@ ${values.experience}`,
     >
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h4">
-            Send message to owner of "{group.name}"
+          <Typography variant="h4" className={classes.title}>
+            Join group "{group.title}"
+          </Typography>
+          <Typography variant="body1">
+            Please fill out the following form to to send a message to the owner
+            of the group. Once they review your information, they will provide
+            you with the links, etc. to participate in the group sittings.
           </Typography>
         </Grid>
         <Grid item xs={12} className={classes.leader}>
