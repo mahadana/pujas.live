@@ -31,14 +31,14 @@
       "default": true,
       "required": true
     },
+    "timezone": {
+      "type": "string",
+      "default": "UTC",
+      "required": true
+    },
     "owner": {
       "plugin": "users-permissions",
       "model": "user"
-    },
-    "timezone": {
-      "type": "string",
-      "required": true,
-      "default": "UTC"
     },
     "events": {
       "type": "component",

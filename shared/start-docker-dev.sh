@@ -51,7 +51,7 @@ if [ "$SERVICE" = backend ]; then
   if [ $(ls build | wc -l) = 0 ]; then
     su -c "npm run build" $user
   fi
-  su -c "node lib/seed.js" $user
+  su -c "node lib/init" $user
 fi
 
 su -c "npm run dev" $user
