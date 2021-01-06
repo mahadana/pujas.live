@@ -7,6 +7,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     position: "relative",
     height: "10em",
+    marginBottom: "2em",
   },
   image: {
     position: "absolute",

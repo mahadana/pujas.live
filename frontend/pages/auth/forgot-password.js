@@ -6,7 +6,7 @@ import { withApollo } from "@/lib/apollo";
 
 const ForgotPasswordPage = () => (
   <>
-    <Banner />
+    <Banner userButton={false} />
     <Container maxWidth="sm">
       <ForgotPasswordControl />
     </Container>
