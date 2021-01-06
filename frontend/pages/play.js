@@ -5,11 +5,8 @@ import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useState } from "react";
 
-const SlideBar = ({ children, width = 100, height = 100 }) => {
+const SlideBar = ({ children, width = 100, height = 100, leaveDelay = 0 }) => {
   const [visible, setVisible] = useState(false);
-  const toggleVisible = () => {
-    setVisible((prev) => !prev);
-  };
   let timeout = null;
   const onMouseEnter = (event) => {
     if (timeout) {
@@ -22,7 +19,7 @@ const SlideBar = ({ children, width = 100, height = 100 }) => {
     if (timeout) {
       clearTimeout(timeout);
     }
-    timeout = setTimeout(() => setVisible(false), 500);
+    timeout = setTimeout(() => setVisible(false), leaveDelay);
   };
   return (
     <Box
@@ -38,7 +35,7 @@ const SlideBar = ({ children, width = 100, height = 100 }) => {
       onMouseLeave={onMouseLeave}
     >
       <Slide direction="right" in={visible} mountOnEnter unmountOnExit>
-        <Box style={{ width, height }}>{children}</Box>
+        <Box style={{ width, height, overflow: "hidden" }}>{children}</Box>
       </Slide>
     </Box>
   );
@@ -50,26 +47,43 @@ const Play = () => {
   // xs, sm, md, lg
 
   return (
-    <Container>
-      <h1>Playground</h1>
-      <Box
-        style={{
-          position: "relative",
-          backgroundColor: "#9fe",
-          height: "80vh",
-        }}
+    <Box
+      style={{
+        position: "relative",
+        width: "100vw",
+        height: "100vh",
+        margin: 0,
+        padding: 0,
+      }}
+    >
+      <Box>{desktop ? "desktop" : "mobile"}</Box>
+      <SlideBar
+        width={desktop ? 200 : 150}
+        height={desktop ? 400 : 300}
+        leaveDelay={500}
       >
-        <h2>OnMouseEnter / OnMouseLeave</h2>
-        <p>{desktop ? "desktop" : "mobile"}</p>
-        <SlideBar width={desktop ? 300 : 100} height={desktop ? 400 : 200}>
-          <div
-            style={{ width: "100%", height: "100%", backgroundColor: "green" }}
-          >
-            Chanting book 1
-          </div>
-        </SlideBar>
-      </Box>
-    </Container>
+        <Box
+          style={{
+            width: "90%",
+            height: "45%",
+            backgroundColor: "#fe9",
+            margin: "5%",
+          }}
+        >
+          Chanting book 1
+        </Box>
+        <Box
+          style={{
+            width: "90%",
+            height: "45%",
+            backgroundColor: "#fe9",
+            margin: "5%",
+          }}
+        >
+          Chanting book 2
+        </Box>
+      </SlideBar>
+    </Box>
   );
 };
 
