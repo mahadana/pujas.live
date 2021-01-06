@@ -28,12 +28,12 @@ const useStyles = makeStyles((theme) => ({
   },
   closeButton: {
     position: "absolute",
-    top: -40,
-    right: -40,
+    top: 6,
+    right: -10,
   },
   closeIcon: {
     fontSize: 40,
-    color: "white",
+    color: "black",
   },
 }));
 
