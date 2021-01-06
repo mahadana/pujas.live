@@ -3,7 +3,6 @@ import Container from "@material-ui/core/Container";
 import Banner from "@/components/Banner";
 import Loading from "@/components/Loading";
 import NotLoggedIn from "@/components/NotLoggedIn";
-import UserBar from "@/components/UserBar";
 import { useUser } from "@/lib/user";
 
 const AccountPage = () => {
@@ -11,7 +10,6 @@ const AccountPage = () => {
   return (
     <>
       <Banner />
-      <UserBar />
       <Container maxWidth="sm">
         {!user && userLoading ? (
           <Loading />

@@ -8,7 +8,6 @@ import GroupList from "@/components/GroupList";
 import HomeChannelList from "@/components/HomeChannelList";
 import Link from "@/components/Link";
 import Loading from "@/components/Loading";
-import UserBar from "@/components/UserBar";
 import { withApollo } from "@/lib/apollo";
 import { HOME_QUERY } from "@/lib/schema";
 
@@ -32,7 +31,6 @@ const Home = () => {
     <>
       <Banner />
       <ChantingBooksBar />
-      <UserBar />
       <Container maxWidth="lg">
         {error ? (
           <p>Error loading data...</p>

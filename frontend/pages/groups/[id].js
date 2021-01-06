@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import Banner from "@/components/Banner";
 import Group from "@/components/Group";
 import Loading from "@/components/Loading";
-import UserBar from "@/components/UserBar";
 import { withApollo } from "@/lib/apollo";
 import { GROUP_QUERY } from "@/lib/schema";
 
@@ -34,7 +33,6 @@ const GroupPage = () => {
   return (
     <>
       <Banner />
-      <UserBar />
       <Container maxWidth="lg">
         {loading || !group ? (
           <Loading />

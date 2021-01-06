@@ -1,9 +1,10 @@
 import { makeStyles } from "@material-ui/core";
 
 import Link from "@/components/Link";
+import UserButton from "@/components/UserButton";
 
 const useStyles = makeStyles((theme) => ({
-  container: {
+  root: {
     position: "relative",
     height: "10em",
   },
@@ -37,12 +38,18 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 500,
     color: "white",
   },
+  login: {
+    position: "absolute",
+    top: ".5em",
+    right: "1em",
+    color: "white",
+  },
 }));
 
-const Banner = () => {
+const Banner = ({ userButton = true }) => {
   const classes = useStyles();
   return (
-    <header className={classes.container}>
+    <header className={classes.root}>
       <img className={classes.image} src="/banner.jpg" alt="banner" />
       <h1 className={classes.title}>
         <Link href="/">Pujas.live</Link>
@@ -51,6 +58,11 @@ const Banner = () => {
         Livestreams and meditation groups in the Thai Forest tradition of Ajahn
         Chah
       </p>
+      {userButton && (
+        <div className={classes.login}>
+          <UserButton />
+        </div>
+      )}
     </header>
   );
 };

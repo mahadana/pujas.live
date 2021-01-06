@@ -8,6 +8,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "flex-end",
     margin: "2em 2em 0",
+    [theme.breakpoints.up("sm")]: {
+      height: "3.5em",
+    },
   },
   book: {
     marginLeft: "2em",

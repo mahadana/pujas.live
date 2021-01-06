@@ -6,7 +6,7 @@ import { withApollo } from "@/lib/apollo";
 
 const RegisterPage = () => (
   <>
-    <Banner />
+    <Banner userButton={false} />
     <Container maxWidth="sm">
       <RegisterControl />
     </Container>

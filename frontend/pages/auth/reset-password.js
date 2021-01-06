@@ -6,7 +6,7 @@ import { withApollo } from "@/lib/apollo";
 
 const ResetPasswordPage = () => (
   <>
-    <Banner />
+    <Banner userButton={false} />
     <Container maxWidth="sm">
       <ResetPasswordControl />
     </Container>

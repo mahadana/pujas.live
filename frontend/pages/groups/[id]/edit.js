@@ -7,7 +7,6 @@ import Banner from "@/components/Banner";
 import GroupForm from "@/components/GroupForm";
 import Loading from "@/components/Loading";
 import NotLoggedIn from "@/components/NotLoggedIn";
-import UserBar from "@/components/UserBar";
 import { apolloClient, withApollo } from "@/lib/apollo";
 import { GROUP_QUERY, UPDATE_GROUP_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
@@ -53,7 +52,6 @@ const GroupEditPage = () => {
   return (
     <>
       <Banner />
-      <UserBar />
       <Container maxWidth="sm">
         {(!user && userLoading) || loading || !group ? (
           <Loading />
