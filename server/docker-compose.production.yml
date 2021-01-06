@@ -3,7 +3,7 @@ version: "3.7"
 services:
   backend:
     build:
-      context: .
+      context: ..
       dockerfile: ./backend/Dockerfile
     restart: unless-stopped
     depends_on:
@@ -23,7 +23,7 @@ services:
       - db:/var/lib/postgresql/data
   frontend:
     build:
-      context: .
+      context: ..
       dockerfile: ./frontend/Dockerfile
     restart: unless-stopped
     depends_on:
@@ -38,7 +38,7 @@ services:
       - redis:/var/lib/redis
   worker:
     build:
-      context: .
+      context: ..
       dockerfile: ./worker/Dockerfile
     restart: unless-stopped
 
