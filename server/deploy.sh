@@ -4,16 +4,16 @@
 
 set -eu
 
-log="/var/log/neo.pujas.live-deploy.log"
+log="/var/log/pujas.live-deploy.log"
 
 (
   echo "$(date) start $0"
 
-  cd /opt/neo.pujas.live
+  cd /opt/pujas.live
   git pull
 
   function docker-compose-production {
-    docker-compose -f docker-compose.production.yml "$@"
+    docker-compose -f server/docker-compose.production.yml "$@"
   }
 
   docker-compose-production build

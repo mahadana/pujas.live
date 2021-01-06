@@ -1,4 +1,4 @@
-# `neo.pujas.live`
+# `pujas.live`
 
 ## Quick Start
 
@@ -6,8 +6,8 @@ Install [Docker](https://docs.docker.com/get-docker/) and
 [docker-compose](https://docs.docker.com/compose/install/). Then:
 
 ```sh
-git clone https://github.com/mahadana/neo.pujas.live.git
-cd neo.pujas.live
+git clone https://github.com/mahadana/pujas.live.git
+cd pujas.live
 docker-compose up
 ```
 
@@ -21,9 +21,19 @@ The default credentials (for both):
 - Email: `admin@pujas.live`
 - Password: `Password1`
 
-## Local Development
+## Task Helper
 
-Working with email and captchas requires a few more steps:
+```sh
+# Run a bash shell in the frontend container
+./task frontend
+
+# Show help and additional examples
+./task -h
+```
+
+## Email and Captchas
+
+To enable email and captchas on local development requires a few more steps:
 
 1.  Create an account with [Mailtrap](https://mailtrap.io/).
 
@@ -55,50 +65,6 @@ Working with email and captchas requires a few more steps:
     - Frontend: http://pujas.test:3000/
     - Backend: http://pujas.test:1337/admin/
 
-## Task Helper
-
-```sh
-# Run a bash shell on the frontend
-./task frontend
-
-# Show help and additional examples
-./task -h
-```
-
 ## Server Setup
 
-```sh
-wget -qO- 'https://raw.githubusercontent.com/mahadana/neo.pujas.live/main/server/setup.sh' | bash
-```
-
-Edit `backend/.env`:
-
-```
-ADMIN_JWT_SECRET=...
-ADMIN_PASSWORD=...
-HCAPTCHA_SECRET=...
-JWT_SECRET=...
-MAILJET_PUBLIC_KEY=...
-MAILJET_SECRET_KEY=...
-```
-
-Edit `frontend/.env`:
-
-```
-NEXT_PUBLIC_HCAPTCHA_SITE_KEY=...
-```
-
-You can create JWT secrets with:
-
-```sh
-openssl rand -hex 32
-```
-
-To completely restart from on scratch:
-
-```sh
-cd /opt/neo.pujas.live
-docker-compose down
-docker volume rm $(docker volume ls -q | grep neopujaslive)
-docker-compose -f docker-compose.production.yml up -d
-```
+See the [server documentation](server/README.md).

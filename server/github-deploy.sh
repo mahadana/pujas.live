@@ -4,6 +4,6 @@
 
 set -eu
 
-cd /opt/neo.pujas.live
+cd /opt/pujas.live
 git pull
 nohup server/deploy.sh > /dev/null 2>&1 &
