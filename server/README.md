@@ -35,7 +35,8 @@
 
     You will need the various keys from [Mailjet](https://www.mailjet.com/),
     [hCaptcha](https://www.hcaptcha.com/), and
-    [Google APIs](https://console.cloud.google.com/).
+    [Google APIs](https://console.cloud.google.com/). `ADMIN_PASSWORD` is the
+    password to auto-assign to `admin@pujas.live` for use with the site.
     You can create `ADMIN_JWT_SECRET` and `JWT_SECRET` with:
 
     ```sh

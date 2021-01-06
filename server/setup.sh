@@ -40,14 +40,16 @@ for service in backend frontend worker; do
   fi
 done
 
-if [ $noservice = 1 ]; then
+if [[ $noservice = 1 ]]; then
   exit 1
 fi
 
 cp server/nginx.conf "/etc/nginx/sites-available/$PROJECT"
 ln -sf "../sites-available/$PROJECT" "/etc/nginx/sites-enabled/$PROJECT"
 
-certbot --nginx --non-interactive --agree-tos --email "$EMAIL" \
+systemctl restart nginx.service
+
+certbot run --nginx --non-interactive --agree-tos --expand --email "$EMAIL" \
   --domain "$DOMAIN" --domain "api.$DOMAIN" --domain "www.$DOMAIN"
 
 systemctl restart nginx.service
@@ -60,7 +62,7 @@ fi
 
 cp server/webhook.conf "/etc/webhook.conf"
 chmod 600 "/etc/webhook.conf"
-perl -pi -e "s/SECRET/$(cat /etc/webhook.conf.secret)/" "/etc/webhook.conf.$PROJECT"
+perl -pi -e "s/SECRET/$(cat /etc/webhook.conf.secret)/" "/etc/webhook.conf"
 
 echo "GitHub Webhook URL: https://$DOMAIN/hooks/$PROJECT-github-deploy"
 echo "GitHub Webhook Secret: $(cat /etc/webhook.conf.secret)"
