@@ -20,7 +20,7 @@ const GroupCreatePage = () => {
 
   const onSubmit = async (values) => {
     const data = groupCreateDbCast.cast(values);
-    data.confirmed = true;
+    data.listed = true;
     data.owner = user.id;
     const variables = { input: { data } };
     try {
