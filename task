@@ -56,7 +56,7 @@ case "$SERVICE" in
     elif [ "$*" == "console" ]; then
       set npx -c 'PORT=1338 strapi console'
     elif [ "$*" == "fake" ]; then
-      set bash -c 'node lib/fake.js'
+      set bash -c 'node lib/fake'
     fi
     ;;
   db|postgres)

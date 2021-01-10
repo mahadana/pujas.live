@@ -1,7 +1,7 @@
 const faker = require("faker");
 
 const bootstrap = require("../bootstrap");
-const { CHANNEL_COUNT, RECORDING_COUNT } = require("./channel");
+const { CHANNEL_COUNT, RECORDING_COUNT } = require("./constants");
 const { addFakeAssociatedImage } = require("./image");
 const { makeTimestamps, truncateCollection } = require("./util");
 
