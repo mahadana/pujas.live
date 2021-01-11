@@ -15,8 +15,6 @@ const useStyles = makeStyles((theme) => ({
     padding: "0px",
 
     position: "absolute",
-    width: "106px",
-    height: "408px",
 
     background: "linear-gradient(90deg, rgba(0, 0, 0, 0.53) 0%, rgba(0, 0, 0, 0) 100%)",
   },
@@ -57,6 +55,7 @@ const VideoChantingBooksBar = forwardRef((props , ref)  => {
 
   const onClose = () => {
     setOpen(false);
+    props.onClose();
   };
 
   return (

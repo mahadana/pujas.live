@@ -35,11 +35,12 @@ const useStyles = makeStyles((theme) => ({
     right: 20,
   },
   chantingBooks: {
-    fontSize: 40,
     color: "white",
     position: "absolute",
     top: 20,
-    left: 20,
+
+    width: "106px",
+    height: "408px",
   },
   closeIcon: {
     fontSize: 40,
@@ -52,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
 
 const VideoIframeModal = ({ url, open, onClose }) => {
   const classes = useStyles();
+  let timeout;
 
   const [showing, setShowing] = useState(true);
   const [hasEnteredOnce, setHasEnteredOnce] = useState(false);
@@ -72,13 +74,17 @@ const VideoIframeModal = ({ url, open, onClose }) => {
    *
    */
   const onMouseEnterBooks = (event) => {
-    console.log("mouse enter books")
+    if(timeout) clearTimeout(timeout)
     setShowing(true);
   }
 
   const onMouseLeaveBooks = (event) => {
-    console.log("mouse leave books")
-    setTimeout(() => setShowing(false), 500);
+    if(timeout) clearTimeout(timeout)
+    timeout = setTimeout(() => setShowing(false), 500);
+  }
+
+  const onCloseChantingBook = (event) => {
+    setShowing(false)
   }
 
   const videoChantingRef = createRef();
@@ -95,12 +101,12 @@ const VideoIframeModal = ({ url, open, onClose }) => {
           <IconButton className={classes.closeButton} onClick={onClose}>
             <CancelIcon className={classes.closeIcon} />
           </IconButton>
-          <Slide direction="right" in={showing} mountOnEnter unmountOnExit onEntered={onBooksEntered}>
-            <VideoChantingBooksBar ref={videoChantingRef} />
-          </Slide>
-          {/*this is an invisible version of the bar that stays in place for the actual events*/}
-          <VideoChantingBooksBar hidden={true} />
-                                 onMouseEnter={onMouseEnterBooks} onMouseLeave={onMouseLeaveBooks}/>
+          <Box className={classes.chantingBooks} onMouseEnter={onMouseEnterBooks} onMouseLeave={onMouseLeaveBooks}>
+            <Slide direction="right" in={showing} mountOnEnter unmountOnExit onEntered={onBooksEntered}>
+              <VideoChantingBooksBar ref={videoChantingRef} onClose={onCloseChantingBook} />
+            </Slide>
+          </Box>
+
           <iframe
             src={url}
             seamless="seamless"
