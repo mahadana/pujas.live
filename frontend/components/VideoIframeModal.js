@@ -37,10 +37,10 @@ const useStyles = makeStyles((theme) => ({
   chantingBooks: {
     color: "white",
     position: "absolute",
-    top: 20,
+
 
     width: "106px",
-    height: "408px",
+    height: "100%",
   },
   closeIcon: {
     fontSize: 40,
@@ -87,6 +87,14 @@ const VideoIframeModal = ({ url, open, onClose }) => {
     setShowing(false)
   }
 
+  const onClickClose = (event) => {
+    //reset to initial state
+    setHasEnteredOnce(false)
+    setShowing(true)
+
+    onClose() //callback from parent
+  }
+
   const videoChantingRef = createRef();
 
   return (
@@ -98,7 +106,7 @@ const VideoIframeModal = ({ url, open, onClose }) => {
     >
       <Fade in={open}>
         <Box className={classes.container}>
-          <IconButton className={classes.closeButton} onClick={onClose}>
+          <IconButton className={classes.closeButton} onClick={onClickClose}>
             <CancelIcon className={classes.closeIcon} />
           </IconButton>
           <Box className={classes.chantingBooks} onMouseEnter={onMouseEnterBooks} onMouseLeave={onMouseLeaveBooks}>
