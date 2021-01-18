@@ -17,7 +17,7 @@ const YOUTUBE_CHANNELS = [
 
 const applyFakeChannels = async () => {
   strapi.log.info("Faking channels...");
-  truncateCollection("channels");
+  await truncateCollection("channels");
   const knex = strapi.connections.default;
   for (let id = 1; id <= CHANNEL_COUNT; id++) {
     await knex("channels").insert({

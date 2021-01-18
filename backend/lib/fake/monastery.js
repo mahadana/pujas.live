@@ -7,7 +7,7 @@ const { makeTimestamps, truncateCollection } = require("./util");
 
 const applyFakeMonasteries = async () => {
   strapi.log.info("Faking monasteries...");
-  truncateCollection("monasteries");
+  await truncateCollection("monasteries");
   const knex = strapi.connections.default;
   for (let id = 1; id <= MONASTERY_COUNT; id++) {
     await knex("monasteries").insert({

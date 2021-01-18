@@ -14,7 +14,7 @@ const YOUTUBE_VIDEOS = [
 
 const applyFakeRecordings = async () => {
   strapi.log.info("Faking recordings...");
-  truncateCollection("recordings");
+  await truncateCollection("recordings");
   const knex = strapi.connections.default;
   for (let id = 1; id <= RECORDING_COUNT; id++) {
     await knex("recordings").insert({
