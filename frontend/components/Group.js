@@ -69,7 +69,7 @@ const Group = ({ events, image, timezone, ...props }) => {
 
   const imageUrl = image
     ? `${process.env.NEXT_PUBLIC_API_URL}${image?.formats?.thumbnail?.url}`
-    : "https://placekitten.com/g/100/100";
+    : "default-group-square.png";
   const localEvents = (events || []).map((event) => ({
     day: capitalize(event.day === "everyday" ? "Every day" : event.day),
     time: dayjs().tz(timezone).timeString(event.startAt).format("h:mma z"),
