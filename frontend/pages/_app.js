@@ -27,6 +27,12 @@ const MyApp = ({ Component, pageProps }) => {
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
+        <script
+          async
+          defer
+          data-domain="pujas.live"
+          src="https://plausible.pujas.live/js/plausible.js"
+        />
       </Head>
       <ThemeProvider theme={theme}>
         <UserProvider>

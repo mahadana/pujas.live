@@ -50,7 +50,7 @@ ln -sf "../sites-available/$PROJECT" "/etc/nginx/sites-enabled/$PROJECT"
 systemctl restart nginx.service
 
 certbot run --nginx --non-interactive --agree-tos --expand --email "$EMAIL" \
-  --domain "$DOMAIN" --domain "api.$DOMAIN" --domain "www.$DOMAIN"
+  --domain "$DOMAIN" --domain "api.$DOMAIN" --domain "www.$DOMAIN" --domain "plausible.$DOMAIN"
 
 systemctl restart nginx.service
 
