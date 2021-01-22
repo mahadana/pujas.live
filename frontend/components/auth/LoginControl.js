@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import LoginForm from "@/components/auth/LoginForm";
 import { apolloClient } from "@/lib/apollo";
+import plausible from "@/lib/plausible";
 import { LOGIN_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
 import { useUser } from "@/lib/user";
@@ -45,6 +46,7 @@ const LoginControl = () => {
     login(user, jwt);
     setComplete(true);
     snackInfo(`Logged in as ${user.email}`);
+    plausible("login");
     pushBack(router);
   };
 

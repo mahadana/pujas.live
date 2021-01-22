@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
+import plausible from "@/lib/plausible";
 import { useUser } from "@/lib/user";
 import { pushBack } from "@/lib/util";
 
@@ -9,6 +10,7 @@ const LogoutPage = () => {
   const { logout } = useUser();
   useEffect(() => {
     logout();
+    plausible("logout");
     pushBack(router, "/auth/login");
   }, []);
   return <div />;

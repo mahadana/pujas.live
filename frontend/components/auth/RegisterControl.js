@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import RegisterForm from "@/components/auth/RegisterForm";
 import { apolloClient } from "@/lib/apollo";
+import plausible from "@/lib/plausible";
 import { REGISTER_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
 import { useUser } from "@/lib/user";
@@ -51,6 +52,7 @@ const RegisterControl = () => {
     login(user, jwt);
     setComplete(true);
     snackSuccess(`Created account for ${user.email}`);
+    plausible("register");
     pushBack(router);
   };
 

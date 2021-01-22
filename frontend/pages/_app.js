@@ -8,6 +8,7 @@ import { useEffect } from "react";
 
 import SnackbarProvider from "@/components/SnackbarProvider";
 import UserProvider from "@/components/UserProvider";
+import { plausibleDomain } from "@/lib/plausible";
 import theme from "@/lib/theme";
 
 const MyApp = ({ Component, pageProps }) => {
@@ -30,7 +31,7 @@ const MyApp = ({ Component, pageProps }) => {
         <script
           async
           defer
-          data-domain="pujas.live"
+          data-domain={plausibleDomain}
           src="https://plausible.pujas.live/js/plausible.js"
         />
       </Head>

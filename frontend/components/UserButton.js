@@ -4,9 +4,10 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Typography from "@material-ui/core/Typography";
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import ButtonLink from "@/components/ButtonLink";
+import plausible from "@/lib/plausible";
 import { useSnackbar } from "@/lib/snackbar";
 import { useUser } from "@/lib/user";
 import { getPushBackUrl } from "@/lib/util";
@@ -45,6 +46,7 @@ const UserButton = () => {
     closeMenu();
     logout();
     snackInfo("You were logged out");
+    plausible("logout");
   };
 
   if (!user && userLoading) {
