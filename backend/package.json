@@ -18,7 +18,7 @@
   "dependencies": {
     "faker": "^5.1.0",
     "hcaptcha": "0.0.2",
-    "knex": "^0.21.15",
+    "knex": "^0.21.16",
     "pg": "^8.5.1",
     "strapi": "3.4.1",
     "strapi-admin": "3.4.1",
