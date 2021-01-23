@@ -1,0 +1,24 @@
+{
+  "extends": ["plugin:prettier/recommended", "plugin:react/recommended"],
+  "globals": {
+    "React": "writable"
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+  "plugins": ["prettier", "react"],
+  "rules": {
+    "prettier/prettier": ["error"],
+    "react/no-unescaped-entities": 0,
+    "react/prop-types": "off"
+  },
+  "settings": {
+    "react": {
+      "version": "17"
+    }
+  }
+}

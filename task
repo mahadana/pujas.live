@@ -4,28 +4,17 @@ if [ $# = 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
   cat <<EOF
 Usage: $0 <service> [command...]
 
-Consoles:
-
-  Bash shell in backend             $0 backend
-  Bash shell in frontend            $0 frontend
-  Bash shell in worker              $0 worker
+  Bash shell                        $0 <backend|frontend|worker>
   Strapi console                    $0 backend console
   PostgreSQL console                $0 postgres console
   Redis console                     $0 redis console
 
-Testing:
+  Run all tests                     $0 test
+  Run <service> tests               $0 <backend|frontend|worker> test
+  Watch <service> tests             $0 <backend|frontend|worker> watch
 
-  Run tests in backend              $0 backend test
-  Watch tests in backend            $0 backend watch
-  Run tests in frontend             $0 frontend test
-  Watch tests in frontend           $0 frontend watch
-  Run tests in worker               $0 worker test
-  Watch tests in worker             $0 worker watch
-
-Other:
-
-  Add fake data                     $0 backend fake
-  Strapi (re)build                  $0 backend build
+  Add fake data                     $0 fake
+  (Re)build Strapi admin            $0 build-admin
   Reset database                    $0 reset-db
   Clean containers, cache, etc...   $0 clean
 
@@ -51,7 +40,7 @@ case "$SERVICE" in
       set npm run test
     elif [ "$*" == "watch" ]; then
       set npm run watch
-    elif [ "$*" == "build" ]; then
+    elif [ "$*" == "build-admin" ]; then
       set bash -c 'rm -rf build/* cache/* && npx strapi build'
     elif [ "$*" == "console" ]; then
       set npx -c 'PORT=1338 strapi console'
@@ -77,11 +66,26 @@ case "$SERVICE" in
       set npm run watch
     fi
     ;;
+  build-admin)
+    "$0" backend build-admin
+    exit 0
+    ;;
+  fake)
+    "$0" backend fake
+    exit 0
+    ;;
+  test)
+    "$0" backend test
+    "$0" frontend test
+    "$0" worker test
+    exit 0
+    ;;
   reset-db|reload-db)
     cd "$(dirname "$0")"
     docker-compose stop -t 1 backend postgres
     docker-compose rm -f postgres
     docker volume prune -f
+    rm -rf backend/public/uploads/*
     docker-compose up -d backend postgres
     exit 0
     ;;
@@ -97,6 +101,7 @@ case "$SERVICE" in
     docker volume prune -f
     rm -rf backend/.cache backend/.tmp backend/build \
           backend/exports backend/node_modules \
+          backend/public/uploads/* \
           frontend/.next frontend/node_modules \
           worker/build worker/node_modules
     exit 0

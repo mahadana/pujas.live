@@ -24,11 +24,23 @@ The default credentials (for both):
 ## Task Helper
 
 ```sh
-# Run a bash shell in the frontend container
-./task frontend
+Usage: ./task <service> [command...]
 
-# Show help and additional examples
-./task -h
+  Bash shell                        ./task <backend|frontend|worker>
+  Strapi console                    ./task backend console
+  PostgreSQL console                ./task postgres console
+  Redis console                     ./task redis console
+
+  Run all tests                     ./task test
+  Run <service> tests               ./task <backend|frontend|worker> test
+  Watch <service> tests             ./task <backend|frontend|worker> watch
+
+  Add fake data                     ./task fake
+  (Re)build Strapi admin            ./task build-admin
+  Reset database                    ./task reset-db
+  Clean containers, cache, etc...   ./task clean
+
+Note: Services must already be running (docker-compose up).
 ```
 
 ## Email, Captchas, YouTube
@@ -62,6 +74,26 @@ when developing locally.
 
     - Frontend: http://pujas.test:3000/
     - Backend: http://pujas.test:1337/admin/
+
+## Linting and Prettier
+
+First, install the node modules locally:
+
+```sh
+npm install
+```
+
+To apply prettier fixes:
+
+```sh
+npm run prettier
+```
+
+To lint code:
+
+```sh
+npm run eslint
+```
 
 ## Server Setup
 

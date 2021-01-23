@@ -1,20 +1,4 @@
 {
-  "name": "backend",
-  "private": true,
-  "version": "0.1.0",
-  "description": "A Strapi application",
-  "scripts": {
-    "dev": "strapi develop",
-    "build": "strapi build",
-    "start": "strapi start",
-    "strapi": "strapi",
-    "test": "jest --forceExit --detectOpenHandles"
-  },
-  "devDependencies": {
-    "jest": "^26.6.3",
-    "sqlite3": "^5.0.1",
-    "supertest": "^6.1.1"
-  },
   "dependencies": {
     "faker": "^5.1.0",
     "hcaptcha": "0.0.2",
@@ -34,15 +18,16 @@
     "strapi-utils": "3.4.1",
     "timezone-support": "^2.0.2"
   },
-  "author": {
-    "name": "A Strapi developer"
+  "devDependencies": {
+    "jest": "^26.6.3",
+    "sqlite3": "^5.0.1",
+    "supertest": "^6.1.1"
   },
-  "strapi": {
-    "uuid": "b25a33e7-bd58-493f-91a6-6f0babee35d2"
-  },
-  "engines": {
-    "node": ">=10.16.0 <=14.x.x",
-    "npm": ">=6.0.0"
-  },
-  "license": "MIT"
+  "scripts": {
+    "dev": "strapi develop",
+    "build": "strapi build",
+    "start": "strapi start",
+    "strapi": "strapi",
+    "test": "jest --forceExit --detectOpenHandles"
+  }
 }

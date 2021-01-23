@@ -21,14 +21,14 @@
     "timezone-support": "^2.0.2",
     "yup": "^0.32.8"
   },
+  "devDependencies": {
+    "jest": "^26.6.3"
+  },
   "scripts": {
     "dev": "next",
     "build": "next build",
     "start": "next start",
     "test": "jest",
     "watch": "jest --watchAll"
-  },
-  "devDependencies": {
-    "jest": "^26.6.3"
   }
 }

@@ -16,14 +16,14 @@
     "pg": "^8.5.1",
     "redis": "^3.0.2"
   },
+  "devDependencies": {
+    "jest": "^26.6.3"
+  },
   "scripts": {
     "dev": "nodemon --exec npx babel-node src/index.js",
     "build": "babel -d build src",
     "start": "node build/index.js",
     "test": "jest",
     "watch": "jest --watchAll"
-  },
-  "devDependencies": {
-    "jest": "^26.6.3"
   }
 }
