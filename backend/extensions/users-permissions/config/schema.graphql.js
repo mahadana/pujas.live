@@ -8,7 +8,7 @@ module.exports = {
       },
       forgotPassword: {
         policies: ["plugins::users-permissions.ratelimit", "global::captcha"],
-      }
+      },
     },
   },
 };

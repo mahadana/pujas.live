@@ -20,9 +20,7 @@ const Link = ({
     shallow={shallow}
     passHref
   >
-    <MaterialLink {...props}>
-      {children}
-    </MaterialLink>
+    <MaterialLink {...props}>{children}</MaterialLink>
   </NextLink>
 );
 

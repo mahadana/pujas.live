@@ -9,12 +9,14 @@ const hcaptcha = require("hcaptcha");
 module.exports = async (ctx, next) => {
   const secret = strapi.config.get("server.hcaptchaSecret");
   if (!secret) {
-    strapi.log.warn("Captcha check bypassed. HCAPTCHA_SECRET not defined in .env file.");
+    strapi.log.warn(
+      "Captcha check bypassed. HCAPTCHA_SECRET not defined in .env file."
+    );
     return await next();
   }
 
   if (ctx.state?.user) {
-    strapi.log.debug('Captcha check bypassed. User already authenticated.')
+    strapi.log.debug("Captcha check bypassed. User already authenticated.");
     return await next();
   }
 

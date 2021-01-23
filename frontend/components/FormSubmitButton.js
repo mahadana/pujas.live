@@ -2,7 +2,13 @@ import Button from "@material-ui/core/Button";
 import SaveIcon from "@material-ui/icons/Save";
 import { useFormikContext } from "formik";
 
-const FormSubmitButton = ({ children, disabled, onClick, startIcon, ...props }) => {
+const FormSubmitButton = ({
+  children,
+  disabled,
+  onClick,
+  startIcon,
+  ...props
+}) => {
   const formik = useFormikContext();
   return (
     <Button

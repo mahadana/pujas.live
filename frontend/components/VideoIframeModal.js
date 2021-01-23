@@ -1,15 +1,8 @@
-import {
-  Box,
-  Fade,
-  IconButton,
-  makeStyles,
-  Modal,
-} from "@material-ui/core";
+import { Box, Fade, IconButton, makeStyles, Modal } from "@material-ui/core";
 import CancelIcon from "@material-ui/icons/Cancel";
 import VideoChantingBooksBar from "./VideoChantingBookBar";
-import Slide from '@material-ui/core/Slide';
+import Slide from "@material-ui/core/Slide";
 import { useState, forwardRef, createRef } from "react";
-
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -38,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     position: "absolute",
 
-
     width: "106px",
     height: "100%",
   },
@@ -47,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
   },
   hidden: {
-    display:"none",
+    display: "none",
   },
 }));
 
@@ -63,37 +55,37 @@ const VideoIframeModal = ({ url, open, onClose }) => {
     This lets the user know that the controls are there, just hiding on the left.
    */
   const onBooksEntered = (event) => {
-    if(!hasEnteredOnce) {
-      setTimeout(() => setShowing(false), 1000)
+    if (!hasEnteredOnce) {
+      setTimeout(() => setShowing(false), 1000);
     }
     setHasEnteredOnce(true);
-  }
+  };
 
   /**
    * Show/hide books based on entering/leaving the fake/invisible element (which is exactly the same size)
    *
    */
   const onMouseEnterBooks = (event) => {
-    if(timeout) clearTimeout(timeout)
+    if (timeout) clearTimeout(timeout);
     setShowing(true);
-  }
+  };
 
   const onMouseLeaveBooks = (event) => {
-    if(timeout) clearTimeout(timeout)
+    if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => setShowing(false), 500);
-  }
+  };
 
   const onCloseChantingBook = (event) => {
-    setShowing(false)
-  }
+    setShowing(false);
+  };
 
   const onClickClose = (event) => {
     //reset to initial state
-    setHasEnteredOnce(false)
-    setShowing(true)
+    setHasEnteredOnce(false);
+    setShowing(true);
 
-    onClose() //callback from parent
-  }
+    onClose(); //callback from parent
+  };
 
   const videoChantingRef = createRef();
 
@@ -109,9 +101,22 @@ const VideoIframeModal = ({ url, open, onClose }) => {
           <IconButton className={classes.closeButton} onClick={onClickClose}>
             <CancelIcon className={classes.closeIcon} />
           </IconButton>
-          <Box className={classes.chantingBooks} onMouseEnter={onMouseEnterBooks} onMouseLeave={onMouseLeaveBooks}>
-            <Slide direction="right" in={showing} mountOnEnter unmountOnExit onEntered={onBooksEntered}>
-              <VideoChantingBooksBar ref={videoChantingRef} onClose={onCloseChantingBook} />
+          <Box
+            className={classes.chantingBooks}
+            onMouseEnter={onMouseEnterBooks}
+            onMouseLeave={onMouseLeaveBooks}
+          >
+            <Slide
+              direction="right"
+              in={showing}
+              mountOnEnter
+              unmountOnExit
+              onEntered={onBooksEntered}
+            >
+              <VideoChantingBooksBar
+                ref={videoChantingRef}
+                onClose={onCloseChantingBook}
+              />
             </Slide>
           </Box>
 
@@ -119,7 +124,7 @@ const VideoIframeModal = ({ url, open, onClose }) => {
             src={url}
             seamless="seamless"
             scrolling="no"
-            frameborder="0"
+            frameBorder="0"
             allowtransparency="true"
           />
         </Box>

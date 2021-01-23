@@ -56,7 +56,7 @@ const IframeModal = ({ url, open, onClose }) => {
             src={url}
             seamless="seamless"
             scrolling="no"
-            frameborder="0"
+            frameBorder="0"
             allowtransparency="true"
           />
         </Box>

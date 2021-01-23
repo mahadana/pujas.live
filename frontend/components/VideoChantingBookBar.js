@@ -17,7 +17,8 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     height: "100%",
 
-    background: "linear-gradient(90deg, rgba(0, 0, 0, 0.53) 0%, rgba(0, 0, 0, 0) 100%)",
+    background:
+      "linear-gradient(90deg, rgba(0, 0, 0, 0.53) 0%, rgba(0, 0, 0, 0) 100%)",
   },
   book: {
     marginLeft: "2em",
@@ -38,12 +39,10 @@ const useStyles = makeStyles((theme) => ({
   },
   hidden: {
     display: "none",
-  }
+  },
 }));
 
-
-const VideoChantingBooksBar = forwardRef((props , ref)  => {
-
+const VideoChantingBooksBar = forwardRef((props, ref) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [url, setUrl] = useState(null);
@@ -60,7 +59,11 @@ const VideoChantingBooksBar = forwardRef((props , ref)  => {
   };
 
   return (
-    <Box className={`${classes.root}${props.hidden ? " hidden" : ""}`} ref={ref} onMouseOver={props.onMouseOver}>
+    <Box
+      className={`${classes.root}${props.hidden ? " hidden" : ""}`}
+      ref={ref}
+      onMouseOver={props.onMouseOver}
+    >
       <Box className={classes.book}>
         <Link href="#">
           <a onClick={(e) => openChantingBook(e, 1)}>
@@ -81,5 +84,7 @@ const VideoChantingBooksBar = forwardRef((props , ref)  => {
     </Box>
   );
 });
+
+VideoChantingBooksBar.displayName = "VideoChantingBooksBar";
 
 export default VideoChantingBooksBar;

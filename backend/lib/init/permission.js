@@ -47,12 +47,7 @@ const initPermissions = async () => {
     ["count", "create", "find", "findone", "message", "update"],
     true
   );
-  await updatePermissions(
-    "Authenticated",
-    ["upload"],
-    ["upload"],
-    true
-  );
+  await updatePermissions("Authenticated", ["upload"], ["upload"], true);
 };
 
 module.exports = { initPermissions };

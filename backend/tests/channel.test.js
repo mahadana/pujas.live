@@ -20,17 +20,17 @@ describe("channel", () => {
     const channels = [
       await strapi.services.channel.create({
         title: "1",
-        updated_at: '2020-01-01T00:00:00Z',
+        updated_at: "2020-01-01T00:00:00Z",
       }),
       await strapi.services.channel.create({
         title: "2",
         activeStream: recordings[1].id,
-        updated_at: '2020-02-01T00:00:00Z',
+        updated_at: "2020-02-01T00:00:00Z",
       }),
       await strapi.services.channel.create({
         title: "3",
         activeStream: recordings[0].id,
-        updated_at: '2020-03-01T00:00:00Z',
+        updated_at: "2020-03-01T00:00:00Z",
       }),
     ];
 
@@ -41,10 +41,7 @@ describe("channel", () => {
     result = await strapi.services.channel.find({ _sort: "_activeStreams" });
     expect(_.map(result, "title")).toEqual(["3", "2", "1"]);
 
-    await strapi.services.recording.update(
-      { title: "1" },
-      { live: false }
-    );
+    await strapi.services.recording.update({ title: "1" }, { live: false });
 
     result = await strapi.services.channel.find({ _sort: "_activeStreams" });
     expect(_.map(result, "title")).toEqual(["2", "3", "1"]);

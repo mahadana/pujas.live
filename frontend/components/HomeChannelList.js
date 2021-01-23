@@ -33,7 +33,7 @@ function HomeChannelList({ channels }) {
       <Box>
         {shownChannels.map((channel) => (
           <HomeChannel key={channel.id} {...channel} />
-        ))} 
+        ))}
       </Box>
       {showMore && hasMore && (
         <Box className={classes.showMore}>

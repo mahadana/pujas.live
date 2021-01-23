@@ -99,17 +99,21 @@ const HomeChannel = (props) => {
         <p>{props.description}</p>
         <p className={classes.monasteryLinks}>
           {props.monastery && props.monastery.websiteUrl && (
-            <a href={props.monastery.websiteUrl} target="_blank">
+            <a
+              href={props.monastery.websiteUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
               {props.monastery.title} Website
             </a>
           )}
           {props.channelUrl && (
-            <a href={props.channelUrl} target="_blank">
+            <a href={props.channelUrl} target="_blank" rel="noreferrer">
               {props.monastery?.title || "Livestream"} Channel
             </a>
           )}
           {props.historyUrl && (
-            <a href={props.historyUrl} target="_blank">
+            <a href={props.historyUrl} target="_blank" rel="noreferrer">
               Previous Sessions
             </a>
           )}

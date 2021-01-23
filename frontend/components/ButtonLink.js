@@ -20,9 +20,7 @@ const ButtonLink = ({
     shallow={shallow}
     passHref
   >
-    <Button {...props}>
-      {children}
-    </Button>
+    <Button {...props}>{children}</Button>
   </NextLink>
 );
 

@@ -71,13 +71,16 @@ const makeGroupDbCast = (update) => {
     .object({
       title: yup.string(),
       description: yup.string(),
-      image: yup.number().nullable().transform((value, original) => {
-        if (original && original.id) {
-          return parseInt(original.id);
-        } else {
-          return null;
-        }
-      }),
+      image: yup
+        .number()
+        .nullable()
+        .transform((value, original) => {
+          if (original && original.id) {
+            return parseInt(original.id);
+          } else {
+            return null;
+          }
+        }),
       timezone: yup.string(),
       events: yup.array().of(yup.object(eventsFields).noUnknown()),
     })

@@ -12,7 +12,7 @@ const Upcoming = ({ time, duration }) => {
   const from = time.from(now);
   const fullTime = tzTime.format("LLLL z");
   const shortTime = tzTime.format("h:mma z");
-  const endTime = duration ? time.add(duration, 'minute') : null;
+  const endTime = duration ? time.add(duration, "minute") : null;
   const ended = duration ? now.isAfter(endTime) : false;
   const endedFrom = ended ? endTime.from(now) : null;
 

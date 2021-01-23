@@ -40,7 +40,7 @@ const LoginControl = () => {
         snackError(translateStrapiError(error));
         console.error(error);
       }
-      return
+      return;
     }
 
     login(user, jwt);

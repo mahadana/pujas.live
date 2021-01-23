@@ -39,7 +39,7 @@ To update this group, please visit ${frontendUrl}/groups/${id}/edit .
     await strapi.plugins["email"].services.email.send({
       to: toEmail,
       from: "no-reply@pujas.live",
-      fromName: 'Pujas.live',
+      fromName: "Pujas.live",
       replyTo: `"${name}" <${email}>`,
       subject: `[Pujas.live] Message from ${name}`,
       text,
