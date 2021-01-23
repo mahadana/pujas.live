@@ -18,6 +18,7 @@ export const groupSchema = yup
     id: yup.number().nullable(),
     title: yup.string().ensure().required("Required"),
     description: yup.string().ensure(),
+    image: yup.object().nullable(),
     timezone: yup.string().ensure().required("Required"),
     events: yup
       .array()
@@ -61,7 +62,7 @@ const nullableNumber = yup
 
 const makeGroupDbCast = (update) => {
   const eventsFields = {
-    days: yup.string(),
+    day: yup.string(),
     startAt: yup.string().transform(fixTime),
     duration: nullableNumber,
   };
@@ -70,6 +71,13 @@ const makeGroupDbCast = (update) => {
     .object({
       title: yup.string(),
       description: yup.string(),
+      image: yup.number().nullable().transform((value, original) => {
+        if (original && original.id) {
+          return parseInt(original.id);
+        } else {
+          return null;
+        }
+      }),
       timezone: yup.string(),
       events: yup.array().of(yup.object(eventsFields).noUnknown()),
     })

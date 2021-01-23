@@ -8,6 +8,7 @@ import capitalize from "lodash/capitalize";
 
 import ButtonLink from "@/components/ButtonLink";
 import Upcoming from "@/components/Upcoming";
+import UploadImage from "@/components/UploadImage";
 import { dayjs, getNextGroupEventTime } from "@/lib/time";
 import { useUser } from "@/lib/user";
 
@@ -63,13 +64,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Group = ({ events, image, timezone, ...props }) => {
+const Group = ({ events, timezone, ...props }) => {
   const classes = useStyles();
   const { user } = useUser();
 
-  const imageUrl = image
-    ? `${process.env.NEXT_PUBLIC_API_URL}${image?.formats?.thumbnail?.url}`
-    : "default-group-square.png";
   const localEvents = (events || []).map((event) => ({
     day: capitalize(event.day === "everyday" ? "Every day" : event.day),
     time: dayjs().tz(timezone).timeString(event.startAt).format("h:mma z"),
@@ -91,7 +89,7 @@ const Group = ({ events, image, timezone, ...props }) => {
   return (
     <Box className={classes.root}>
       <Box className={classes.image}>
-        <img src={imageUrl} />
+        <UploadImage image={props.image} />
       </Box>
       <Box className={classes.text}>
         <Typography variant="h3">{props.title}</Typography>

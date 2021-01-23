@@ -5,6 +5,7 @@ const GROUP_FIELDS = `
   title
   description
   image {
+    id
     provider
     formats
   }
@@ -27,6 +28,7 @@ export const HOME_QUERY = gql`
       title
       description
       image {
+        id
         provider
         formats
       }
@@ -41,6 +43,7 @@ export const HOME_QUERY = gql`
         title
         description
         image {
+          id
           provider
           formats
         }
@@ -153,6 +156,16 @@ export const RESET_PASSWORD_MUTATION = gql`
         id
         email
       }
+    }
+  }
+`;
+
+export const UPLOAD_MUTATION = gql`
+  mutation Upload($file: Upload!) {
+    upload(file: $file) {
+      id
+      provider
+      formats
     }
   }
 `;

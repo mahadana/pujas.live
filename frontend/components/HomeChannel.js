@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import { useState } from "react";
 
 import Upcoming from "@/components/Upcoming";
+import UploadImage from "@/components/UploadImage";
 import VideoIframeModal from "@/components/VideoIframeModal";
 import {
   getYouTubeVideoIdFromUrl,
@@ -59,9 +60,6 @@ const useStyles = makeStyles((theme) => ({
 const HomeChannel = (props) => {
   const [videoUrl, setVideoUrl] = useState(null);
   const classes = useStyles();
-  const imageUrl = props.image
-    ? `${process.env.NEXT_PUBLIC_API_URL}${props.image?.formats?.thumbnail?.url}`
-    : "https://placekitten.com/g/150/150";
 
   const onLivestreamClick = (event) => {
     event.preventDefault();
@@ -86,7 +84,7 @@ const HomeChannel = (props) => {
   return (
     <Box className={classes.root}>
       <Box className={classes.image}>
-        <img src={imageUrl} />
+        <UploadImage image={props.image} />
       </Box>
       <Box className={classes.text}>
         <h3>{props.title}</h3>

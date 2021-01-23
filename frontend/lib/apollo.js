@@ -1,6 +1,7 @@
 import { withApollo as nextApollo } from "next-apollo";
 import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { createUploadLink } from "apollo-upload-client";
 import JsCookie from "js-cookie";
 
 export const apiUrl =
@@ -10,7 +11,7 @@ export const apiUrl =
     : // client
       process.env.NEXT_PUBLIC_API_URL || "http://localhost:1337";
 
-const httpLink = createHttpLink({
+const httpLink = createUploadLink({
   uri: `${apiUrl}/graphql`,
 });
 

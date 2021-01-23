@@ -10,6 +10,7 @@ import FormTextField from "@/components/FormTextField";
 import FormSubmitButton from "@/components/FormSubmitButton";
 import GroupEventFormFragment from "@/components//GroupEventFormFragment";
 import TimeZoneField from "@/components/TimeZoneField";
+import UploadImageField from "@/components/UploadImageField";
 import { groupSchema } from "@/lib/validation";
 
 const EVENT_DEFAULTS = {
@@ -55,12 +56,15 @@ const GroupForm = ({ group, onSubmit }) => {
                 />
               </Grid>
               <Grid item xs={12}>
+                <UploadImageField label="Image" name="image" />
+              </Grid>
+              <Grid item xs={12}>
                 <FormTextField
                   name="description"
                   label="Description"
                   multiline
                   fullWidth
-                  rowsMax="8"
+                  rowsMax={4}
                   variant="outlined"
                 />
               </Grid>
