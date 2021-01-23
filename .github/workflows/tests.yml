@@ -3,11 +3,10 @@ name: Tests
 on: [push, pull_request]
 
 jobs:
-  tests:
+  jest-tests:
     runs-on: ubuntu-latest
 
     services:
-
       postgres:
         image: postgres:latest
         env:
@@ -23,16 +22,15 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
         service: [backend, frontend, worker]
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js 14.x
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "14"
 
       - name: Setup hostnames
         run: echo '127.0.0.1 postgres redis' | sudo tee -a /etc/hosts
@@ -41,9 +39,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.npm
-          key: npm-${{ matrix.node-version }}-${{ matrix.service }}-${{ hashFiles('**/package-lock.json') }}
+          key: npm-${{ matrix.service }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            npm-${{ matrix.node-version }}-${{ matrix.service }}-
+            npm-${{ matrix.service }}-
 
       - name: Install node modules
         run: npm clean-install
