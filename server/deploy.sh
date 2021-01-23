@@ -15,6 +15,7 @@ log="/var/log/pujas.live-deploy.log"
   cd server
 
   docker-compose pull
+  docker pull node:14 # Specified in Dockerfiles
   docker-compose build
   docker-compose stop -t 3 worker
   docker-compose rm -fs worker
