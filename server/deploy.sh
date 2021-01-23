@@ -14,12 +14,13 @@ log="/var/log/pujas.live-deploy.log"
 
   cd server
 
+  docker-compose pull
   docker-compose build
   docker-compose stop -t 3 worker
   docker-compose rm -fs worker
   docker-compose stop -t 0 backend frontend
   docker-compose rm -fs backend frontend
-  docker-compose up -d db backend frontend
+  docker-compose up -d postgres backend frontend
   docker-compose up -d
 
   docker image prune -f
