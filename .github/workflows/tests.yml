@@ -3,6 +3,18 @@ name: Tests
 on: [push, pull_request]
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install node modules
+        run: npm clean-install
+
+      - name: Run lint
+        run: npm run eslint
+
   jest-tests:
     runs-on: ubuntu-latest
 

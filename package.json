@@ -19,7 +19,7 @@
     "prettier": "^2.2.1"
   },
   "scripts": {
-    "eslint": "eslint --ext .js backend frontend worker",
+    "eslint": "eslint --ext .js .",
     "prettier": "prettier --write **/*.{js,json}"
   }
 }
