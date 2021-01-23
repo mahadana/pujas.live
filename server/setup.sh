@@ -32,17 +32,12 @@ test -d "$CHANTING_BASE_DIR" || \
 
 cd "$BASE_DIR"
 
-noservice=
-for service in backend frontend worker; do
-  if ! test -f "$BASE_DIR/$service/.env"; then
-    noservice=1
-    echo "Missing: $BASE_DIR/$service/.env"
-  fi
-done
-
-if [[ $noservice = 1 ]]; then
+if ! test -f "$BASE_DIR/.env"; then
+  echo "Missing: $BASE_DIR/.env"
   exit 1
 fi
+
+chmod 600 "$BASE_DIR/.env"
 
 cp server/nginx.conf "/etc/nginx/sites-available/$PROJECT"
 ln -sf "../sites-available/$PROJECT" "/etc/nginx/sites-enabled/$PROJECT"

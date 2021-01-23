@@ -10,7 +10,7 @@ Consoles:
   Bash shell in frontend            $0 frontend
   Bash shell in worker              $0 worker
   Strapi console                    $0 backend console
-  PostgreSQL console                $0 db console
+  PostgreSQL console                $0 postgres console
   Redis console                     $0 redis console
 
 Testing:
@@ -60,7 +60,7 @@ case "$SERVICE" in
     fi
     ;;
   db|postgres)
-    SERVICE="db"
+    SERVICE="postgres"
     if [ "$*" == "console" ]; then
       set psql -U strapi
     fi
@@ -79,10 +79,10 @@ case "$SERVICE" in
     ;;
   reset-db|reload-db)
     cd "$(dirname "$0")"
-    docker-compose stop -t 1 backend db
-    docker-compose rm -f db
+    docker-compose stop -t 1 backend postgres
+    docker-compose rm -f postgres
     docker volume prune -f
-    docker-compose up -d backend db
+    docker-compose up -d backend postgres
     exit 0
     ;;
   clean)

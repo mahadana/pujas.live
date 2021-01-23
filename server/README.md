@@ -8,31 +8,7 @@
     wget -qO- 'https://raw.githubusercontent.com/mahadana/pujas.live/main/server/setup.sh' | bash
     ```
 
-2.  The above script wil exit to have you edit the following `.env` files:
-
-    `backend/.env`:
-
-    ```
-    ADMIN_JWT_SECRET=...
-    ADMIN_PASSWORD=...
-    HCAPTCHA_SECRET=...
-    JWT_SECRET=...
-    MAILJET_PUBLIC_KEY=...
-    MAILJET_SECRET_KEY=...
-    ```
-
-    `frontend/.env`:
-
-    ```
-    NEXT_PUBLIC_HCAPTCHA_SITE_KEY=...
-    ```
-
-    `worker/.env`:
-
-    ```
-    YOUTUBE_API_KEY=...
-    ```
-
+2.  The above script wil exit to have you create and edit `.env`.
     You will need the various keys from [Mailjet](https://www.mailjet.com/),
     [hCaptcha](https://www.hcaptcha.com/), and
     [Google APIs](https://console.cloud.google.com/). `ADMIN_PASSWORD` is the

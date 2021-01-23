@@ -1,47 +1,60 @@
 version: "3.7"
 
 services:
+
   backend:
     image: node:14
+    command: /app/shared/start-docker-dev.sh backend
     depends_on:
-      - db
+      - postgres
+    env_file: .env
     ports:
-      - 127.0.0.1:1337:1337
+      - "127.0.0.1:${BACKEND_PORT:-1337}:1337"
     volumes:
       - .:/app
       - /app/backend/.cache
       - /app/backend/build
       - backend_nm:/app/backend/node_modules
     working_dir: /app/backend
-    command: /app/shared/start-docker-dev.sh backend
-  db:
-    image: postgres:latest
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: strapi
-      POSTGRES_PASSWORD: strapi
-      POSTGRES_USER: strapi
+
   frontend:
     image: node:14
+    command: /app/shared/start-docker-dev.sh frontend
+    environment:
+      NEXT_PUBLIC_API_URL: ${BACKEND_URL:-http://localhost:1337}
+      NEXT_PUBLIC_HCAPTCHA_SITE_KEY: ${HCAPTCHA_SITE_KEY:-}
+      NEXT_PUBLIC_PLAUSIBLE_DOMAIN: ${PLAUSIBLE_DOMAIN:-localhost}
     ports:
-      - 127.0.0.1:3000:3000
+      - "127.0.0.1:${FRONTEND_PORT:-3000}:3000"
     volumes:
       - .:/app
       - /app/frontend/.next
       - frontend_nm:/app/frontend/node_modules
     working_dir: /app/frontend
-    command: /app/shared/start-docker-dev.sh frontend
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: strapi
+      POSTGRES_PASSWORD: strapi
+      POSTGRES_USER: strapi
+    restart: unless-stopped
+
   redis:
     image: redis:latest
     restart: unless-stopped
+
   worker:
     image: node:14
+    command: /app/shared/start-docker-dev.sh worker
+    depends_on:
+      - postgres
+    env_file: .env
     restart: unless-stopped
     volumes:
       - .:/app
       - worker_nm:/app/worker/node_modules
     working_dir: /app/worker
-    command: /app/shared/start-docker-dev.sh worker
 
 volumes:
   backend_nm:

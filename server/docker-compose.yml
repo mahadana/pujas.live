@@ -1,48 +1,73 @@
 version: "3.7"
 
 services:
+
   backend:
     build:
       context: ..
       dockerfile: ./backend/Dockerfile
-    restart: unless-stopped
     depends_on:
-      - db
+      - postgres
+    environment:
+      ADMIN_EMAIL: ${BACKEND_ADMIN_EMAIL?}
+      ADMIN_JWT_SECRET: ${BACKEND_ADMIN_JWT_SECRET?}
+      ADMIN_PASSWORD: ${BACKEND_ADMIN_PASSWORD?}
+      FRONTEND_URL: ${FRONTEND_URL:-https://pujas.live}
+      HCAPTCHA_SECRET: ${HCAPTCHA_SECRET?}
+      JWT_SECRET: ${BACKEND_JWT_SECRET?}
+      MAIL_PROVIDER: ${MAIL_PROVIDER:-mailjet}
+      MAILJET_PUBLIC_KEY: ${MAILJET_PUBLIC_KEY?}
+      MAILJET_SECRET_KEY: ${MAILJET_SECRET_KEY?}
     ports:
-      - 127.0.0.1:1337:1337
+      - "127.0.0.1:${BACKEND_PORT:-1337}:1337"
+    restart: unless-stopped
     volumes:
       - uploads:/app/backend/public/uploads
-  db:
-    image: postgres:latest
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: strapi
-      POSTGRES_PASSWORD: strapi
-      POSTGRES_USER: strapi
-    volumes:
-      - db:/var/lib/postgresql/data
+
   frontend:
     build:
       context: ..
       dockerfile: ./frontend/Dockerfile
-    restart: unless-stopped
+      args:
+        API_URL: ${BACKEND_URL:-https://api.pujas.live}
+        HCAPTCHA_SITE_KEY: ${HCAPTCHA_SITE_KEY?}
+        PLAUSIBLE_DOMAIN: ${PLAUSIBLE_DOMAIN:-pujas.live}
     depends_on:
-      - db
+      - postgres
       - redis
+    environment:
+      NEXT_PUBLIC_API_URL: ${BACKEND_URL:-https://api.pujas.live}
+      NEXT_PUBLIC_HCAPTCHA_SITE_KEY: ${HCAPTCHA_SITE_KEY?}
+      NEXT_PUBLIC_PLAUSIBLE_DOMAIN: ${PLAUSIBLE_DOMAIN:-pujas.live}
     ports:
-      - 127.0.0.1:3000:3000
+      - "127.0.0.1:${FRONTEND_PORT:-3000}:3000"
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: strapi
+      POSTGRES_PASSWORD: strapi
+      POSTGRES_USER: strapi
+    restart: unless-stopped
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
   redis:
     image: redis:latest
     restart: unless-stopped
     volumes:
       - redis:/var/lib/redis
+
   worker:
     build:
       context: ..
       dockerfile: ./worker/Dockerfile
+    environment:
+      YOUTUBE_API_KEY: ${YOUTUBE_API_KEY?}
     restart: unless-stopped
 
 volumes:
-  uploads:
-  db:
+  postgres:
   redis:
+  uploads:

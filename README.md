@@ -31,36 +31,34 @@ The default credentials (for both):
 ./task -h
 ```
 
-## Email and Captchas
+## Email, Captchas, YouTube
 
-To enable email and captchas on local development requires a few more steps:
+A few additional steps are required to work with email, captchas and YouTube
+when developing locally.
 
 1.  Create an account with [Mailtrap](https://mailtrap.io/).
 
 2.  Create an account with [hCaptcha](https://www.hcaptcha.com/).
 
-3.  Edit `/etc/hosts` (or the equivalent):
+3.  Create an API Key with YouTube API v3 access under
+    [Google Developer Console](https://console.developers.google.com/).
+
+4.  Copy `.env.example` to `.env`. Edit as needed using the credentials created
+    in steps 1-3.
+
+5.  Edit `/etc/hosts` (or the equivalent):
 
     ```
     127.0.0.1 pujas.test
     ```
 
-4.  Edit `backend/.env`:
+6.  Restart Docker processes:
 
-    ```
-    FRONTEND_URL=http://pujas.test:3000
-    HCAPTCHA_SECRET=...
-    MAILTRAP_USER=...
-    MAILTRAP_PASSWORD=...
+    ```sh
+    docker-compose restart
     ```
 
-5.  Edit `frontend/.env`:
-
-    ```
-    NEXT_PUBLIC_HCAPTCHA_SITE_KEY=...
-    ```
-
-6.  Finally, use the following URLs when browsing:
+7.  Finally, use the following URLs when browsing:
 
     - Frontend: http://pujas.test:3000/
     - Backend: http://pujas.test:1337/admin/
