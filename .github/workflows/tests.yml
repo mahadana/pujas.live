@@ -1,0 +1,54 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    services:
+
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: strapi
+          POSTGRES_PASSWORD: strapi
+          POSTGRES_USER: strapi
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+        service: [backend, frontend, worker]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Setup hostnames
+        run: echo '127.0.0.1 postgres redis' | sudo tee -a /etc/hosts
+
+      - name: Cache npm
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: npm-${{ matrix.node-version }}-${{ matrix.service }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-${{ matrix.node-version }}-${{ matrix.service }}-
+
+      - name: Install node modules
+        run: npm clean-install
+        working-directory: ${{ matrix.service }}
+
+      - name: Run tests
+        run: npm test
+        working-directory: ${{ matrix.service }}
