@@ -4,7 +4,7 @@ WORKDIR /app/backend
 USER node
 
 COPY --chown=node:node backend/package*.json /app/backend/
-RUN npm install --silent --production
+RUN npm clean-install --silent --production
 
 COPY --chown=node:node shared /app/shared
 COPY --chown=node:node backend /app/backend

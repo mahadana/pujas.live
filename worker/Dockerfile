@@ -4,7 +4,7 @@ WORKDIR /app/worker
 USER node
 
 COPY --chown=node:node worker/package*.json /app/worker/
-RUN npm install --silent --production
+RUN npm clean-install --silent --production
 
 COPY --chown=node:node shared /app/shared
 COPY --chown=node:node worker /app/worker

@@ -4,7 +4,7 @@ WORKDIR /app/frontend
 USER node
 
 COPY --chown=node:node frontend/package*.json /app/frontend/
-RUN npm install --silent --production
+RUN npm clean-install --silent --production
 
 COPY --chown=node:node shared /app/shared
 COPY --chown=node:node frontend /app/frontend
