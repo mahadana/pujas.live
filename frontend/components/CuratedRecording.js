@@ -1,6 +1,5 @@
 import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
-import { useState } from "react";
 
 import UploadImage from "@/components/UploadImage";
 import PlayRecordingButtonAndModal from "@/components/PlayRecordingButtonAndModal";
@@ -47,15 +46,6 @@ const useStyles = makeStyles((theme) => ({
 
 const CuratedRecording = ({ title, description, recording }) => {
   const classes = useStyles();
-  const [isVideoOpen, setVideoOpen] = useState("false");
-  const onClick = (event) => {
-    event.preventDefault();
-    setVideoOpen(true);
-  };
-
-  const onCloseVideoModal = (event) => {
-    setVideoOpen(false);
-  };
 
   return (
     <Box className={classes.root}>
