@@ -32,7 +32,7 @@ const GroupEditPage = () => {
     },
   });
 
-  const onSubmit = async (values, form) => {
+  const onSubmit = async (values) => {
     const data = groupUpdateDbCast.cast(values);
     const variables = { input: { where: { id: groupId }, data } };
     try {

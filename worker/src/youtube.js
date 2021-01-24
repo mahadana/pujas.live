@@ -27,13 +27,13 @@ class YouTube {
   }
 
   async getChannelIdFromUrl(url) {
-    const regex = /^\s*(?:(?:https?):\/\/)?(?:(?:www|m)\.)?youtube\.com\/(c\/|channel\/|u\/|user\/)?([a-zA-Z0-9\-_]+)(?:[\/?].+)??\s*$/;
+    const regex = /^\s*(?:(?:https?):\/\/)?(?:(?:www|m)\.)?youtube\.com\/(c\/|channel\/|u\/|user\/)?([a-zA-Z0-9\-_]+)(?:[/?].+)??\s*$/;
     let channelId = false;
     const m = String(url).match(regex);
     if (!m) {
       return channelId;
     }
-    const [_, type, arg] = m;
+    const [, type, arg] = m;
     if (type === "channel/") {
       return arg;
     }
@@ -123,7 +123,7 @@ class YouTube {
 
   async getVideoIdFromUrl(url) {
     // Based on https://stackoverflow.com/a/37704433
-    const regex = /^\s*(?:(?:https?:)?\/\/)?(?:(?:www|m)\.)?(?:(?:youtube\.com|youtu\.be))(?:\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(?:\S+)?$/;
+    const regex = /^\s*(?:(?:https?:)?\/\/)?(?:(?:www|m)\.)?(?:(?:youtube\.com|youtu\.be))(?:\/(?:[-\w]+\?v=|embed\/|v\/)?)([-\w]+)(?:\S+)?$/;
     const m = String(url).match(regex);
     return m ? m[1] : false;
   }

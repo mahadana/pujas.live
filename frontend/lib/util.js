@@ -1,7 +1,7 @@
 // TODO redundant with worker/src/youtube.js
 export const getYouTubeVideoIdFromUrl = (url) => {
   // Based on https://stackoverflow.com/a/37704433
-  const regex = /^\s*(?:(?:https?:)?\/\/)?(?:(?:www|m)\.)?(?:(?:youtube\.com|youtu\.be))(?:\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(?:\S+)?$/;
+  const regex = /^\s*(?:(?:https?:)?\/\/)?(?:(?:www|m)\.)?(?:(?:youtube\.com|youtu\.be))(?:\/(?:[-\w]+\?v=|embed\/|v\/)?)([-\w]+)(?:\S+)?$/;
   const m = String(url).match(regex);
   return m ? m[1] : false;
 };

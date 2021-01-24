@@ -1,6 +1,5 @@
 const http = require("http");
-const Knex = require("knex");
-const { dirname, join } = require("path");
+const { dirname } = require("path");
 const Strapi = require("strapi");
 
 beforeAll(async (done) => {
@@ -22,7 +21,7 @@ beforeEach(async (done) => {
     "users-permissions_user",
   ];
   const knex = strapi.connections.default;
-  for (tableName of TABLE_NAMES) {
+  for (const tableName of TABLE_NAMES) {
     if (await knex.schema.hasTable(tableName)) {
       await knex(tableName).delete();
       await knex("sqlite_sequence").where("name", tableName).delete();

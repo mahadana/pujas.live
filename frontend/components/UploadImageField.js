@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const UploadImageField = ({ label, name }) => {
-  const [field, meta, helpers] = useField(name);
+  const [field, , helpers] = useField(name);
   const classes = useStyles();
   const [uploading, setUploading] = useState(false);
 

@@ -1,5 +1,5 @@
 import { withApollo as nextApollo } from "next-apollo";
-import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { createUploadLink } from "apollo-upload-client";
 import JsCookie from "js-cookie";

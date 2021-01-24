@@ -11,7 +11,7 @@ class Cache {
     // Async proxy for redis
     return new Proxy(this, {
       get: (target, key) => {
-        if (target.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(target, key)) {
           return target[key];
         }
         const method = Reflect.get(target.redisClient, key);

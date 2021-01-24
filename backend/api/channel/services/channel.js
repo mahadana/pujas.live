@@ -5,7 +5,6 @@
  * to customize this service
  */
 
-const _ = require("lodash");
 const { convertRestQueryParams, buildQuery } = require("strapi-utils");
 
 const findSortedByActiveStreams = async (params, populate) => {

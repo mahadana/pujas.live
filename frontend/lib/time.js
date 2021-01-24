@@ -90,7 +90,7 @@ export const getNextGroupEventTime = (args) => {
   return time;
 };
 
-const timeString = (option, dayjsClass, dayjsFactory) => {
+const timeString = (option, dayjsClass) => {
   dayjsClass.prototype.timeString = function (ts) {
     if (ts === undefined) {
       return this.format("HH:mm:ss.SSS");

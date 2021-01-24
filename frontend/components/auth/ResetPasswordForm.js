@@ -6,7 +6,7 @@ import FormTextField from "@/components/FormTextField";
 import FormSubmitButton from "@/components/FormSubmitButton";
 import { resetPasswordSchema } from "@/lib/validation";
 
-const ResetPasswordForm = ({ disabled, expired, ...props }) => (
+const ResetPasswordForm = ({ disabled, ...props }) => (
   <AuthForm
     disableCaptcha
     disabled={disabled}

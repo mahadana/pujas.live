@@ -1,11 +1,8 @@
-import {
-  Box,
-  Fade,
-  IconButton,
-  makeStyles,
-  Modal,
-  withTheme,
-} from "@material-ui/core";
+import Box from "@material-ui/core/Box";
+import Fade from "@material-ui/core/Fade";
+import IconButton from "@material-ui/core/IconButton";
+import { makeStyles } from "@material-ui/core/styles";
+import Modal from "@material-ui/core/Modal";
 import CancelIcon from "@material-ui/icons/Cancel";
 
 const useStyles = makeStyles((theme) => ({

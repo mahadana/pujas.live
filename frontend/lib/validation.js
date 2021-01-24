@@ -46,7 +46,7 @@ export const groupSchema = yup
   })
   .noUnknown();
 
-const fixTime = (value, original) => {
+const fixTime = (value) => {
   if (typeof value === "string" && /^[0-9]{2}:[0-9]{2}$/.test(value)) {
     return value + ":00";
   } else {
@@ -58,7 +58,7 @@ const nullableNumber = yup
   .number()
   .default(null)
   .nullable()
-  .transform((v, o) => (isNaN(v) ? null : v));
+  .transform((v) => (isNaN(v) ? null : v));
 
 const makeGroupDbCast = (update) => {
   const eventsFields = {

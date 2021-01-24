@@ -1,8 +1,13 @@
-import { Box, Fade, IconButton, makeStyles, Modal } from "@material-ui/core";
-import CancelIcon from "@material-ui/icons/Cancel";
-import VideoChantingBooksBar from "./VideoChantingBookBar";
+import Box from "@material-ui/core/Box";
+import Fade from "@material-ui/core/Fade";
+import IconButton from "@material-ui/core/IconButton";
+import { makeStyles } from "@material-ui/core/styles";
+import Modal from "@material-ui/core/Modal";
 import Slide from "@material-ui/core/Slide";
-import { useState, forwardRef, createRef } from "react";
+import CancelIcon from "@material-ui/icons/Cancel";
+import { useState, createRef } from "react";
+
+import VideoChantingBooksBar from "@/components/VideoChantingBookBar";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -54,7 +59,7 @@ const VideoIframeModal = ({ url, open, onClose }) => {
     The first time we load the page, show the controls, and then have them move out.
     This lets the user know that the controls are there, just hiding on the left.
    */
-  const onBooksEntered = (event) => {
+  const onBooksEntered = () => {
     if (!hasEnteredOnce) {
       setTimeout(() => setShowing(false), 1000);
     }
@@ -65,21 +70,21 @@ const VideoIframeModal = ({ url, open, onClose }) => {
    * Show/hide books based on entering/leaving the fake/invisible element (which is exactly the same size)
    *
    */
-  const onMouseEnterBooks = (event) => {
+  const onMouseEnterBooks = () => {
     if (timeout) clearTimeout(timeout);
     setShowing(true);
   };
 
-  const onMouseLeaveBooks = (event) => {
+  const onMouseLeaveBooks = () => {
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => setShowing(false), 500);
   };
 
-  const onCloseChantingBook = (event) => {
+  const onCloseChantingBook = () => {
     setShowing(false);
   };
 
-  const onClickClose = (event) => {
+  const onClickClose = () => {
     //reset to initial state
     setHasEnteredOnce(false);
     setShowing(true);

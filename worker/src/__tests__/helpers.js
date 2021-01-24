@@ -22,7 +22,9 @@ export const getTextFromFixtureOrUrl = async (url) => {
   const fixturePath = path.join(fixtureDir, encodeURIComponent(url));
   try {
     return (await fs.readFile(fixturePath)).toString();
-  } catch {}
+  } catch {
+    // Pass
+  }
   console.log(`Downloading ${url} to fixture ${fixturePath}`);
   const apiKey = process.env.YOUTUBE_API_KEY;
   if (!process.env.YOUTUBE_API_KEY) {

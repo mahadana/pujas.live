@@ -15,7 +15,7 @@ describe("cached", () => {
 
   test("getChannelIdFromUrl", async () => {
     yt._getTextFromUrl = getTextFromFixtureOrUrl;
-    yt._makeCacheKey = (url) => "test-cache-0";
+    yt._makeCacheKey = () => "test-cache-0";
     expect(await yt.cache.get("test-cache-0")).toBeNull();
     expect(
       await yt.getChannelIdFromUrl("http://www.youtube.com/c/TrueLittleMonk")
@@ -24,7 +24,7 @@ describe("cached", () => {
   });
 
   test("getTextFromUrl", async () => {
-    yt._makeCacheKey = (url) => "test-cache-1";
+    yt._makeCacheKey = () => "test-cache-1";
     expect(await yt.cache.get("test-cache-1")).toBeNull();
     expect(
       await yt.getTextFromUrl("https://jsonplaceholder.typicode.com")
@@ -33,7 +33,7 @@ describe("cached", () => {
   });
 
   test("getJsonFromUrl", async () => {
-    yt._makeCacheKey = (url) => "test-cache-2";
+    yt._makeCacheKey = () => "test-cache-2";
     expect(await yt.cache.get("test-cache-2")).toBeNull();
     expect(
       await yt.getJsonFromUrl("https://jsonplaceholder.typicode.com/todos/1")

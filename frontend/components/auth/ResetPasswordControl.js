@@ -16,7 +16,7 @@ const ResetPasswordControl = () => {
   const [expired, setExpired] = useState(false);
   const { login, logout } = useUser();
 
-  const onSubmit = async (values, formik) => {
+  const onSubmit = async (values) => {
     logout();
     const variables = {
       password: values.password,

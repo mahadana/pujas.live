@@ -1,5 +1,14 @@
 {
-  "extends": ["plugin:prettier/recommended", "plugin:react/recommended"],
+  "env": {
+    "es2020": true,
+    "jest": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:prettier/recommended",
+    "plugin:react/recommended"
+  ],
   "globals": {
     "React": "writable"
   },
@@ -12,9 +21,7 @@
   },
   "plugins": ["prettier", "react"],
   "rules": {
-    "prettier/prettier": ["error"],
-    "react/no-unescaped-entities": 0,
-    "react/prop-types": "off"
+    "prettier/prettier": ["error"]
   },
   "settings": {
     "react": {
