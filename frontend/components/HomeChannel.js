@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import { useState } from "react";
 
+import CuratedRecordingLink from "@/components/CuratedRecordingLink";
 import Upcoming from "@/components/Upcoming";
 import UploadImage from "@/components/UploadImage";
 import VideoIframeModal from "@/components/VideoIframeModal";
@@ -106,6 +107,9 @@ const HomeChannel = (props) => {
             >
               {props.monastery.title} Website
             </a>
+          )}
+          {props.curatedRecordings?.length && (
+            <CuratedRecordingLink curatedRecordings={props.curatedRecordings} />
           )}
           {props.channelUrl && (
             <a href={props.channelUrl} target="_blank" rel="noreferrer">
