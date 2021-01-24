@@ -1,17 +1,11 @@
 import Box from "@material-ui/core/Box";
-import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import { useState } from "react";
 
 import CuratedRecordingLink from "@/components/CuratedRecordingLink";
 import Upcoming from "@/components/Upcoming";
 import UploadImage from "@/components/UploadImage";
-import VideoIframeModal from "@/components/VideoIframeModal";
-import {
-  getYouTubeVideoIdFromUrl,
-  getYouTubeEmbedVideoUrlFromVideoId,
-} from "@/lib/util";
+import PlayRecordingButtonAndModal from "@/components/PlayRecordingButtonAndModal";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,28 +53,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const HomeChannel = (props) => {
-  const [videoUrl, setVideoUrl] = useState(null);
   const classes = useStyles();
-
-  const onLivestreamClick = (event) => {
-    event.preventDefault();
-    if (props.activeStream.embed) {
-      const videoId = getYouTubeVideoIdFromUrl(props.activeStream.recordingUrl);
-      if (videoId) {
-        const embedUrl = getYouTubeEmbedVideoUrlFromVideoId(videoId);
-        setVideoUrl(embedUrl);
-      } else {
-        // TODO error notification?
-      }
-    } else {
-      const w = window.open(props.activeStream.recordingUrl, "_blank");
-      w.focus();
-    }
-  };
-
-  const onCloseVideoModal = () => {
-    setVideoUrl(null);
-  };
 
   return (
     <Box className={classes.root}>
@@ -125,20 +98,9 @@ const HomeChannel = (props) => {
       </Box>
       <Box className={classes.links}>
         {props.activeStream && (
-          <>
-            <Button
-              color={props.activeStream?.live ? "primary" : undefined}
-              variant="contained"
-              onClick={onLivestreamClick}
-            >
-              {props.activeStream?.live ? "Join Livestream" : "Livestream"}
-            </Button>
-            <VideoIframeModal
-              url={videoUrl}
-              open={!!videoUrl}
-              onClose={onCloseVideoModal}
-            />
-          </>
+          <PlayRecordingButtonAndModal recording={props.activeStream}>
+            {props.activeStream?.live ? "Join Livestream" : "Livestream"}
+          </PlayRecordingButtonAndModal>
         )}
       </Box>
     </Box>

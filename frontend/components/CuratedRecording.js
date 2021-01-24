@@ -1,8 +1,9 @@
 import Box from "@material-ui/core/Box";
-import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
+import { useState } from "react";
 
 import UploadImage from "@/components/UploadImage";
+import PlayRecordingButtonAndModal from "@/components/PlayRecordingButtonAndModal";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,10 +47,16 @@ const useStyles = makeStyles((theme) => ({
 
 const CuratedRecording = ({ title, description, recording }) => {
   const classes = useStyles();
+  const [isVideoOpen, setVideoOpen] = useState("false");
   const onClick = (event) => {
     event.preventDefault();
-    console.log("TODO show video");
+    setVideoOpen(true);
   };
+
+  const onCloseVideoModal = (event) => {
+    setVideoOpen(false);
+  };
+
   return (
     <Box className={classes.root}>
       <Box className={classes.image}>
@@ -60,9 +67,9 @@ const CuratedRecording = ({ title, description, recording }) => {
         <p>{description ? description : recording.description}</p>
       </Box>
       <Box className={classes.button}>
-        <Button variant="contained" onClick={onClick}>
-          Play Video
-        </Button>
+        <PlayRecordingButtonAndModal recording={recording}>
+          Play Recording
+        </PlayRecordingButtonAndModal>
       </Box>
     </Box>
   );
