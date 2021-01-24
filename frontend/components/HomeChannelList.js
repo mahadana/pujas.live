@@ -24,18 +24,6 @@ function HomeChannelList({ channels }) {
     setShowMore(false);
   };
 
-  // Remove curated recordings where recording is null
-  // TODO this is definetely not ideal
-  channels = channels.map((channel) => {
-    channel = Object.assign({}, channel);
-    if (channel.curatedRecordings) {
-      channel.curatedRecordings = channel.curatedRecordings.filter(
-        (cr) => cr.recording
-      );
-    }
-    return channel;
-  });
-
   const hasMore = channels.length > MAX_INITIAL;
   const shownChannels =
     showMore && hasMore ? channels.slice(0, MAX_INITIAL) : channels;

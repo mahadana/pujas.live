@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
 import CuratedRecordingLink from "@/components/CuratedRecordingLink";
+import Link from "@/components/Link";
 import Upcoming from "@/components/Upcoming";
 import UploadImage from "@/components/UploadImage";
 import PlayRecordingButtonAndModal from "@/components/PlayRecordingButtonAndModal";
@@ -46,14 +47,21 @@ const useStyles = makeStyles((theme) => ({
   links: {
     display: "flex",
     alignItems: "center",
-    "& button": {
-      borderRadius: 20,
-    },
   },
 }));
 
 const HomeChannel = (props) => {
   const classes = useStyles();
+
+  // Remove curated recordings where recording is null
+  // TODO this is definetely not ideal and would better be done
+  // in the query.
+  if (Array.isArray(props.curatedRecordings)) {
+    props = Object.assign({}, props);
+    props.curatedRecordings = props.curatedRecordings.filter(
+      (cr) => cr.recording
+    );
+  }
 
   return (
     <Box className={classes.root}>
@@ -73,26 +81,21 @@ const HomeChannel = (props) => {
         <p>{props.description}</p>
         <p className={classes.monasteryLinks}>
           {props.monastery && props.monastery.websiteUrl && (
-            <a
+            <Link
               href={props.monastery.websiteUrl}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener"
             >
-              {props.monastery.title} Website
-            </a>
+              {props.monastery.title} website
+            </Link>
           )}
-          {props.curatedRecordings?.length && (
+          {props.curatedRecordings?.length ? (
             <CuratedRecordingLink curatedRecordings={props.curatedRecordings} />
-          )}
+          ) : null}
           {props.channelUrl && (
-            <a href={props.channelUrl} target="_blank" rel="noreferrer">
-              {props.monastery?.title || "Livestream"} Channel
-            </a>
-          )}
-          {props.historyUrl && (
-            <a href={props.historyUrl} target="_blank" rel="noreferrer">
-              Previous Sessions
-            </a>
+            <Link href={props.channelUrl} target="_blank" rel="noreferrer">
+              {props.monastery?.title || "Livestream"} channel
+            </Link>
           )}
         </p>
       </Box>

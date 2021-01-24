@@ -12,6 +12,9 @@ const useStyles = makeStyles((theme) => ({
     "&:nth-child(odd)": {
       backgroundColor: "#eee",
     },
+    "&:last-child": {
+      marginBottom: "1em",
+    },
   },
   image: {
     flex: "0 0 12em",
@@ -23,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   text: {
-    flex: "1 1 20em",
+    flex: "100 1 14em",
     marginRight: "2em",
     "& > h3": {
       margin: 0,
@@ -33,14 +36,16 @@ const useStyles = makeStyles((theme) => ({
     "& > p": {
       marginBottom: 0,
       fontSize: "1.1em",
+      [theme.breakpoints.down("sm")]: {
+        marginBottom: "1em",
+      },
     },
   },
   button: {
     display: "flex",
+    flex: "1 0 11em",
     alignItems: "center",
-    "& button": {
-      borderRadius: 20,
-    },
+    justifyContent: "center",
   },
 }));
 
