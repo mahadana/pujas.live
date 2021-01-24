@@ -47,6 +47,11 @@
     },
     "activeStream": {
       "model": "recording"
+    },
+    "curatedRecordings": {
+      "type": "component",
+      "repeatable": true,
+      "component": "recording.curated-recording"
     }
   }
 }

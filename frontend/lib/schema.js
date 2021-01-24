@@ -56,6 +56,22 @@ export const HOME_QUERY = gql`
         duration
         extra
       }
+      curatedRecordings {
+        title
+        description
+        recording {
+          title
+          description
+          image {
+            id
+            provider
+            formats
+          }
+          recordingUrl
+          embed
+          extra
+        }
+      }
     }
     groups(sort: "updated_at:desc", where: { listed: true }) {
       ${GROUP_FIELDS}

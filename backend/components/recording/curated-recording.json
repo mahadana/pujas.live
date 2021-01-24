@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_curated_recordings",
+  "info": {
+    "name": "curated recording",
+    "icon": "assistive-listening-systems",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "recording": {
+      "model": "recording"
+    }
+  }
+}
