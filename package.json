@@ -14,12 +14,14 @@
   "devDependencies": {
     "eslint": "^7.18.0",
     "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-json": "^2.1.2",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-yaml": "^0.3.0",
     "prettier": "^2.2.1"
   },
   "scripts": {
-    "eslint": "eslint --ext .js .",
-    "prettier": "prettier --write **/*.{js,json}"
+    "eslint": "eslint --ext .js,.json,.yaml,.yml .",
+    "prettier": "prettier --write **/.eslintrc **/.prettierrc ."
   }
 }

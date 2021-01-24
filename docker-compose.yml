@@ -1,7 +1,6 @@
 version: "3.7"
 
 services:
-
   backend:
     image: node:14
     command: /app/shared/start-docker-dev.sh backend

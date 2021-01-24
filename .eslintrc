@@ -6,8 +6,10 @@
   },
   "extends": [
     "eslint:recommended",
+    "plugin:json/recommended",
     "plugin:prettier/recommended",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "plugin:yaml/recommended"
   ],
   "globals": {
     "React": "writable"
