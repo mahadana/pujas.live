@@ -200,3 +200,36 @@ describe("fixtures", () => {
     );
   });
 });
+
+describe("simple", () => {
+  const yt = new YouTube();
+
+  test("getEmbedVideoUrlFromVideoId", () => {
+    expect(yt.getEmbedVideoUrlFromVideoId("BgsbBWcKch8")).toEqual(
+      "https://www.youtube.com/embed/BgsbBWcKch8"
+    );
+    expect(
+      yt.getEmbedVideoUrlFromVideoId("BgsbBWcKch8", { autoplay: true })
+    ).toEqual("https://www.youtube.com/embed/BgsbBWcKch8?autoplay=1");
+    expect(
+      yt.getEmbedVideoUrlFromVideoId("BgsbBWcKch8", {
+        autoplay: true,
+        skip: 101,
+      })
+    ).toEqual("https://www.youtube.com/embed/BgsbBWcKch8?autoplay=1&start=101");
+  });
+
+  test("getVideoUrlFromVideoId", () => {
+    expect(yt.getVideoUrlFromVideoId("BgsbBWcKch8")).toEqual(
+      "https://youtu.be/BgsbBWcKch8"
+    );
+    expect(
+      yt.getVideoUrlFromVideoId("BgsbBWcKch8", { autoplay: true })
+    ).toEqual("https://youtu.be/BgsbBWcKch8?autoplay=1");
+    expect(
+      yt.getVideoUrlFromVideoId("BgsbBWcKch8", {
+        skip: 101,
+      })
+    ).toEqual("https://youtu.be/BgsbBWcKch8?t=101");
+  });
+});

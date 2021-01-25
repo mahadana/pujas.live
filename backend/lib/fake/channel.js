@@ -29,7 +29,6 @@ const applyFakeChannels = async () => {
         channelUrl: faker.random.number(4)
           ? faker.random.arrayElement(YOUTUBE_CHANNELS) + `?${id}`
           : null,
-        historyUrl: faker.random.number(2) ? null : faker.internet.url(),
         monastery: faker.random.number({ min: 1, max: MONASTERY_COUNT }),
         activeStream: faker.random.boolean()
           ? faker.random.number({ min: 1, max: RECORDING_COUNT })
@@ -47,6 +46,9 @@ const applyFakeChannels = async () => {
           title: faker.random.boolean() ? faker.lorem.words(3) : null,
           description: faker.random.boolean() ? faker.lorem.paragraph() : null,
           recording: faker.random.number({ min: 1, max: RECORDING_COUNT }),
+          skip: faker.random.boolean()
+            ? faker.random.number({ min: 1, max: 1000 })
+            : null,
         })
         .returning("id");
       await knex("channels_components").insert({

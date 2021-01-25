@@ -6,6 +6,7 @@ import VideoIframeModal from "@/components/VideoIframeModal";
 import {
   getYouTubeEmbedVideoUrlFromVideoId,
   getYouTubeVideoIdFromUrl,
+  getYouTubeVideoUrlFromVideoId,
 } from "@/lib/util";
 
 const useStyles = makeStyles((theme) => ({
@@ -14,18 +15,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PlayRecordingButtonAndModal = ({ recording, children }) => {
+const PlayRecordingButtonAndModal = ({ children, recording, skip }) => {
   const [isOpen, setOpen] = useState(false);
   const classes = useStyles();
 
-  let embed = false;
+  let embed = recording.embed;
   let videoUrl = recording.recordingUrl;
-  if (recording.embed) {
-    const videoId = getYouTubeVideoIdFromUrl(recording.recordingUrl);
-    if (videoId) {
-      embed = true;
-      videoUrl = getYouTubeEmbedVideoUrlFromVideoId(videoId);
-    }
+  const youTubeVideoId = getYouTubeVideoIdFromUrl(videoUrl);
+  if (youTubeVideoId) {
+    videoUrl = (embed
+      ? getYouTubeEmbedVideoUrlFromVideoId
+      : getYouTubeVideoUrlFromVideoId)(youTubeVideoId, {
+      autoplay: true,
+      skip,
+    });
   }
 
   const onClick = () => {

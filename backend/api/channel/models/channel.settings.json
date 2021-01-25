@@ -38,10 +38,6 @@
       "regex": "^(https?://\\S+)?$",
       "unique": true
     },
-    "historyUrl": {
-      "type": "string",
-      "regex": "^(https?://\\S+)?$"
-    },
     "monastery": {
       "model": "monastery"
     },

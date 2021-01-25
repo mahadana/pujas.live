@@ -15,6 +15,10 @@
     },
     "recording": {
       "model": "recording"
+    },
+    "skip": {
+      "type": "integer",
+      "min": 1
     }
   }
 }

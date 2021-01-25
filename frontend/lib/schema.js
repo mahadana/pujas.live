@@ -34,7 +34,6 @@ export const HOME_QUERY = gql`
       }
       automate
       channelUrl
-      historyUrl
       monastery {
         title
         websiteUrl
@@ -71,6 +70,7 @@ export const HOME_QUERY = gql`
           embed
           extra
         }
+        skip
       }
     }
     groups(sort: "updated_at:desc", where: { listed: true }) {

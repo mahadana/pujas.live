@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CuratedRecording = ({ title, description, recording }) => {
+const CuratedRecording = ({ title, description, recording, skip }) => {
   const classes = useStyles();
 
   return (
@@ -62,7 +62,7 @@ const CuratedRecording = ({ title, description, recording }) => {
         <p>{description ? description : recording.description}</p>
       </Box>
       <Box className={classes.button}>
-        <PlayRecordingButtonAndModal recording={recording}>
+        <PlayRecordingButtonAndModal recording={recording} skip={skip}>
           Play Recording
         </PlayRecordingButtonAndModal>
       </Box>

@@ -70,8 +70,13 @@ class YouTube {
     return `https://www.youtube.com/embed/live_stream?channel=${channelId}`;
   }
 
-  getEmbedVideoUrlFromVideoId(videoId) {
-    return `https://www.youtube.com/embed/${videoId}`;
+  getEmbedVideoUrlFromVideoId(videoId, options = {}) {
+    let url = `https://www.youtube.com/embed/${videoId}`;
+    const extras = [];
+    if (options.autoplay) extras.push("autoplay=1");
+    if (options.skip) extras.push("start=" + options.skip);
+    if (extras.length) url += "?" + extras.join("&");
+    return url;
   }
 
   async getJsonFromUrl(url) {
@@ -128,8 +133,13 @@ class YouTube {
     return m ? m[1] : false;
   }
 
-  getVideoUrlFromVideoId(videoId) {
-    return `https://youtu.be/${videoId}`;
+  getVideoUrlFromVideoId(videoId, options = {}) {
+    let url = `https://youtu.be/${videoId}`;
+    const extras = [];
+    if (options.autoplay) extras.push("autoplay=1");
+    if (options.skip) extras.push("t=" + options.skip);
+    if (extras.length) url += "?" + extras.join("&");
+    return url;
   }
 
   async _getCachedTextFromUrl(url) {
