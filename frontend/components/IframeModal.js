@@ -51,10 +51,9 @@ const IframeModal = ({ url, open, onClose }) => {
           </IconButton>
           <iframe
             src={url}
-            seamless="seamless"
-            scrolling="no"
             frameBorder="0"
-            allowtransparency="true"
+            scrolling="no"
+            seamless="seamless"
           />
         </Box>
       </Fade>

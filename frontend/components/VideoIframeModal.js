@@ -127,10 +127,10 @@ const VideoIframeModal = ({ url, open, onClose }) => {
 
           <iframe
             src={url}
-            seamless="seamless"
-            scrolling="no"
+            allowFullScreen
             frameBorder="0"
-            allowtransparency="true"
+            scrolling="no"
+            seamless="seamless"
           />
         </Box>
       </Fade>
