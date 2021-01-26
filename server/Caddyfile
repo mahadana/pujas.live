@@ -1,0 +1,21 @@
+pujas.live {
+  redir /chanting /chanting/
+  handle_path /chanting/* {
+    root * /opt/chanting
+    file_server
+  }
+  reverse_proxy /hooks/* pujas.live:9000
+  reverse_proxy frontend:3000
+}
+
+www.pujas.live {
+  redir https://pujas.live{uri}
+}
+
+api.pujas.live {
+  reverse_proxy backend:1337
+}
+
+plausible.pujas.live {
+  reverse_proxy pujas.live:8000
+}

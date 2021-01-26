@@ -65,3 +65,13 @@ docker-compose ps
     ```sh
     bash /opt/pujas.live/server/setup.sh
     ```
+
+4.  Add GitHub webhooks with the following payload URLs:
+
+    [pujas.live](https://github.com/mahadana/pujas.live/settings/hooks):
+    `https://pujas.live/hooks/pujas.live-github-deploy`
+
+    [chanting](https://github.com/mahadana/chanting/settings/hooks):
+    `https://pujas.live/hooks/chanting-github-deploy`
+
+    The secret for each can be found in `/etc/webhook.secret`.

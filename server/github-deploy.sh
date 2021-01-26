@@ -5,5 +5,7 @@
 set -eu
 
 cd /opt/pujas.live
-git pull
+git fetch
+git reset --hard origin/main
+
 nohup server/deploy.sh > /dev/null 2>&1 &
