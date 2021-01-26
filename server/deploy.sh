@@ -17,12 +17,10 @@ log="/var/log/pujas.live-deploy.log"
   docker-compose pull
   docker pull node:14 # Specified in Dockerfiles
   docker-compose build
-  docker-compose stop -t 3 worker
-  docker-compose rm -fs worker
-  docker-compose stop -t 0 backend frontend
-  docker-compose rm -fs backend frontend
-  docker-compose up -d postgres backend frontend
-  docker-compose up -d
+  docker-compose up -d -t 1 postgres redis
+  docker-compose up -d -t 1 frontend
+  docker-compose up -d -t 1 backend
+  docker-compose up -d -t 3 backup worker
 
   docker image prune -f
 
