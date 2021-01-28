@@ -1,4 +1,5 @@
 import { useQuery } from "@apollo/client";
+import { useIdleTimer } from "react-idle-timer";
 
 import Banner from "@/components/Banner";
 import ChantingBooksBar from "@/components/ChantingBooksBar";
@@ -10,6 +11,17 @@ import { HOME_QUERY } from "@/lib/schema";
 const HomePage = () => {
   const result = useQuery(HOME_QUERY, {
     fetchPolicy: "cache-and-network",
+  });
+
+  const { reset: resetIdleTimer } = useIdleTimer({
+    debounce: 500,
+    onIdle: () => {
+      if (!result.error) {
+        result.refetch();
+      }
+      resetIdleTimer();
+    },
+    timeout: 1000 * 10,
   });
 
   return (
