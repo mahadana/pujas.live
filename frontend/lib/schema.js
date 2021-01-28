@@ -21,60 +21,71 @@ const GROUP_FIELDS = `
   }
 `;
 
+const RECORDING_FIELDS = `
+  id
+  title
+  description
+  image {
+    id
+    provider
+    formats
+  }
+  automate
+  recordingUrl
+  embed
+  live
+  startAt
+  endAt
+  duration
+  extra
+`;
+
+const CHANNEL_FIELDS = `
+  id
+  title
+  description
+  image {
+    id
+    provider
+    formats
+  }
+  automate
+  channelUrl
+  monastery {
+    title
+    websiteUrl
+  }
+  activeStream {
+    ${RECORDING_FIELDS}
+  }
+`;
+
 export const HOME_QUERY = gql`
   {
     channels(sort: "_activeStreams") {
-      id
-      title
-      description
-      image {
-        id
-        provider
-        formats
-      }
-      automate
-      channelUrl
-      monastery {
-        title
-        websiteUrl
-      }
-      activeStream {
-        title
-        description
-        image {
-          id
-          provider
-          formats
-        }
-        automate
-        recordingUrl
-        embed
-        live
-        startAt
-        endAt
-        duration
-        extra
-      }
+      ${CHANNEL_FIELDS}
+    }
+    groups(sort: "updated_at:desc", where: { listed: true }) {
+      ${GROUP_FIELDS}
+    }
+  }
+`;
+
+export const CHANNEL_QUERY = gql`
+  query Channel($id: ID!) {
+    channel(id: $id) {
+      ${CHANNEL_FIELDS}
       curatedRecordings {
         title
         description
         recording {
-          title
-          description
-          image {
-            id
-            provider
-            formats
-          }
-          recordingUrl
-          embed
-          extra
+          ${RECORDING_FIELDS}
         }
         skip
       }
-    }
-    groups(sort: "updated_at:desc", where: { listed: true }) {
-      ${GROUP_FIELDS}
+      recordings(sort: "created_at:DESC", limit: 20) {
+        ${RECORDING_FIELDS}
+      }
     }
   }
 `;
@@ -103,6 +114,14 @@ export const UPDATE_GROUP_MUTATION = gql`
       group {
         ${GROUP_FIELDS}
       }
+    }
+  }
+`;
+
+export const RECORDING_QUERY = gql`
+  query Recording($id: ID!) {
+    recording(id: $id) {
+      ${RECORDING_FIELDS}
     }
   }
 `;

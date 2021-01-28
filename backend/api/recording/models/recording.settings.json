@@ -62,7 +62,8 @@
       "type": "json"
     },
     "channel": {
-      "model": "channel"
+      "model": "channel",
+      "via": "recordings"
     }
   }
 }

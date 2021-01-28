@@ -2,11 +2,11 @@ import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
-import CuratedRecordingLink from "@/components/CuratedRecordingLink";
+import ChannelRecordingsLink from "@/components/ChannelRecordingsLink";
 import Link from "@/components/Link";
 import Upcoming from "@/components/Upcoming";
 import UploadImage from "@/components/UploadImage";
-import PlayRecordingButtonAndModal from "@/components/PlayRecordingButtonAndModal";
+import PlayRecordingButton from "@/components/PlayRecordingButton";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,17 +52,6 @@ const useStyles = makeStyles((theme) => ({
 
 const HomeChannel = (props) => {
   const classes = useStyles();
-
-  // Remove curated recordings where recording is null
-  // TODO this is definetely not ideal and would better be done
-  // in the query.
-  if (Array.isArray(props.curatedRecordings)) {
-    props = Object.assign({}, props);
-    props.curatedRecordings = props.curatedRecordings.filter(
-      (cr) => cr.recording
-    );
-  }
-
   return (
     <Box className={classes.root}>
       <Box className={classes.image}>
@@ -89,21 +78,24 @@ const HomeChannel = (props) => {
               {props.monastery.title} website
             </Link>
           )}
-          {props.curatedRecordings?.length ? (
-            <CuratedRecordingLink curatedRecordings={props.curatedRecordings} />
-          ) : null}
           {props.channelUrl && (
             <Link href={props.channelUrl} target="_blank" rel="noreferrer">
               {props.monastery?.title || "Livestream"} channel
             </Link>
           )}
+          <ChannelRecordingsLink channel={props}>
+            Recordings
+          </ChannelRecordingsLink>
         </p>
       </Box>
       <Box className={classes.links}>
         {props.activeStream && (
-          <PlayRecordingButtonAndModal recording={props.activeStream}>
-            {props.activeStream?.live ? "Join Livestream" : "Livestream"}
-          </PlayRecordingButtonAndModal>
+          <PlayRecordingButton
+            active={props.activeStream.live}
+            recording={props.activeStream}
+          >
+            {props.activeStream.live ? "Join Livestream" : "Livestream"}
+          </PlayRecordingButton>
         )}
       </Box>
     </Box>

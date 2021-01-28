@@ -6,6 +6,7 @@ import Head from "next/head";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 
+import LoadingProvider from "@/components/LoadingProvider";
 import SnackbarProvider from "@/components/SnackbarProvider";
 import UserProvider from "@/components/UserProvider";
 import { plausibleDomain } from "@/lib/plausible";
@@ -35,11 +36,20 @@ const MyApp = ({ Component, pageProps }) => {
           src="https://plausible.pujas.live/js/plausible.js"
         />
       </Head>
+      <style jsx global>
+        {`
+          body {
+            overflow-y: scroll;
+          }
+        `}
+      </style>
       <ThemeProvider theme={theme}>
         <UserProvider>
           <SnackbarProvider>
-            <CssBaseline />
-            <Component {...pageProps} />
+            <LoadingProvider>
+              <CssBaseline />
+              <Component {...pageProps} />
+            </LoadingProvider>
           </SnackbarProvider>
         </UserProvider>
       </ThemeProvider>

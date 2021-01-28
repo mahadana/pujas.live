@@ -2,20 +2,15 @@ import Container from "@material-ui/core/Container";
 
 import Banner from "@/components/Banner";
 import Loading from "@/components/Loading";
-import NotLoggedIn from "@/components/NotLoggedIn";
-import { useUser } from "@/lib/user";
+import Title from "@/components/Title";
 
-const AccountPage = () => {
-  const { user, userLoading } = useUser();
-  return (
-    <>
-      <Banner />
-      <Container maxWidth="sm">
-        {!user && userLoading ? (
-          <Loading />
-        ) : !user ? (
-          <NotLoggedIn />
-        ) : (
+const AccountPage = () => (
+  <>
+    <Title title="Account" />
+    <Banner />
+    <Loading data requireUser>
+      {({ user }) => (
+        <Container maxWidth="sm">
           <div>
             <h1>TODO Account Info</h1>
             <p>
@@ -29,10 +24,10 @@ const AccountPage = () => {
             <h1>TODO Change Password</h1>
             <h1>TODO Delete Account?</h1>
           </div>
-        )}
-      </Container>
-    </>
-  );
-};
+        </Container>
+      )}
+    </Loading>
+  </>
+);
 
 export default AccountPage;

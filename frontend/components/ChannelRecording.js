@@ -1,8 +1,9 @@
 import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 
 import UploadImage from "@/components/UploadImage";
-import PlayRecordingButtonAndModal from "@/components/PlayRecordingButtonAndModal";
+import PlayRecordingButton from "@/components/PlayRecordingButton";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CuratedRecording = ({ title, description, recording, skip }) => {
+const ChannelRecording = ({ recording }) => {
   const classes = useStyles();
 
   return (
@@ -58,16 +59,16 @@ const CuratedRecording = ({ title, description, recording, skip }) => {
         <UploadImage image={recording.image} />
       </Box>
       <Box className={classes.text}>
-        <h3>{title ? title : recording.title}</h3>
-        <p>{description ? description : recording.description}</p>
+        <Typography variant="h3">{recording.title}</Typography>
+        <Typography variant="body1">{recording.description}</Typography>
       </Box>
       <Box className={classes.button}>
-        <PlayRecordingButtonAndModal recording={recording} skip={skip}>
+        <PlayRecordingButton recording={recording} skip={recording.skip}>
           Play Recording
-        </PlayRecordingButtonAndModal>
+        </PlayRecordingButton>
       </Box>
     </Box>
   );
 };
 
-export default CuratedRecording;
+export default ChannelRecording;

@@ -1,3 +1,5 @@
+import slugify from "slugify";
+
 // TODO redundant with worker/src/youtube.js
 export const getYouTubeVideoIdFromUrl = (url) => {
   // Based on https://stackoverflow.com/a/37704433
@@ -26,6 +28,20 @@ export const getYouTubeVideoUrlFromVideoId = (videoId, options = {}) => {
   return url;
 };
 
+export const getRecordingVideoUrl = (recording, { autoplay, skip }) => {
+  let videoUrl = recording.recordingUrl;
+  const youTubeVideoId = getYouTubeVideoIdFromUrl(videoUrl);
+  if (youTubeVideoId) {
+    videoUrl = (recording.embed
+      ? getYouTubeEmbedVideoUrlFromVideoId
+      : getYouTubeVideoUrlFromVideoId)(youTubeVideoId, {
+      autoplay,
+      skip,
+    });
+  }
+  return videoUrl;
+};
+
 export const getBackFromQuery = (query, defaultPath = "/") => {
   return (query || {}).back || defaultPath;
 };
@@ -35,6 +51,22 @@ export const getPushBackUrl = (router, path) =>
 
 export const pushBack = (router, defaultPath = "/") => {
   router.push(getBackFromQuery(router.query, defaultPath));
+};
+
+const slugifyTitle = (title) =>
+  slugify(title || "-", {
+    lower: true,
+    strict: true,
+  }).slice(0, 32);
+
+export const getChannelRecordingsPath = (channel) => {
+  const slug = slugifyTitle(channel.title);
+  return `/channel/${channel.id}/${slug}/recordings`;
+};
+
+export const getRecordingPath = (recording) => {
+  const slug = slugifyTitle(recording.title);
+  return `/recording/${recording.id}/${slug}`;
 };
 
 export const getStrapiError = (error) => {

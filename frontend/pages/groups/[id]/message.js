@@ -7,25 +7,23 @@ import Banner from "@/components/Banner";
 import GroupMessageForm from "@/components/GroupMessageForm";
 import GroupMessageSuccess from "@/components/GroupMessageSuccess";
 import Loading from "@/components/Loading";
+import Title from "@/components/Title";
 import { apolloClient, withApollo } from "@/lib/apollo";
 import { GROUP_QUERY, MESSAGE_GROUP_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
-import { useUser } from "@/lib/user";
 import { translateStrapiError } from "@/lib/util";
 
 const GroupMessagePage = () => {
   const router = useRouter();
   const { snackError, snackSuccess } = useSnackbar();
-  const { user, userLoading } = useUser();
   const [complete, setComplete] = useState(false);
 
   const groupId = router.query.id;
-  const { loading, data } = useQuery(GROUP_QUERY, {
+  const result = useQuery(GROUP_QUERY, {
     fetchPolicy: "cache-and-network",
     skip: !groupId,
     variables: { id: groupId },
   });
-  const group = data?.group;
 
   const onSubmit = async (values, formik, token) => {
     const variables = {
@@ -62,21 +60,29 @@ const GroupMessagePage = () => {
 
   return (
     <>
+      <Title title="Join Group" />
       <Banner />
-      <Container maxWidth="sm">
-        {(!user && userLoading) || loading || !group || !group.owner ? (
-          <Loading />
-        ) : !complete ? (
-          <GroupMessageForm
-            disabled={complete}
-            group={group}
-            onSubmit={onSubmit}
-            user={user}
-          />
-        ) : (
-          <GroupMessageSuccess />
+      <Loading {...result}>
+        {({ data: { group }, user }) => (
+          <>
+            <Title title={`Join ${group.title}`} />
+            <Container maxWidth="sm">
+              <div>
+                {!complete ? (
+                  <GroupMessageForm
+                    disabled={complete}
+                    group={group}
+                    onSubmit={onSubmit}
+                    user={user}
+                  />
+                ) : (
+                  <GroupMessageSuccess />
+                )}
+              </div>
+            </Container>
+          </>
         )}
-      </Container>
+      </Loading>
     </>
   );
 };

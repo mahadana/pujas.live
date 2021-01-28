@@ -48,6 +48,10 @@
       "type": "component",
       "repeatable": true,
       "component": "recording.curated-recording"
+    },
+    "recordings": {
+      "via": "channel",
+      "collection": "recording"
     }
   }
 }

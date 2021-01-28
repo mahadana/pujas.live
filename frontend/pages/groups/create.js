@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import Banner from "@/components/Banner";
 import GroupForm from "@/components/GroupForm";
 import Loading from "@/components/Loading";
-import NotLoggedIn from "@/components/NotLoggedIn";
+import Title from "@/components/Title";
 import { apolloClient, withApollo } from "@/lib/apollo";
 import { CREATE_GROUP_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
@@ -16,7 +16,7 @@ import { groupSchema, groupCreateDbCast } from "@/lib/validation";
 const GroupCreatePage = () => {
   const router = useRouter();
   const { snackError, snackSuccess } = useSnackbar();
-  const { user, userLoading } = useUser();
+  const { user } = useUser();
 
   const onSubmit = async (values) => {
     const data = groupCreateDbCast.cast(values);
@@ -30,7 +30,10 @@ const GroupCreatePage = () => {
       });
       const newGroup = result.data.createGroup.group;
       snackSuccess("Successfully created group");
-      router.push(`/groups/${newGroup.id}/edit`);
+      router.push(`/groups/${newGroup.id}/edit`, null, {
+        scroll: false,
+        shallow: true,
+      });
     } catch (error) {
       snackError(translateStrapiError(error));
       console.error(error);
@@ -42,16 +45,19 @@ const GroupCreatePage = () => {
 
   return (
     <>
+      <Title title="New Group" />
       <Banner />
-      <Container maxWidth="sm">
-        {userLoading ? (
-          <Loading />
-        ) : !user ? (
-          <NotLoggedIn />
-        ) : (
-          <GroupForm group={newGroup} onSubmit={onSubmit} />
+      <Loading
+        data
+        requireUser
+        noUserMessage="Please create an account to post a new group. It's easy!"
+      >
+        {() => (
+          <Container maxWidth="sm">
+            <GroupForm group={newGroup} onSubmit={onSubmit} />
+          </Container>
         )}
-      </Container>
+      </Loading>
     </>
   );
 };

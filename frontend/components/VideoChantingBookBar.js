@@ -1,40 +1,42 @@
-import { useState, forwardRef } from "react";
 import { Box, makeStyles } from "@material-ui/core";
 import Link from "next/link";
-import IframeModal from "./IframeModal";
+import { useState, forwardRef } from "react";
+
+import IframeModal from "@/components/IframeModal";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-    //justifyContent: "flex-end",
-    //margin: "2em 2em 0",
-
     flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "space-evenly",
     alignItems: "center",
     padding: "0px",
 
-    position: "absolute",
+    position: "relative",
+    width: "100%",
     height: "100%",
+    fontSize: "3vh",
+    lineHeight: "4vh",
+    textAlign: "center",
+    textShadow: "0 0 0.2em #000",
 
+    color: "white",
     background:
-      "linear-gradient(90deg, rgba(0, 0, 0, 0.53) 0%, rgba(0, 0, 0, 0) 100%)",
+      "radial-gradient(ellipse at left, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 70%)",
   },
   book: {
-    marginLeft: "2em",
     "& a": {
-      //color: "white",
+      color: "white",
       textDecoration: "none",
-      fontSize: "1.5em",
     },
     "& span": {
       display: "inline-block",
       verticalAlign: "top",
-      width: "90px",
-      color: "white",
+      width: "80%",
     },
     "& img": {
-      width: "60px",
+      marginTop: "0.3em",
+      width: "60%",
     },
   },
   hidden: {
@@ -62,7 +64,6 @@ const VideoChantingBooksBar = forwardRef((props, ref) => {
     <Box
       className={`${classes.root}${props.hidden ? " hidden" : ""}`}
       ref={ref}
-      onMouseOver={props.onMouseOver}
     >
       <Box className={classes.book}>
         <Link href="#">

@@ -1,33 +1,47 @@
-import Box from "@material-ui/core/Box";
-import { makeStyles } from "@material-ui/core/styles";
-import Skeleton from "@material-ui/lab/Skeleton";
+import isFunction from "lodash/isFunction";
+import { useContext, useEffect, useRef } from "react";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-    height: "40vh",
-  },
-  skeleton: {
-    width: "100%",
-    height: "100%",
-    maxWidth: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-}));
+import { LoadingContext } from "@/components/LoadingProvider";
+import { useUser } from "@/lib/user";
 
-const Loading = () => {
-  const classes = useStyles();
-  return (
-    <Box className={classes.root}>
-      <Skeleton
-        variant="rect"
-        animation="wave"
-        className={classes.skeleton}
-      ></Skeleton>
-    </Box>
-  );
+const Loading = ({ children, ...props }) => {
+  const { deleteState, setState } = useContext(LoadingContext);
+  const id = useRef(null);
+  const { user, userLoading } = useUser();
+
+  let state;
+  if (props.error && !props.loading) {
+    state = "error";
+  } else if (!props.data && props.called === false) {
+    state = "waiting";
+  } else if (
+    userLoading ||
+    (!props.data && (props.loading || props.called !== false))
+  ) {
+    state = "loading";
+  } else if (props.requireUser && !user) {
+    state = "noUser";
+  } else {
+    state = "ready";
+  }
+
+  useEffect(() => {
+    setState(id, { ...props, state });
+  }, [state]);
+
+  useEffect(() => {
+    return () => deleteState(id);
+  }, []);
+
+  if (state === "ready") {
+    if (isFunction(children)) {
+      return children({ ...props, user });
+    } else {
+      return children;
+    }
+  } else {
+    return null;
+  }
 };
 
 export default Loading;
