@@ -76,6 +76,7 @@ const ChannelRecordingsModal = ({ children }) => {
   const onClose = () => {
     router.push(closeProps.href, closeProps.as, closeProps);
   };
+  const onExited = () => setState("curated");
   const toggleState = () =>
     setState(state === "curated" ? "recent" : "curated");
 
@@ -84,7 +85,13 @@ const ChannelRecordingsModal = ({ children }) => {
       {children}
       <Loading {...result}>
         {({ data: { channel } }) => (
-          <Dialog maxWidth="lg" open={open} onClose={onClose} scroll="body">
+          <Dialog
+            maxWidth="lg"
+            open={open}
+            onClose={onClose}
+            onExited={onExited}
+            scroll="body"
+          >
             {open && <Title title={`Recordings | ${channel.title}`} />}
             <CloseButtonLink className={classes.closeButton} {...closeProps} />
             <DialogTitle className={classes.title}>

@@ -7,12 +7,11 @@ import Image from "next/image";
 const useStyles = makeStyles((theme) => ({
   root: {
     position: "fixed",
-    bottom: "min(10vh, 10vw)",
-    left: "min(10vh, 10vw)",
-    fontSize: 40,
-    width: "10vw",
-    height: "20vw",
-    zIndex: 1000,
+    bottom: "0.2rem",
+    left: "0.2rem",
+    width: "4rem",
+    height: "8rem",
+    zIndex: 10000,
   },
 }));
 

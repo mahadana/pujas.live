@@ -49,7 +49,7 @@ const LoadingError = ({ error, errors, refetchers }) => {
         aria-labelledby="error-dialog-title"
         disableBackdropClick
         disableEscapeKeyDown
-        maxWidth="xs"
+        maxWidth="sm"
         open={error}
       >
         <DialogTitle id="error-dialog-title">Server Error</DialogTitle>
