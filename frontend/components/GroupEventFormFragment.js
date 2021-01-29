@@ -67,6 +67,7 @@ const GroupEventFormFragment = ({ namePrefix, onRemove }) => {
             label="Time"
             type="time"
             required
+            variant="standard"
             InputLabelProps={{
               shrink: true,
             }}
@@ -77,6 +78,7 @@ const GroupEventFormFragment = ({ namePrefix, onRemove }) => {
             name={`${namePrefix}.duration`}
             label="Duration (minutes)"
             type="number"
+            variant="standard"
             InputLabelProps={{
               shrink: true,
             }}

@@ -46,13 +46,7 @@ const GroupForm = ({ group, onSubmit }) => {
           <Paper className={classes.groupPaper}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <FormTextField
-                  name="title"
-                  label="Title"
-                  required
-                  fullWidth
-                  variant="outlined"
-                />
+                <FormTextField name="title" label="Title" required fullWidth />
               </Grid>
               <Grid item xs={12}>
                 <UploadImageField label="Image" name="image" />
@@ -64,7 +58,6 @@ const GroupForm = ({ group, onSubmit }) => {
                   multiline
                   fullWidth
                   rowsMax={4}
-                  variant="outlined"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -73,7 +66,6 @@ const GroupForm = ({ group, onSubmit }) => {
                   label="Time Zone"
                   required
                   fullWidth
-                  variant="outlined"
                 />
               </Grid>
             </Grid>

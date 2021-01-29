@@ -5,6 +5,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import AuthForm from "@/components/auth/AuthForm";
 import ForgotPasswordButtonLink from "@/components/auth/ForgotPasswordButtonLink";
 import RegisterButtonLink from "@/components/auth/RegisterButtonLink";
+import FormPasswordField from "@/components/FormPasswordField";
 import FormTextField from "@/components/FormTextField";
 import FormSubmitButton from "@/components/FormSubmitButton";
 import { loginSchema } from "@/lib/validation";
@@ -14,6 +15,8 @@ const LoginForm = ({ disabled, ...props }) => (
     disableCaptcha
     disabled={disabled}
     lead="Login to your account to continue..."
+    validateOnBlur={false}
+    validateOnChange={false}
     validationSchema={loginSchema}
     {...props}
   >
@@ -26,17 +29,14 @@ const LoginForm = ({ disabled, ...props }) => (
           label="Email"
           name="email"
           type="email"
-          variant="outlined"
         />
       </Grid>
       <Grid item xs={12}>
-        <FormTextField
+        <FormPasswordField
           autoComplete="current-password"
           disabled={disabled}
           label="Password"
           name="password"
-          type="password"
-          variant="outlined"
         />
       </Grid>
       <Grid item xs={12}>

@@ -28,11 +28,12 @@ module.exports = {
     }
 
     const frontendUrl = strapi.config.get("server.frontendUrl");
-    const text = `${message}
+    const text = `From: ${name} <${email}>
 
+${message}
 ---
-The above message originated from ${name} <${email}> on ${frontendUrl}/
-directed to the owner of the group "${group.name}".
+The above message originated from Pujas.live ${frontendUrl}/
+directed to the owner of the group "${group.title}".
 To update this group, please visit ${frontendUrl}/groups/${id}/edit .
 `;
 

@@ -4,30 +4,39 @@ import { useFormikContext } from "formik";
 
 import { TIMEZONES } from "@/lib/time";
 
-const TimeZoneField = ({ name, autocompleteProps = {}, ...props }) => {
+const TimeZoneField = ({
+  autocompleteProps = {},
+  disabled,
+  name,
+  ...props
+}) => {
   const formik = useFormikContext();
   const meta = formik.getFieldMeta(name);
+
+  const onChange = async (_, value) => {
+    await formik.setFieldValue(name, value);
+    await formik.setFieldTouched(name);
+    await formik.validateField(name);
+  };
+
   return (
     <Autocomplete
-      {...autocompleteProps}
+      disabled={formik.isSubmitting || disabled}
+      onChange={onChange}
       options={TIMEZONES}
+      renderInput={(params) => (
+        <TextField
+          disabled={formik.isSubmitting || disabled}
+          error={meta.error && meta.touched}
+          helperText={meta.touched && meta.error}
+          name={name}
+          variant="outlined"
+          {...params}
+          {...props}
+        />
+      )}
       value={meta.value}
-      onChange={async (_, value) => {
-        await formik.setFieldValue(name, value);
-        await formik.setFieldTouched(name);
-        await formik.validateField(name);
-      }}
-      renderInput={(params) => {
-        return (
-          <TextField
-            {...params}
-            {...props}
-            error={meta.error && meta.touched}
-            helperText={meta.touched && meta.error}
-            name={name}
-          />
-        );
-      }}
+      {...autocompleteProps}
     />
   );
 };

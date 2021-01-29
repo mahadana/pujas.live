@@ -25,7 +25,6 @@ const ForgotPasswordForm = ({ disabled, ...props }) => (
           label="Email"
           name="email"
           type="email"
-          variant="outlined"
         />
       </Grid>
       <Grid item xs={12}>

@@ -17,6 +17,20 @@
     },
     {
       "method": "POST",
+      "path": "/auth/change-password",
+      "handler": "Auth.changePassword",
+      "config": {
+        "policies": [],
+        "prefix": "",
+        "description": "Change a user's password",
+        "tag": {
+          "plugin": "users-permissions",
+          "name": "User"
+        }
+      }
+    },
+    {
+      "method": "POST",
       "path": "/auth/forgot-password",
       "handler": "Auth.forgotPassword",
       "config": {

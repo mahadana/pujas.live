@@ -9,18 +9,18 @@ const FormSubmitButton = ({
   startIcon,
   ...props
 }) => {
-  const formik = useFormikContext();
+  const { isSubmitting, submitForm } = useFormikContext();
   return (
     <Button
       type="submit"
       variant="contained"
       color="primary"
-      disabled={disabled || formik.isSubmitting}
+      disabled={isSubmitting || disabled}
       onClick={
         onClick ||
         ((event) => {
           event.preventDefault();
-          formik.submitForm();
+          submitForm();
         })
       }
       startIcon={startIcon || <SaveIcon />}

@@ -77,8 +77,6 @@ const AuthForm = ({ children, disabled, lead, ...props }) => {
     <CaptchaForm
       formProps={{ className: classes.root }}
       initialValues={{ email, password: "" }}
-      validateOnBlur={false}
-      validateOnChange={false}
       {...props}
     >
       <AuthFormInner disabled={disabled} email={email} lead={lead}>

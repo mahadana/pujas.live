@@ -70,7 +70,6 @@ const GroupMessagePage = () => {
               <div>
                 {!complete ? (
                   <GroupMessageForm
-                    disabled={complete}
                     group={group}
                     onSubmit={onSubmit}
                     user={user}

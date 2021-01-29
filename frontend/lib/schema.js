@@ -167,6 +167,30 @@ export const REGISTER_MUTATION = gql`
   }
 `;
 
+export const CHANGE_EMAIL_MUTATION = gql`
+  mutation ChangeEmail($email: String!) {
+    changeEmail(email: $email) {
+      ok
+    }
+  }
+`;
+
+export const CHANGE_PASSWORD_MUTATION = gql`
+  mutation ChangePassword(
+    $oldPassword: String!
+    $newPassword: String!
+    $newPasswordConfirmation: String!
+  ) {
+    changePassword(
+      oldPassword: $oldPassword
+      newPassword: $newPassword
+      newPasswordConfirmation: $newPasswordConfirmation
+    ) {
+      ok
+    }
+  }
+`;
+
 export const FORGOT_PASSWORD_MUTATION = gql`
   mutation ForgotPassword($email: String!) {
     forgotPassword(email: $email) {

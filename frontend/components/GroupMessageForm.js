@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GroupMessageForm = ({ disabled, group, onSubmit }) => {
+const GroupMessageForm = ({ group, onSubmit }) => {
   const classes = useStyles();
   const { user } = useUser();
   const myOnSubmit = async (values, actions, token) => {
@@ -46,7 +46,6 @@ ${values.experience}`,
     <CaptchaForm
       disableCaptcha={!!user}
       initialValues={initialValues}
-      invalidFormSnackbar="Please check your message"
       onSubmit={myOnSubmit}
       validateOnChange={false}
       validationSchema={groupMessageSchema}
@@ -66,25 +65,10 @@ ${values.experience}`,
           Your information:
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormTextField
-            name="name"
-            label="Name"
-            required
-            fullWidth
-            variant="outlined"
-            autoFocus
-            disabled={disabled}
-          />
+          <FormTextField name="name" label="Name" fullWidth required />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormTextField
-            name="email"
-            label="Email"
-            required
-            fullWidth
-            variant="outlined"
-            disabled={disabled}
-          />
+          <FormTextField name="email" label="Email" fullWidth required />
         </Grid>
         <Grid item xs={12} className={classes.leader}>
           What are you looking for in a meditation group?
@@ -92,12 +76,10 @@ ${values.experience}`,
         <Grid item xs={12}>
           <FormTextField
             name="interest"
-            multiline
-            rowsMax={10}
-            required
             fullWidth
-            variant="outlined"
-            disabled={disabled}
+            multiline
+            required
+            rowsMax={10}
           />
         </Grid>
         <Grid item xs={12} className={classes.leader}>
@@ -106,16 +88,14 @@ ${values.experience}`,
         <Grid item xs={12}>
           <FormTextField
             name="experience"
-            multiline
-            rowsMax={10}
-            required
             fullWidth
-            variant="outlined"
-            disabled={disabled}
+            multiline
+            required
+            rowsMax={10}
           />
         </Grid>
         <Grid item xs={12}>
-          <FormSubmitButton disabled={disabled} startIcon={<SendIcon />}>
+          <FormSubmitButton startIcon={<SendIcon />}>
             Send Message
           </FormSubmitButton>
         </Grid>
