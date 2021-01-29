@@ -25,7 +25,7 @@ const initPermissions = async () => {
   );
   await updatePermissions(
     "Public",
-    ["channel", "monastery", "recording"],
+    ["channel", "group", "monastery", "recording"],
     ["count", "find", "findone"],
     true
   );
