@@ -1,0 +1,12 @@
+{
+  "routes": [
+    {
+      "method": "POST",
+      "path": "/site/message",
+      "handler": "site.message",
+      "config": {
+        "policies": ["global::captcha"]
+      }
+    }
+  ]
+}

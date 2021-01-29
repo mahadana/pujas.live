@@ -95,6 +95,12 @@ export const groupMessageSchema = yup.object({
   experience: yupRequiredString,
 });
 
+export const siteMessageSchema = yup.object({
+  name: yupRequiredString,
+  email: yupEmail,
+  message: yupRequiredString,
+});
+
 export const loginSchema = yup.object({
   email: yupEmail,
   password: yupRequiredString,

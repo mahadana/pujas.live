@@ -22,19 +22,7 @@ const useStyles = makeStyles((theme) => ({
 const GroupMessageForm = ({ group, onSubmit }) => {
   const classes = useStyles();
   const { user } = useUser();
-  const myOnSubmit = async (values, actions, token) => {
-    values = {
-      ...values,
-      message: `Q. What are you looking for in a meditation group?
 
-${values.interest}
-
-Q. Please describe your experience/interest in the Thai Forest tradition:
-
-${values.experience}`,
-    };
-    return await onSubmit(values, actions, token);
-  };
   const initialValues = {
     name: "",
     email: user?.email || "",
@@ -46,7 +34,7 @@ ${values.experience}`,
     <CaptchaForm
       disableCaptcha={!!user}
       initialValues={initialValues}
-      onSubmit={myOnSubmit}
+      onSubmit={onSubmit}
       validateOnChange={false}
       validationSchema={groupMessageSchema}
     >

@@ -7,7 +7,7 @@
 
 module.exports = {
   async message(ctx) {
-    await strapi.services.group.message(ctx.params.id, ctx.request.body);
+    await strapi.services.site.message(ctx.request.body);
     return { ok: true };
   },
 };

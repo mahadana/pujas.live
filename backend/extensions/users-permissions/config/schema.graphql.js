@@ -1,21 +1,18 @@
 "use strict";
 
-const _ = require("lodash");
-
-function checkBadRequest(contextBody) {
-  if (_.get(contextBody, "statusCode", 200) !== 200) {
-    const message = _.get(contextBody, "error", "Bad Request");
-    const exception = new Error(message);
-    exception.code = _.get(contextBody, "statusCode", 400);
-    exception.data = contextBody;
-    throw exception;
-  }
-}
-
 module.exports = {
+  definition: `
+    type changeEmailPaylod {
+      ok: Boolean!
+    }
+
+    type changePasswordPayload {
+      ok: Boolean!
+    }
+  `,
   mutation: `
-    changeEmail(email: String!): UserPermissionsPasswordPayload
-    changePassword(oldPassword: String!, newPassword: String!, newPasswordConfirmation: String!): UserPermissionsPasswordPayload
+    changeEmail(email: String!): changeEmailPaylod
+    changePassword(oldPassword: String!, newPassword: String!): changePasswordPayload
   `,
   resolver: {
     Mutation: {
@@ -25,38 +22,12 @@ module.exports = {
 
       changeEmail: {
         description: "Change a user's email",
-        resolverOf: "plugins::users-permissions.auth.changeEmail",
-        resolver: async (obj, options, { context }) => {
-          context.request.body = _.toPlainObject(options);
-          await strapi.plugins[
-            "users-permissions"
-          ].controllers.auth.changeEmail(context);
-          let output = context.body.toJSON
-            ? context.body.toJSON()
-            : context.body;
-          checkBadRequest(output);
-          return {
-            ok: output.ok || output,
-          };
-        },
+        resolver: "plugins::users-permissions.auth.changeEmail",
       },
 
       changePassword: {
         description: "Change a user's password",
-        resolverOf: "plugins::users-permissions.auth.changePassword",
-        resolver: async (obj, options, { context }) => {
-          context.request.body = _.toPlainObject(options);
-          await strapi.plugins[
-            "users-permissions"
-          ].controllers.auth.changePassword(context);
-          let output = context.body.toJSON
-            ? context.body.toJSON()
-            : context.body;
-          checkBadRequest(output);
-          return {
-            ok: output.ok || output,
-          };
-        },
+        resolver: "plugins::users-permissions.auth.changePassword",
       },
 
       forgotPassword: {

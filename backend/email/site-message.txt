@@ -1,0 +1,7 @@
+From: ${name} <${email}>
+
+Message:
+
+${message}
+---
+This message originated from ${frontendUrl}/about

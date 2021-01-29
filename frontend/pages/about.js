@@ -3,6 +3,7 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 
 import Banner from "@/components/Banner";
+import SiteMessageControl from "@/components/SiteMessageControl";
 import { withApollo } from "@/lib/apollo";
 import { globalStyle } from "@/lib/styles";
 
@@ -75,7 +76,7 @@ const About = () => {
             We welcome any feedback or questions you have as well. Please fill
             out the form below to contact us:
           </p>
-          FORM GOES HERE
+          <SiteMessageControl />
         </>
       </Container>
     </>

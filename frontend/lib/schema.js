@@ -134,6 +134,14 @@ export const MESSAGE_GROUP_MUTATION = gql`
   }
 `;
 
+export const MESSAGE_SITE_MUTATION = gql`
+  mutation MessageSite($input: messageSiteInput!) {
+    messageSite(input: $input) {
+      ok
+    }
+  }
+`;
+
 export const LOGIN_MUTATION = gql`
   mutation Login($input: UsersPermissionsLoginInput!) {
     login(input: $input) {
@@ -176,16 +184,8 @@ export const CHANGE_EMAIL_MUTATION = gql`
 `;
 
 export const CHANGE_PASSWORD_MUTATION = gql`
-  mutation ChangePassword(
-    $oldPassword: String!
-    $newPassword: String!
-    $newPasswordConfirmation: String!
-  ) {
-    changePassword(
-      oldPassword: $oldPassword
-      newPassword: $newPassword
-      newPasswordConfirmation: $newPasswordConfirmation
-    ) {
+  mutation ChangePassword($oldPassword: String!, $newPassword: String!) {
+    changePassword(oldPassword: $oldPassword, newPassword: $newPassword) {
       ok
     }
   }

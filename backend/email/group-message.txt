@@ -1,0 +1,12 @@
+From: ${name} <${email}>
+
+Q. What are you looking for in a meditation group?
+
+${interest}
+
+Q. Please describe your experience/interest in the Thai Forest tradition:
+
+${experience}
+---
+This message originated from ${frontendUrl}/groups/${groupId}/message
+To update this group, please visit ${frontendUrl}/groups/${groupId}/edit

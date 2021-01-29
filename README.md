@@ -23,7 +23,7 @@ The default credentials (for both):
 
 ## Task Helper
 
-```sh
+```
 Usage: ./task <service> [command...]
 
   Bash shell                        ./task <backend|frontend|worker>
@@ -35,6 +35,8 @@ Usage: ./task <service> [command...]
   Run <service> tests               ./task <backend|frontend|worker> test
   Watch <service> tests             ./task <backend|frontend|worker> watch
 
+  Apply auto-formatting (prettier)  ./task pretty
+  Run linter (eslint)               ./task lint
   Add fake data                     ./task fake
   (Re)build Strapi admin            ./task build-admin
   Reset database                    ./task reset-db
@@ -74,26 +76,6 @@ when developing locally.
 
     - Frontend: http://pujas.test:3000/
     - Backend: http://pujas.test:1337/admin/
-
-## Linting and Prettier
-
-First, install the node modules locally:
-
-```sh
-npm install
-```
-
-To apply prettier fixes:
-
-```sh
-npm run prettier
-```
-
-To lint code:
-
-```sh
-npm run eslint
-```
 
 ## Server Setup
 

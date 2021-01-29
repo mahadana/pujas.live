@@ -13,40 +13,30 @@ const {
   requiredStringSchema,
 } = require("../../../lib/util");
 
-const messageGroupSchema = yup.object({
+const messageSiteSchema = yup.object({
   email: emailSchema,
-  experience: requiredStringSchema,
-  interest: requiredStringSchema,
+  message: requiredStringSchema,
   name: requiredStringSchema,
 });
 
 module.exports = {
-  async message(groupId, params) {
-    const group = await strapi.services.group.findOne({ id: groupId });
-    if (!group) {
-      throw Error(`Group not found`);
-    }
-    const groupOwnerEmail = group.owner?.email;
-
-    emailSchema.validateSync(groupOwnerEmail);
-    messageGroupSchema.validateSync(params);
-
+  async message(params) {
+    messageSiteSchema.validateSync(params);
     await strapi.plugins["email"].services.email.sendTemplatedEmail(
       {
         from: strapi.config.get("plugins.email.settings.defaultFrom"),
         fromName: strapi.config.get("plugins.email.settings.defaultFromName"),
         replyTo: `"${params.name}" <${params.email}>`,
-        to: groupOwnerEmail,
+        to: strapi.config.get("server.admin.auth.email"),
       },
       {
-        subject: "[Pujas.live] Join request from ${name}",
-        text: await getEmailTemplate("group-message.txt"),
-        html: await getEmailTemplate("group-message.html"),
+        subject: "[Pujas.live] Message from ${name}",
+        text: await getEmailTemplate("site-message.txt"),
+        html: await getEmailTemplate("site-message.html"),
       },
       {
         ...params,
         frontendUrl: strapi.config.get("server.frontendUrl"),
-        groupId,
       }
     );
   },

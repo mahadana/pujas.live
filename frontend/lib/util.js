@@ -82,6 +82,8 @@ export const translateStrapiError = (error) => {
     return "You are not logged in";
   } else if (strapiError?.message) {
     return strapiError.message;
+  } else if (error?.message) {
+    return error.message;
   } else {
     return "Unknown server error";
   }

@@ -29,10 +29,11 @@ const initPermissions = async () => {
     ["count", "find", "findone"],
     true
   );
+  await updatePermissions("Public", ["site"], ["message"], true);
   await updatePermissions(
     "Public",
-    ["group"],
-    ["count", "find", "findone", "message"],
+    ["extra"],
+    ["loginwithtoken", "preparegroup"],
     true
   );
   await updatePermissions(
@@ -47,6 +48,7 @@ const initPermissions = async () => {
     ["count", "create", "find", "findone", "message", "update"],
     true
   );
+  await updatePermissions("Authenticated", ["site"], ["message"], true);
   await updatePermissions("Authenticated", ["upload"], ["upload"], true);
 };
 

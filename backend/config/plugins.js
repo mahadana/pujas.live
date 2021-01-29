@@ -18,7 +18,7 @@ module.exports = ({ env }) => {
       providerOptions,
       settings: {
         defaultFrom: env("MAIL_DEFAULT_FROM", "contact@pujas.live"),
-        defaultFromName: "Pujas.live",
+        defaultFromName: env("MAIL_DEFAULT_FROM_NAME", "Pujas.live"),
       },
     },
   };

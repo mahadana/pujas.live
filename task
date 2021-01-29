@@ -13,6 +13,8 @@ Usage: $0 <service> [command...]
   Run <service> tests               $0 <backend|frontend|worker> test
   Watch <service> tests             $0 <backend|frontend|worker> watch
 
+  Apply auto-formatting (prettier)  $0 pretty
+  Run linter (eslint)               $0 lint
   Add fake data                     $0 fake
   (Re)build Strapi admin            $0 build-admin
   Reset database                    $0 reset-db
@@ -66,18 +68,28 @@ case "$SERVICE" in
       set npm run watch
     fi
     ;;
-  build-admin)
-    "$0" backend build-admin
+  test)
+    "$0" backend test
+    "$0" frontend test
+    "$0" worker test
     exit 0
     ;;
   fake)
     "$0" backend fake
     exit 0
     ;;
-  test)
-    "$0" backend test
-    "$0" frontend test
-    "$0" worker test
+  pretty|prettier)
+    test -d node_modules || npm install --silent
+    npm run prettier
+    exit 0
+    ;;
+  lint|eslint)
+    test -d node_modules || npm install --silent
+    npm run eslint
+    exit 0
+    ;;
+  build-admin)
+    "$0" backend build-admin
     exit 0
     ;;
   reset-db|reload-db)

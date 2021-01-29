@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
   definition: `
     input messageGroupInput {
@@ -6,9 +8,10 @@ module.exports = {
     }
 
     input messageGroupDataInput {
-      name: String!
       email: String!
-      message: String!
+      experience: String!
+      interest: String!
+      name: String!
     }
   
     type messageGroupPayload {
