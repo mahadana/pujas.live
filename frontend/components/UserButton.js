@@ -1,8 +1,5 @@
-import Box from "@material-ui/core/Box";
-import { makeStyles } from "@material-ui/core/styles";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import Typography from "@material-ui/core/Typography";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -12,27 +9,14 @@ import { useSnackbar } from "@/lib/snackbar";
 import { useUser } from "@/lib/user";
 import { getPushBackUrl } from "@/lib/util";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    justifyContent: "flex-end",
-  },
-  loginLink: {
-    color: "white",
-  },
-  email: {
-    cursor: "pointer",
-    margin: 0,
-  },
-}));
-
 const UserButton = () => {
   const router = useRouter();
   const { snackInfo } = useSnackbar();
   const [anchor, setAnchor] = useState(null);
-  const classes = useStyles();
   const { logout, user, userLoading } = useUser();
 
   const openMenu = (event) => {
+    event.preventDefault();
     setAnchor(event.currentTarget);
   };
   const closeMenu = () => {
@@ -53,44 +37,38 @@ const UserButton = () => {
     return null;
   } else if (!user) {
     return (
-      <ButtonLink
-        className={classes.loginLink}
-        href={getPushBackUrl(router, "/auth/login")}
-      >
+      <ButtonLink href={getPushBackUrl(router, "/auth/login")}>
         Login
       </ButtonLink>
     );
+  } else {
+    return (
+      <>
+        <ButtonLink href="/account" onClick={openMenu}>
+          {user.email}
+        </ButtonLink>
+        <Menu
+          anchorEl={anchor}
+          anchorOrigin={{
+            horizontal: "center",
+            vertical: "bottom",
+          }}
+          anchorReference="anchorEl"
+          keepMounted
+          getContentAnchorEl={null}
+          onClose={closeMenu}
+          open={!!anchor}
+          transformOrigin={{
+            horizontal: "center",
+            vertical: "top",
+          }}
+        >
+          <MenuItem onClick={doAccount}>Account Settings</MenuItem>
+          <MenuItem onClick={doLogout}>Logout</MenuItem>
+        </Menu>
+      </>
+    );
   }
-
-  return (
-    <Box>
-      <Typography
-        ref={anchor}
-        variant="h6"
-        className={classes.email}
-        onClick={openMenu}
-      >
-        {user.email}
-      </Typography>
-      <Menu
-        anchorEl={anchor}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "center",
-        }}
-        keepMounted
-        open={!!anchor}
-        onClose={closeMenu}
-      >
-        <MenuItem onClick={doAccount}>My Account</MenuItem>
-        <MenuItem onClick={doLogout}>Logout</MenuItem>
-      </Menu>
-    </Box>
-  );
 };
 
 export default UserButton;

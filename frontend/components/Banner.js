@@ -2,8 +2,6 @@ import { makeStyles } from "@material-ui/core";
 
 import Link from "@/components/Link";
 import UserButton from "@/components/UserButton";
-import { getPushBackUrl } from "@/lib/util";
-import { useRouter } from "next/router";
 import ButtonLink from "@/components/ButtonLink";
 
 const useStyles = makeStyles((theme) => ({
@@ -47,14 +45,13 @@ const useStyles = makeStyles((theme) => ({
     top: ".5em",
     right: "1em",
     color: "white",
-  },
-  loginLink: {
-    color: "white",
+    "& a, & button": {
+      color: "white",
+    },
   },
 }));
 
 const Banner = ({ userButton = true }) => {
-  const router = useRouter();
   const classes = useStyles();
   return (
     <header className={classes.root}>
@@ -68,13 +65,10 @@ const Banner = ({ userButton = true }) => {
       </p>
 
       <div className={classes.login}>
-        <ButtonLink
-          className={classes.loginLink}
-          href={getPushBackUrl(router, "/about")}
-        >
+        {userButton && <UserButton />}
+        <ButtonLink className={classes.loginLink} href="/about">
           About
         </ButtonLink>
-        {userButton && <UserButton />}
       </div>
     </header>
   );
