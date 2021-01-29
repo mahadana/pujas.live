@@ -1,6 +1,7 @@
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import { globalStyle } from "@/lib/styles";
 
 import GroupList from "@/components/GroupList";
 import HomeChannelList from "@/components/HomeChannelList";
@@ -9,11 +10,7 @@ import ChannelRecordingsModal from "@/components/ChannelRecordingsModal";
 import VideoModal from "@/components/VideoModal";
 
 const useStyles = makeStyles((theme) => ({
-  lead: {
-    margin: 0,
-    fontSize: "2rem",
-    fontWeight: 400,
-  },
+  lead: globalStyle("lead"),
 }));
 
 const HomeContent = ({ channels, groups }) => {

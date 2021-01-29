@@ -2,6 +2,9 @@ import { makeStyles } from "@material-ui/core";
 
 import Link from "@/components/Link";
 import UserButton from "@/components/UserButton";
+import { getPushBackUrl } from "@/lib/util";
+import { useRouter } from "next/router";
+import ButtonLink from "@/components/ButtonLink";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,9 +48,13 @@ const useStyles = makeStyles((theme) => ({
     right: "1em",
     color: "white",
   },
+  loginLink: {
+    color: "white",
+  },
 }));
 
 const Banner = ({ userButton = true }) => {
+  const router = useRouter();
   const classes = useStyles();
   return (
     <header className={classes.root}>
@@ -59,11 +66,16 @@ const Banner = ({ userButton = true }) => {
         Livestreams and meditation groups in the Thai Forest tradition of Ajahn
         Chah
       </p>
-      {userButton && (
-        <div className={classes.login}>
-          <UserButton />
-        </div>
-      )}
+
+      <div className={classes.login}>
+        <ButtonLink
+          className={classes.loginLink}
+          href={getPushBackUrl(router, "/about")}
+        >
+          About
+        </ButtonLink>
+        {userButton && <UserButton />}
+      </div>
     </header>
   );
 };
