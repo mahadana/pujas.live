@@ -55,11 +55,16 @@ const ChannelRecordingsModal = ({ children }) => {
   const classes = useStyles();
 
   const {
-    channelRecordingsModalBackPath: closeAs,
+    channelRecordingsModalBackPath: backPath,
     channelRecordingsModalChannelId: channelId,
     ...query
   } = router.query;
-  const closeHref = { pathname: router.pathname, query };
+  const closeProps = {
+    as: backPath,
+    href: { pathname: router.pathname, query },
+    scroll: false,
+    shallow: true,
+  };
   const open = !!channelId;
 
   useEffect(() => {
@@ -69,7 +74,7 @@ const ChannelRecordingsModal = ({ children }) => {
   }, [channelId]);
 
   const onClose = () => {
-    router.push(closeHref, closeAs, { scroll: false, shallow: true });
+    router.push(closeProps.href, closeProps.as, closeProps);
   };
   const toggleState = () =>
     setState(state === "curated" ? "recent" : "curated");
@@ -81,13 +86,7 @@ const ChannelRecordingsModal = ({ children }) => {
         {({ data: { channel } }) => (
           <Dialog maxWidth="lg" open={open} onClose={onClose} scroll="body">
             {open && <Title title={`Recordings | ${channel.title}`} />}
-            <CloseButtonLink
-              as={closeAs}
-              className={classes.closeButton}
-              href={closeHref}
-              scroll={false}
-              shallow
-            />
+            <CloseButtonLink className={classes.closeButton} {...closeProps} />
             <DialogTitle className={classes.title}>
               <Box>Recordings - {channel.title}</Box>
               <Box>

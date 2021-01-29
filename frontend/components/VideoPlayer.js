@@ -1,5 +1,6 @@
 import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
+import ReactPlayer from "react-player";
 
 import CloseButtonLink from "@/components/CloseButtonLink";
 import VideoChantingBooksSlider from "@/components/VideoChantingBooksSlider";
@@ -30,23 +31,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const VideoIframe = ({ closeButtonProps = {}, url }) => {
+const VideoPlayer = ({ closeProps = {}, onEnded, url }) => {
   const classes = useStyles();
+
+  const config = {
+    youtube: {},
+    vimeo: {},
+  };
+
   return (
     <Box className={classes.root}>
-      <CloseButtonLink className={classes.closeButton} {...closeButtonProps} />
+      <CloseButtonLink className={classes.closeButton} {...closeProps} />
       <VideoChantingBooksSlider />
-      <iframe
-        allow="autoplay"
-        allowFullScreen
-        className={classes.iframe}
-        frameBorder="0"
-        scrolling="no"
-        seamless
-        src={url}
+      <ReactPlayer
+        config={config}
+        controls={true}
+        height="100%"
+        onEnded={onEnded}
+        playing={true}
+        width="100%"
+        url={url}
       />
     </Box>
   );
 };
 
-export default VideoIframe;
+export default VideoPlayer;

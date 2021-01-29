@@ -3,7 +3,7 @@ import Slide from "@material-ui/core/Slide";
 import { makeStyles } from "@material-ui/core/styles";
 import { useEffect, useRef, useState } from "react";
 
-import VideoChantingBooksBar from "@/components/VideoChantingBookBar";
+import VideoChantingBooksBar from "@/components/VideoChantingBooksBar";
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 
 import Title from "@/components/Title";
-import VideoIframe from "@/components/VideoIframe";
+import VideoPlayer from "@/components/VideoPlayer";
 
 export const useVideoModalHref = () => {
   const router = useRouter();
@@ -40,22 +40,21 @@ const VideoModal = ({ children }) => {
   const classes = useStyles();
 
   const {
-    videoModalBackPath: closeAs,
+    videoModalBackPath: backPath,
     videoModalTitle: title,
     videoModalUrl: url,
     ...query
   } = router.query;
-  const closeHref = { pathname: router.pathname, query };
-  const closeButtonProps = {
-    as: closeAs,
-    href: closeHref,
+  const closeProps = {
+    as: backPath,
+    href: { pathname: router.pathname, query },
     scroll: false,
     shallow: true,
   };
   const open = !!url;
 
   const onClose = () => {
-    router.push(closeHref, closeAs, { scroll: false, shallow: true });
+    router.push(closeProps.href, closeProps.as, closeProps);
   };
 
   return (
@@ -65,7 +64,7 @@ const VideoModal = ({ children }) => {
       <NoSsr>
         <Modal onClose={onClose} open={open}>
           <Box className={classes.container}>
-            <VideoIframe closeButtonProps={closeButtonProps} url={url} />
+            <VideoPlayer closeProps={closeProps} onEnded={onClose} url={url} />
           </Box>
         </Modal>
       </NoSsr>

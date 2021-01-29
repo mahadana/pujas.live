@@ -1,7 +1,8 @@
 import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
+import { useRouter } from "next/router";
 
-import VideoIframe from "@/components/VideoIframe";
+import VideoPlayer from "@/components/VideoPlayer";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,10 +14,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const VideoContent = ({ url }) => {
+  const router = useRouter();
   const classes = useStyles();
+
+  const closeProps = { href: "/" };
+  const onEnded = () => router.push("/");
+
   return (
     <Box className={classes.root}>
-      <VideoIframe closeButtonProps={{ href: "/" }} url={url} />
+      <VideoPlayer closeProps={closeProps} onEnded={onEnded} url={url} />
     </Box>
   );
 };
