@@ -1,6 +1,8 @@
-import { makeStyles } from "@material-ui/core/styles";
+import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
+import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import ReactPlayer from "react-player";
 
 import Banner from "@/components/Banner";
 import SiteMessageControl from "@/components/SiteMessageControl";
@@ -9,10 +11,16 @@ import { globalStyle } from "@/lib/styles";
 
 const useStyles = makeStyles((theme) => ({
   lead: globalStyle("lead"),
-  video: {
-    width: "60%",
-    maxWidth: "60%",
-    height: "400px",
+  player: {
+    position: "relative",
+    overflow: "hidden",
+    width: "calc(100% - 2em)",
+    paddingTop: "56.25%", // 16:9 Aspect Ratio
+    margin: "2em 1em",
+    "& > div": {
+      position: "absolute",
+      top: 0,
+    },
   },
 }));
 
@@ -27,14 +35,14 @@ const About = () => {
           <Typography className={classes.lead} variant="h2">
             How to Use
           </Typography>
-          <iframe
-            className={classes.video}
-            src="https://www.youtube.com/embed/jSegDnC7-ww"
-            seamless="seamless"
-            scrolling="no"
-            frameBorder="0"
-            allowTransparency="true"
-          />
+          <Box className={classes.player}>
+            <ReactPlayer
+              controls={true}
+              height="100%"
+              width="100%"
+              url="https://youtu.be/jSegDnC7-ww"
+            />
+          </Box>
         </>
 
         <>
