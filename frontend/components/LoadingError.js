@@ -1,21 +1,30 @@
 import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
 import NoSsr from "@material-ui/core/NoSsr";
-import Typography from "@material-ui/core/Typography";
-import ErrorIcon from "@material-ui/icons/Error";
+import Alert from "@material-ui/lab/Alert";
 import { useEffect, useRef } from "react";
 
 const refetchTimeout = 5000;
 
-const LoadingError = ({ error, errors, refetchers }) => {
+import Box from "@material-ui/core/Box";
+import Fade from "@material-ui/core/Fade";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    position: "fixed",
+    bottom: "1rem",
+    left: "50%",
+    transform: "translateX(-50%)",
+    zIndex: 10000,
+    "& > div": {
+      boxShadow: "1px 1px 6px rgb(0 0 0 / 80%)",
+    },
+  },
+}));
+
+const LoadingError = ({ error, refetchers }) => {
   const errorInterval = useRef(null);
+  const classes = useStyles();
 
   const clearErrorInterval = () => {
     if (errorInterval.current) {
@@ -39,41 +48,29 @@ const LoadingError = ({ error, errors, refetchers }) => {
     return () => clearErrorInterval();
   }, []);
 
-  const onClick = () => {
-    window.location.reload();
-  };
+  const reloadWindow = () => window.location.reload();
 
   return (
     <NoSsr>
-      <Dialog
-        aria-labelledby="error-dialog-title"
-        disableBackdropClick
-        disableEscapeKeyDown
-        maxWidth="sm"
-        open={error}
+      <Fade
+        in={error}
+        mountOnEnter
+        timeout={{ enter: 400, exit: 2000 }}
+        unmountOnExit
       >
-        <DialogTitle id="error-dialog-title">Server Error</DialogTitle>
-        <DialogContent dividers>
-          <List>
-            {errors.map((error, index) => (
-              <ListItem key={index}>
-                <ListItemIcon>
-                  <ErrorIcon />
-                </ListItemIcon>
-                <ListItemText primary={error.message} />
-              </ListItem>
-            ))}
-          </List>
-          <Typography variant="body1">
-            Sorry! Please wait or try again later...
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClick} color="primary">
-            Reload
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <Box className={classes.root}>
+          <Alert
+            action={
+              <Button color="inherit" onClick={reloadWindow} size="small">
+                Reload
+              </Button>
+            }
+            severity="error"
+          >
+            <strong>Temporary Server Error</strong>
+          </Alert>
+        </Box>
+      </Fade>
     </NoSsr>
   );
 };

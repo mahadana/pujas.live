@@ -36,7 +36,7 @@ const GroupForm = ({ group, onSubmit }) => {
       invalidFormSnackbar="Please correct the errors."
       validationSchema={groupSchema}
       validateOnChange={false}
-      onSubmit={async (values) => onSubmit(values)}
+      onSubmit={onSubmit}
     >
       <Grid container spacing={2}>
         <Grid item xs={12}>

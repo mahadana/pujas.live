@@ -17,15 +17,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LoadingNoUser = ({ noUser, noUserMessages = [] }) => {
+const LoadingNoUser = ({ noUser }) => {
   const router = useRouter();
   const classes = useStyles();
 
   const onBackdropClick = () => router.push("/");
-
-  if (noUserMessages.length == 0) {
-    noUserMessages.push("Please create an account or login to continue...");
-  }
 
   return (
     <NoSsr>
@@ -37,11 +33,9 @@ const LoadingNoUser = ({ noUser, noUserMessages = [] }) => {
       >
         <DialogTitle id="nouser-dialog-title">Account Required</DialogTitle>
         <DialogContent dividers>
-          {noUserMessages.map((message, index) => (
-            <Typography key={index} variant="body1">
-              {message}
-            </Typography>
-          ))}
+          <Typography variant="body1">
+            Please create an account or login to continue...
+          </Typography>
         </DialogContent>
         <DialogActions className={classes.actions}>
           <ButtonLink href="/">Cancel</ButtonLink>

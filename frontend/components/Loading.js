@@ -4,38 +4,39 @@ import { useContext, useEffect, useRef } from "react";
 import { LoadingContext } from "@/components/LoadingProvider";
 import { useUser } from "@/lib/user";
 
-const Loading = ({ children, ...props }) => {
+const Loading = ({ children, data, previousData, requireUser, ...props }) => {
   const { deleteState, setState } = useContext(LoadingContext);
   const id = useRef(null);
-  const { user, userLoading } = useUser();
+  const { user, userError, userLoading } = useUser();
+
+  data = data || previousData;
+  const toShow = Boolean(data && (user || !requireUser));
 
   let state;
-  if (props.error && !props.loading) {
+  if (props.error || (requireUser && userError)) {
     state = "error";
-  } else if (!props.data && props.called === false) {
-    state = "waiting";
+  } else if (requireUser && !user && !userLoading) {
+    state = "noUser";
   } else if (
     userLoading ||
-    (!props.data && (props.loading || props.called !== false))
+    (!toShow && (props.loading || props.called !== false))
   ) {
     state = "loading";
-  } else if (props.requireUser && !user) {
-    state = "noUser";
   } else {
-    state = "ready";
+    state = "ok";
   }
 
   useEffect(() => {
-    setState(id, { ...props, state });
+    setState(id, { refetch: props.refetch, state });
   }, [state]);
 
   useEffect(() => {
     return () => deleteState(id);
   }, []);
 
-  if (state === "ready") {
+  if (toShow) {
     if (isFunction(children)) {
-      return children({ ...props, user });
+      return children({ ...props, data, user });
     } else {
       return children;
     }

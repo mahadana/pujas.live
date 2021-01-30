@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const HomeContent = ({ channels, groups }) => {
+  console.log("HomeContent");
   const classes = useStyles();
   return (
     <VideoModal>

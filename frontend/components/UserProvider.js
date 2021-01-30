@@ -5,7 +5,7 @@ import { apolloClient } from "@/lib/apollo";
 import { ME_QUERY } from "@/lib/schema";
 import { UserContext } from "@/lib/user";
 
-const loadUser = ({ setUser, setUserLoading, user }) => {
+const loadUser = ({ setUser, setUserError, setUserLoading, user }) => {
   if (typeof window === "undefined" || user || !JsCookie.get("jwt")) {
     setUserLoading(false);
     return;
@@ -19,6 +19,7 @@ const loadUser = ({ setUser, setUserLoading, user }) => {
       setUser(result.data.me);
     } catch (error) {
       console.error(error);
+      setUserError(error);
       setUser(null);
     }
     setUserLoading(false);
@@ -27,6 +28,7 @@ const loadUser = ({ setUser, setUserLoading, user }) => {
 
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [userError, setUserError] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
   const context = {
     login: (user, jwt) => {
@@ -38,8 +40,10 @@ const UserProvider = ({ children }) => {
       JsCookie.remove("jwt");
     },
     setUser,
+    setUserError,
     setUserLoading,
     user,
+    userError,
     userLoading,
   };
   useEffect(() => loadUser(context), []);

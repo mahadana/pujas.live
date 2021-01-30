@@ -12,23 +12,20 @@ export const LoadingContext = createContext({
 const LoadingProvider = ({ children }) => {
   const [matrix, setMatrix] = useState(new Map());
 
-  let errors = [];
   const refetchers = [];
+  let error = false;
   let loading = false;
   let noUser = false;
-  let noUserMessages = [];
-  for (const { error, refetch, state, noUserMessage } of matrix.values()) {
+  for (const { refetch, state } of matrix.values()) {
     if (state === "error") {
-      errors.push(error);
-      refetchers.push(refetch);
+      error = true;
+      refetch && refetchers.push(refetch);
     } else if (state === "loading") {
       loading = true;
     } else if (state === "noUser") {
       noUser = true;
-      noUserMessage && noUserMessages.push(noUserMessage);
     }
   }
-  const error = errors.length > 0;
 
   const context = {
     deleteState: (id) =>
@@ -44,9 +41,9 @@ const LoadingProvider = ({ children }) => {
   return (
     <LoadingContext.Provider value={context}>
       {children}
-      <LoadingError error={error} errors={errors} refetchers={refetchers} />
+      <LoadingError error={error} refetchers={refetchers} />
       <LoadingProgress loading={loading} />
-      <LoadingNoUser noUser={noUser} noUserMessages={noUserMessages} />
+      <LoadingNoUser noUser={noUser} />
     </LoadingContext.Provider>
   );
 };
