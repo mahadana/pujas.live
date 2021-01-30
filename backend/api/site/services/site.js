@@ -9,6 +9,8 @@ const yup = require("yup");
 
 const {
   emailSchema,
+  encodeAddress,
+  encodeMailto,
   getEmailTemplate,
   requiredStringSchema,
 } = require("../../../lib/util");
@@ -22,11 +24,17 @@ const messageSiteSchema = yup.object({
 module.exports = {
   async message(params) {
     messageSiteSchema.validateSync(params);
+
+    const frontendUrl = strapi.config.get("server.frontendUrl");
+    const from = { name: params.name, address: params.email };
+
     await strapi.plugins["email"].services.email.sendTemplatedEmail(
       {
-        from: strapi.config.get("plugins.email.settings.defaultFrom"),
-        fromName: strapi.config.get("plugins.email.settings.defaultFromName"),
-        replyTo: `"${params.name}" <${params.email}>`,
+        from: {
+          name: strapi.config.get("plugins.email.settings.defaultFromName"),
+          address: strapi.config.get("plugins.email.settings.defaultFrom"),
+        },
+        replyTo: from,
         to: strapi.config.get("server.admin.auth.email"),
       },
       {
@@ -36,7 +44,9 @@ module.exports = {
       },
       {
         ...params,
-        frontendUrl: strapi.config.get("server.frontendUrl"),
+        address: encodeAddress(from),
+        aboutUrl: `${frontendUrl}/about`,
+        mailto: encodeMailto({ to: from }),
       }
     );
   },

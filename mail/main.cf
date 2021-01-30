@@ -1,0 +1,16 @@
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+myhostname = mail.localdomain
+mydestination = $myhostname localhost.localdomain localhost
+mynetworks = 0.0.0.0/0 [::]/0
+inet_interfaces = all
+inet_protocols = all
+
+virtual_alias_domains = *
+virtual_alias_maps = regexp:/etc/postfix/virtual_alias
+relayhost =
+smtp_sasl_auth_enable = yes
+smtp_sasl_mechanism_filter = plain
+smtp_sasl_security_options = noanonymous
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_password

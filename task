@@ -10,6 +10,7 @@ Usage: $0 <service> [command...]
   Strapi console                    $0 backend console
   PostgreSQL console                $0 postgres console
   Redis console                     $0 redis console
+  Mail console                      $0 mail console
 
   Run all tests                     $0 test
   Run <service> tests               $0 <backend|frontend|worker> test
@@ -49,6 +50,12 @@ case "$SERVICE" in
       set npx -c 'PORT=1338 strapi console'
     elif [ "$*" == "fake" ]; then
       set bash -c 'node lib/fake'
+    fi
+    ;;
+  mail)
+    SERVICE="mail"
+    if [ "$*" == "console" ]; then
+      set mail
     fi
     ;;
   db|postgres)
@@ -114,6 +121,7 @@ case "$SERVICE" in
     if docker image ls | grep -q pujaslive; then
       docker image rm $(docker image ls | grep pujaslive | tr -s ' ' | cut -d ' ' -f 3)
     fi
+    docker image prune -f
     if docker volume ls -q | grep -q pujaslive; then
       docker volume rm $(docker volume ls -q | grep pujaslive)
     fi
@@ -144,13 +152,11 @@ if echo "$SERVICE_ID" | grep -q .; then
   fi
 fi
 
-if test "$COMMAND" = run; then
-  case "$SERVICE" in
-    backend|frontend|worker)
-      set -- /app/docker/run "$SERVICE" "$@"
-      ;;
-  esac
-fi
+case "$SERVICE" in
+  backend|frontend|worker)
+    set -- /app/docker/run "$SERVICE" "$@"
+    ;;
+esac
 
 echo "> docker-compose $COMMAND $SERVICE $@"
 docker-compose "$COMMAND" "$SERVICE" "$@"

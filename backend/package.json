@@ -13,8 +13,7 @@
     "strapi-plugin-graphql": "3.4.1",
     "strapi-plugin-upload": "3.4.1",
     "strapi-plugin-users-permissions": "3.4.1",
-    "strapi-provider-email-mailjet": "^3.3.0",
-    "strapi-provider-email-mailtrap": "^3.1.5",
+    "strapi-provider-email-nodemailer": "3.4.1",
     "strapi-utils": "3.4.1",
     "timezone-support": "^2.0.2"
   },

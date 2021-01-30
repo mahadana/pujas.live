@@ -4,52 +4,44 @@ const { getOne } = require("./util");
 const initPermissions = async () => {
   strapi.log.info("Initializing permissions:");
 
-  const updatePermissions = async (role, controllers, actions, enabled) => {
-    const roleModel = await getOne({ name: role }, "role", "users-permissions");
-
-    for (const controller of controllers) {
-      strapi.log.info(`  ${role}/${controller}: ` + actions.join(" "));
-      for (const action of actions) {
-        await strapi
-          .query("permission", "users-permissions")
-          .update({ controller, action, role: roleModel.id }, { enabled });
+  const enablePermissions = async (roles, controllers, actions) => {
+    for (const role of roles) {
+      const roleModel = await getOne(
+        { name: role },
+        "role",
+        "users-permissions"
+      );
+      for (const controller of controllers) {
+        strapi.log.info(`  ${role}/${controller}: ` + actions.join(" "));
+        for (const action of actions) {
+          await strapi
+            .query("permission", "users-permissions")
+            .update(
+              { controller, action, role: roleModel.id },
+              { enabled: true }
+            );
+        }
       }
     }
   };
 
-  await updatePermissions(
-    "Public",
+  await enablePermissions(
+    ["Authenticated", "Public"],
     ["extra"],
-    ["loginwithtoken", "preparegroup"],
-    true
+    ["loginwithtoken", "preparegroup"]
   );
-  await updatePermissions(
-    "Public",
+  await enablePermissions(
+    ["Authenticated", "Public"],
     ["channel", "group", "monastery", "recording"],
-    ["count", "find", "findone"],
-    true
+    ["count", "find", "findone"]
   );
-  await updatePermissions("Public", ["site"], ["message"], true);
-  await updatePermissions(
-    "Public",
-    ["extra"],
-    ["loginwithtoken", "preparegroup"],
-    true
+  await enablePermissions(
+    ["Authenticated", "Public"],
+    ["group", "site"],
+    ["message"]
   );
-  await updatePermissions(
-    "Authenticated",
-    ["channel", "monastery", "recording"],
-    ["count", "find", "findone"],
-    true
-  );
-  await updatePermissions(
-    "Authenticated",
-    ["group"],
-    ["count", "create", "find", "findone", "message", "update"],
-    true
-  );
-  await updatePermissions("Authenticated", ["site"], ["message"], true);
-  await updatePermissions("Authenticated", ["upload"], ["upload"], true);
+  await enablePermissions(["Authenticated"], ["group"], ["create", "update"]);
+  await enablePermissions(["Authenticated"], ["upload"], ["upload"]);
 };
 
 module.exports = { initPermissions };

@@ -9,6 +9,8 @@ const yup = require("yup");
 
 const {
   emailSchema,
+  encodeAddress,
+  encodeMailto,
   getEmailTemplate,
   requiredStringSchema,
 } = require("../../../lib/util");
@@ -26,17 +28,21 @@ module.exports = {
     if (!group) {
       throw Error(`Group not found`);
     }
-    const groupOwnerEmail = group.owner?.email;
 
-    emailSchema.validateSync(groupOwnerEmail);
+    emailSchema.validateSync(group.owner?.email);
     messageGroupSchema.validateSync(params);
+
+    const frontendUrl = strapi.config.get("server.frontendUrl");
+    const from = { name: params.name, address: params.email };
 
     await strapi.plugins["email"].services.email.sendTemplatedEmail(
       {
-        from: strapi.config.get("plugins.email.settings.defaultFrom"),
-        fromName: strapi.config.get("plugins.email.settings.defaultFromName"),
-        replyTo: `"${params.name}" <${params.email}>`,
-        to: groupOwnerEmail,
+        from: {
+          name: strapi.config.get("plugins.email.settings.defaultFromName"),
+          address: strapi.config.get("plugins.email.settings.defaultFrom"),
+        },
+        replyTo: from,
+        to: { name: group.title, address: group.owner.email },
       },
       {
         subject: "[Pujas.live] Join request from ${name}",
@@ -45,8 +51,10 @@ module.exports = {
       },
       {
         ...params,
-        frontendUrl: strapi.config.get("server.frontendUrl"),
-        groupId,
+        address: encodeAddress(from),
+        groupMessageUrl: `${frontendUrl}/groups/${groupId}/message`,
+        groupEditUrl: `${frontendUrl}/groups/${groupId}/edit`,
+        mailto: encodeMailto({ to: from }),
       }
     );
   },

@@ -14,9 +14,6 @@ services:
       FRONTEND_URL: ${FRONTEND_URL:-https://pujas.live}
       HCAPTCHA_SECRET: ${HCAPTCHA_SECRET?}
       JWT_SECRET: ${BACKEND_JWT_SECRET?}
-      MAIL_PROVIDER: ${MAIL_PROVIDER:-mailjet}
-      MAILJET_PUBLIC_KEY: ${MAILJET_PUBLIC_KEY?}
-      MAILJET_SECRET_KEY: ${MAILJET_SECRET_KEY?}
     restart: unless-stopped
     volumes:
       - uploads:/app/backend/public/uploads
@@ -53,13 +50,20 @@ services:
         API_URL: ${BACKEND_URL:-https://api.pujas.live}
         HCAPTCHA_SITE_KEY: ${HCAPTCHA_SITE_KEY?}
         PLAUSIBLE_DOMAIN: ${PLAUSIBLE_DOMAIN:-pujas.live}
-    depends_on:
-      - postgres
-      - redis
     environment:
       NEXT_PUBLIC_API_URL: ${BACKEND_URL:-https://api.pujas.live}
       NEXT_PUBLIC_HCAPTCHA_SITE_KEY: ${HCAPTCHA_SITE_KEY?}
       NEXT_PUBLIC_PLAUSIBLE_DOMAIN: ${PLAUSIBLE_DOMAIN:-pujas.live}
+    restart: unless-stopped
+
+  mail:
+    build:
+      context: ../mail
+    environment:
+      MAIL_RELAY_HOST: ${MAIL_RELAY_HOST:-in.mailjet.com}
+      MAIL_RELAY_PORT: ${MAIL_RELAY_PORT:-2525}
+      MAIL_RELAY_USER: ${MAIL_RELAY_USER?}
+      MAIL_RELAY_PASSWORD: ${MAIL_RELAY_PASSWORD?}
     restart: unless-stopped
 
   postgres:

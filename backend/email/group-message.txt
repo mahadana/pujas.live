@@ -1,4 +1,4 @@
-From: ${name} <${email}>
+Message from ${address}:
 
 Q. What are you looking for in a meditation group?
 
@@ -8,5 +8,5 @@ Q. Please describe your experience/interest in the Thai Forest tradition:
 
 ${experience}
 ---
-This message originated from ${frontendUrl}/groups/${groupId}/message
-To update this group, please visit ${frontendUrl}/groups/${groupId}/edit
+This message originated from ${groupMessageUrl}
+To update this group, please visit ${groupEditUrl}

@@ -9,6 +9,7 @@ services:
     env_file: .env
     ports:
       - "127.0.0.1:${BACKEND_PORT:-1337}:1337"
+    restart: unless-stopped
     volumes:
       - .:/app
       - /app/backend/.cache
@@ -25,11 +26,18 @@ services:
       NEXT_PUBLIC_PLAUSIBLE_DOMAIN: ${PLAUSIBLE_DOMAIN:-localhost}
     ports:
       - "127.0.0.1:${FRONTEND_PORT:-3000}:3000"
+    restart: unless-stopped
     volumes:
       - .:/app
       - /app/frontend/.next
       - frontend_nm:/app/frontend/node_modules
     working_dir: /app/frontend
+
+  mail:
+    build:
+      context: mail
+    env_file: .env
+    restart: unless-stopped
 
   postgres:
     image: postgres:latest
@@ -46,8 +54,6 @@ services:
   worker:
     image: node:14
     command: /app/docker/start worker
-    depends_on:
-      - postgres
     env_file: .env
     restart: unless-stopped
     volumes:
