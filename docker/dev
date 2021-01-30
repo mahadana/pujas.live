@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -eu
+
+if [ $# = 0 ]; then
+  echo "Usage: $0 <service>"
+  exit 1
+fi
+
+SERVICE="$1"
+
+cd "/app/$SERVICE"
+
+if [ $(ls node_modules | wc -l) = 0 ]; then
+  echo "Installing node modules..."
+  npm install --silent
+fi
+
+if [ "$SERVICE" = backend ]; then
+  if [ $(ls build | wc -l) = 0 ]; then
+    npm run build
+  fi
+  node lib/init
+fi
+
+npm run dev

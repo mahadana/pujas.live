@@ -3,11 +3,12 @@
 set -eu
 
 if [ $# = 0 ]; then
-  echo "Usage: $0 <service>"
+  echo "Usage: $0 <service> command [args...]"
   exit 1
 fi
 
 SERVICE="$1"
+shift
 
 case "$SERVICE" in
   backend)
@@ -34,24 +35,15 @@ if [ $uid = 0 ]; then
   user=root
 else
   user=node
-  userdel node 2> /dev/null || true
-  groupdel node 2> /dev/null || true
-  groupadd -g $gid node
-  useradd -u $uid -g $gid -d /home/node -s /bin/bash node
+  groupmod -g $gid $user
+  usermod -u $uid -g $gid $user 2> /dev/null
   chown -R node:node /home/node
   chown node:node node_modules $VOLUME_DIRS
 fi
 
-if [ $(ls node_modules | wc -l) = 0 ]; then
-  echo "Installing node modules..."
-  su -c "npm install --silent" $user
+if test "$*" = bash; then
+  exec su -s /bin/bash $user
+else
+  cmd="$(printf '"%q" ' "$@")"
+  exec su -c "$cmd" $user
 fi
-
-if [ "$SERVICE" = backend ]; then
-  if [ $(ls build | wc -l) = 0 ]; then
-    su -c "npm run build" $user
-  fi
-  su -c "node lib/init" $user
-fi
-
-su -c "npm run dev" $user

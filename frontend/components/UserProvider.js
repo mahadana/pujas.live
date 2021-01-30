@@ -21,6 +21,7 @@ const loadUser = ({ setUser, setUserError, setUserLoading, user }) => {
       console.error(error);
       setUserError(error);
       setUser(null);
+      JsCookie.remove("jwt");
     }
     setUserLoading(false);
   })();

@@ -3,7 +3,7 @@ version: "3.7"
 services:
   backend:
     image: node:14
-    command: /app/shared/start-docker-dev.sh backend
+    command: /app/docker/start backend
     depends_on:
       - postgres
     env_file: .env
@@ -18,7 +18,7 @@ services:
 
   frontend:
     image: node:14
-    command: /app/shared/start-docker-dev.sh frontend
+    command: /app/docker/start frontend
     environment:
       NEXT_PUBLIC_API_URL: ${BACKEND_URL:-http://localhost:1337}
       NEXT_PUBLIC_HCAPTCHA_SITE_KEY: ${HCAPTCHA_SITE_KEY:-}
@@ -45,7 +45,7 @@ services:
 
   worker:
     image: node:14
-    command: /app/shared/start-docker-dev.sh worker
+    command: /app/docker/start worker
     depends_on:
       - postgres
     env_file: .env

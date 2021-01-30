@@ -35,14 +35,13 @@ Usage: ./task <service> [command...]
   Run <service> tests               ./task <backend|frontend|worker> test
   Watch <service> tests             ./task <backend|frontend|worker> watch
 
+  Run npm install in node services  ./task install
   Apply auto-formatting (prettier)  ./task pretty
   Run linter (eslint)               ./task lint
   Add fake data                     ./task fake
   (Re)build Strapi admin            ./task build-admin
   Reset database                    ./task reset-db
   Clean containers, cache, etc...   ./task clean
-
-Note: Services must already be running (docker-compose up).
 ```
 
 ## Email, Captchas, YouTube

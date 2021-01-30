@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eu
+
 if [ $# = 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
   cat <<EOF
 Usage: $0 <service> [command...]
@@ -13,14 +15,13 @@ Usage: $0 <service> [command...]
   Run <service> tests               $0 <backend|frontend|worker> test
   Watch <service> tests             $0 <backend|frontend|worker> watch
 
+  Run npm install in node services  $0 install
   Apply auto-formatting (prettier)  $0 pretty
   Run linter (eslint)               $0 lint
   Add fake data                     $0 fake
   (Re)build Strapi admin            $0 build-admin
   Reset database                    $0 reset-db
   Clean containers, cache, etc...   $0 clean
-
-Note: Services must already be running (docker-compose up).
 EOF
   exit 1
 fi
@@ -74,8 +75,10 @@ case "$SERVICE" in
     "$0" worker test
     exit 0
     ;;
-  fake)
-    "$0" backend fake
+  install)
+    "$0" backend npm install
+    "$0" frontend npm install
+    "$0" worker npm install
     exit 0
     ;;
   pretty|prettier)
@@ -86,6 +89,10 @@ case "$SERVICE" in
   lint|eslint)
     test -d node_modules || npm install --silent
     npm run eslint
+    exit 0
+    ;;
+  fake)
+    "$0" backend fake
     exit 0
     ;;
   build-admin)
@@ -118,14 +125,9 @@ case "$SERVICE" in
           worker/build worker/node_modules
     exit 0
     ;;
-esac
-
-case "$SERVICE" in
-  backend|frontend|worker)
-    USER="$(docker-compose exec "$SERVICE" stat -c %U /app | sed 's/[^[:print:]]//g')"
-    ;;
   *)
-    USER=root
+    echo "No such service: $SERVICE"
+    exit 1
     ;;
 esac
 
@@ -133,4 +135,26 @@ if [ $# = 0 ]; then
   set bash
 fi
 
-docker-compose exec -u "$USER" "$SERVICE" "$@"
+COMMAND=run
+SERVICE_ID=$(docker-compose ps -q $SERVICE)
+if echo "$SERVICE_ID" | grep -q .; then
+  if docker ps -qa --filter status=running \
+                   --filter "id=$SERVICE_ID" | grep -q .; then
+    COMMAND=exec
+  fi
+fi
+
+if test "$COMMAND" = run; then
+  case "$SERVICE" in
+    backend|frontend|worker)
+      set -- /app/docker/run "$SERVICE" "$@"
+      ;;
+  esac
+fi
+
+echo "> docker-compose $COMMAND $SERVICE $@"
+docker-compose "$COMMAND" "$SERVICE" "$@"
+
+if test "$COMMAND" = "run"; then
+  docker-compose rm -vf > /dev/null 2>&1
+fi
