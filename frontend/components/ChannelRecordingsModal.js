@@ -28,6 +28,12 @@ export const useChannelRecordingsModalHref = () => {
 };
 
 const useStyles = makeStyles((theme) => ({
+  dialog: {
+    minHeight: "calc(100vh - 64px)",
+    [theme.breakpoints.up(1164)]: {
+      maxWidth: "1100px !important",
+    },
+  },
   closeButton: {
     position: "absolute",
     right: 0,
@@ -86,6 +92,7 @@ const ChannelRecordingsModal = ({ children }) => {
       <Loading {...result}>
         {({ data: { channel } }) => (
           <Dialog
+            classes={{ paper: classes.dialog }}
             maxWidth="lg"
             open={open}
             onClose={onClose}
