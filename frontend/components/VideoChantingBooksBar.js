@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState, forwardRef } from "react";
 
 import IframeModal from "@/components/IframeModal";
+import plausible from "@/lib/plausible";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,6 +54,7 @@ const VideoChantingBooksBar = forwardRef((props, ref) => {
     event.preventDefault();
     setUrl("https://pujas.live/chanting/iframe.html?book=" + n);
     setOpen(true);
+    plausible("chantingBook", { props: { book: `${n}` } });
   };
 
   const onClose = () => {

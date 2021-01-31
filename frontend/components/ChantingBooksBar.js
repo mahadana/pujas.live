@@ -1,7 +1,9 @@
-import { useState } from "react";
 import { Box, makeStyles } from "@material-ui/core";
-import Link from "@/components/Link";
+import { useState } from "react";
+
 import IframeModal from "@/components/IframeModal";
+import Link from "@/components/Link";
+import plausible from "@/lib/plausible";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,6 +41,7 @@ const ChantingBooksBar = () => {
     event.preventDefault();
     setUrl("https://pujas.live/chanting/iframe.html?book=" + n);
     setOpen(true);
+    plausible("chantingBook", { props: { book: `${n}` } });
   };
 
   const onClose = () => {

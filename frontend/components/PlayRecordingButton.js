@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import ButtonLink from "@/components/ButtonLink";
 import { useVideoModalHref } from "@/components/VideoModal";
 import { getRecordingPath, getRecordingVideoUrl } from "@/lib/util";
+import plausible from "@/lib/plausible";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -31,6 +32,9 @@ const PlayRecordingButton = ({ active, children, recording, skip, title }) => {
     props.href = videoUrl;
     props.rel = "noopener noreferrer";
     props.target = "_blank";
+    props.onClick = () => {
+      plausible("externalVideo", { props: { url: videoUrl } });
+    };
   }
 
   return (
