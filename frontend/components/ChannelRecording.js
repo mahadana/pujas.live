@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
 import UploadImage from "@/components/UploadImage";
-import PlayRecordingButton from "@/components/PlayRecordingButton";
+import PlayRecordingButtonLink from "@/components/PlayRecordingButtonLink";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,9 +63,9 @@ const ChannelRecording = ({ recording }) => {
         <Typography variant="body1">{recording.description}</Typography>
       </Box>
       <Box className={classes.button}>
-        <PlayRecordingButton recording={recording} skip={recording.skip}>
-          Play Recording
-        </PlayRecordingButton>
+        <PlayRecordingButtonLink recording={recording} skip={recording.skip}>
+          Recording
+        </PlayRecordingButtonLink>
       </Box>
     </Box>
   );

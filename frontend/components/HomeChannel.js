@@ -6,7 +6,7 @@ import ChannelRecordingsLink from "@/components/ChannelRecordingsLink";
 import Link from "@/components/Link";
 import Upcoming from "@/components/Upcoming";
 import UploadImage from "@/components/UploadImage";
-import PlayRecordingButton from "@/components/PlayRecordingButton";
+import PlayRecordingButtonLink from "@/components/PlayRecordingButtonLink";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -90,12 +90,12 @@ const HomeChannel = (props) => {
       </Box>
       <Box className={classes.links}>
         {props.activeStream && (
-          <PlayRecordingButton
+          <PlayRecordingButtonLink
             active={props.activeStream.live}
             recording={props.activeStream}
           >
-            {props.activeStream.live ? "Join Livestream" : "Livestream"}
-          </PlayRecordingButton>
+            Livestream
+          </PlayRecordingButtonLink>
         )}
       </Box>
     </Box>

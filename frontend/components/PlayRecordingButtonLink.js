@@ -11,7 +11,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PlayRecordingButton = ({ active, children, recording, skip, title }) => {
+const PlayRecordingButtonLink = ({
+  active,
+  children,
+  recording,
+  skip,
+  title,
+}) => {
   const getVideoModalHref = useVideoModalHref();
   const classes = useStyles();
 
@@ -44,9 +50,9 @@ const PlayRecordingButton = ({ active, children, recording, skip, title }) => {
       variant="contained"
       {...props}
     >
-      {children}
+      {children} {recording.embed ? "⎚" : "↗"}
     </ButtonLink>
   );
 };
 
-export default PlayRecordingButton;
+export default PlayRecordingButtonLink;
