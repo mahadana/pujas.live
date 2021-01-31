@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const VideoPlayer = ({ closeProps = {}, onEnded, url }) => {
+const VideoPlayer = ({ autoplay = false, closeProps = {}, onEnded, url }) => {
   const classes = useStyles();
 
   const config = {
@@ -48,7 +48,7 @@ const VideoPlayer = ({ closeProps = {}, onEnded, url }) => {
         controls={true}
         height="100%"
         onEnded={onEnded}
-        playing={true}
+        playing={autoplay}
         width="100%"
         url={url}
       />

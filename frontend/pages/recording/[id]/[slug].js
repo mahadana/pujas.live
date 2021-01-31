@@ -21,7 +21,7 @@ const RecordingPage = () => {
   if (recording) {
     recordingPath = getRecordingPath(recording);
     videoUrl = getRecordingVideoUrl(recording, {
-      autoplay: true,
+      autoplay: false,
       skip: router.query.skip,
     });
   }

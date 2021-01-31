@@ -22,7 +22,12 @@ const VideoContent = ({ url }) => {
 
   return (
     <Box className={classes.root}>
-      <VideoPlayer closeProps={closeProps} onEnded={onEnded} url={url} />
+      <VideoPlayer
+        autoplay={false}
+        closeProps={closeProps}
+        onEnded={onEnded}
+        url={url}
+      />
     </Box>
   );
 };

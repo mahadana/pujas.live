@@ -225,7 +225,7 @@ describe("simple", () => {
     );
     expect(
       yt.getVideoUrlFromVideoId("BgsbBWcKch8", { autoplay: true })
-    ).toEqual("https://youtu.be/BgsbBWcKch8?autoplay=1");
+    ).toEqual("https://youtu.be/BgsbBWcKch8");
     expect(
       yt.getVideoUrlFromVideoId("BgsbBWcKch8", {
         skip: 101,

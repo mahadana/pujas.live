@@ -64,7 +64,12 @@ const VideoModal = ({ children }) => {
       <NoSsr>
         <Modal onClose={onClose} open={open}>
           <Box className={classes.container}>
-            <VideoPlayer closeProps={closeProps} onEnded={onClose} url={url} />
+            <VideoPlayer
+              autoplay={true}
+              closeProps={closeProps}
+              onEnded={onClose}
+              url={url}
+            />
           </Box>
         </Modal>
       </NoSsr>

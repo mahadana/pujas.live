@@ -22,7 +22,6 @@ export const getYouTubeEmbedVideoUrlFromVideoId = (videoId, options = {}) => {
 export const getYouTubeVideoUrlFromVideoId = (videoId, options = {}) => {
   let url = `https://youtu.be/${videoId}`;
   const extras = [];
-  if (options.autoplay) extras.push("autoplay=1");
   if (options.skip) extras.push("t=" + options.skip);
   if (extras.length) url += "?" + extras.join("&");
   return url;
