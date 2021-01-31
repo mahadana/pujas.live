@@ -32,7 +32,7 @@ const PlayRecordingButtonLink = ({
   const classes = useStyles();
 
   const props = {};
-  const options = { autoplay: true, skip };
+  const options = { autoplay: true, skip: skip || 0 };
   const recordingPath = getRecordingPath(recording, options);
   const videoUrl = getRecordingVideoUrl(recording, options);
 

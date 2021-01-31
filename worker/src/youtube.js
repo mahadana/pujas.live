@@ -1,6 +1,7 @@
 import cheerio from "cheerio";
 import crypto from "crypto";
 import fetch from "cross-fetch";
+import isNil from "lodash/isNil"
 
 import Cache from "./cache";
 
@@ -74,7 +75,7 @@ class YouTube {
     let url = `https://www.youtube.com/embed/${videoId}`;
     const extras = [];
     if (options.autoplay) extras.push("autoplay=1");
-    if (options.skip) extras.push("start=" + options.skip);
+    if (!isNil(options.skip)) extras.push("start=" + options.skip);
     if (extras.length) url += "?" + extras.join("&");
     return url;
   }
@@ -136,7 +137,7 @@ class YouTube {
   getVideoUrlFromVideoId(videoId, options = {}) {
     let url = `https://youtu.be/${videoId}`;
     const extras = [];
-    if (options.skip) extras.push("t=" + options.skip);
+    if (!isNil(options.skip)) extras.push("t=" + options.skip);
     if (extras.length) url += "?" + extras.join("&");
     return url;
   }

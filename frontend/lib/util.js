@@ -1,4 +1,5 @@
 import slugify from "slugify";
+import isNil from "lodash/isNil";
 
 // TODO redundant with worker/src/youtube.js
 export const getYouTubeVideoIdFromUrl = (url) => {
@@ -13,7 +14,7 @@ export const getYouTubeEmbedVideoUrlFromVideoId = (videoId, options = {}) => {
   let url = `https://www.youtube.com/embed/${videoId}`;
   const extras = [];
   if (options.autoplay) extras.push("autoplay=1");
-  if (options.skip) extras.push("start=" + options.skip);
+  if (!isNil(options.skip)) extras.push("start=" + options.skip);
   if (extras.length) url += "?" + extras.join("&");
   return url;
 };
@@ -22,7 +23,7 @@ export const getYouTubeEmbedVideoUrlFromVideoId = (videoId, options = {}) => {
 export const getYouTubeVideoUrlFromVideoId = (videoId, options = {}) => {
   let url = `https://youtu.be/${videoId}`;
   const extras = [];
-  if (options.skip) extras.push("t=" + options.skip);
+  if (!isNil(options.skip)) extras.push("t=" + options.skip);
   if (extras.length) url += "?" + extras.join("&");
   return url;
 };
