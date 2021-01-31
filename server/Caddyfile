@@ -4,6 +4,11 @@ pujas.live {
     root * /opt/chanting
     file_server
   }
+  redir /logs /logs/
+  handle_path /logs/* {
+    root * /logs
+    file_server browse
+  }
   reverse_proxy /hooks/* pujas.live:9000
   reverse_proxy frontend:3000
 }

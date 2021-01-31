@@ -38,6 +38,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - ../logs:/logs
       - /opt/chanting:/opt/chanting
       - caddy_data:/data
       - caddy_config:/config
@@ -89,6 +90,8 @@ services:
     environment:
       YOUTUBE_API_KEY: ${YOUTUBE_API_KEY?}
     restart: unless-stopped
+    volumes:
+      - ../logs:/logs
 
 volumes:
   caddy_config:
