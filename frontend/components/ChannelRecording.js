@@ -64,7 +64,7 @@ const ChannelRecording = ({ recording }) => {
       </Box>
       <Box className={classes.button}>
         <PlayRecordingButtonLink recording={recording} skip={recording.skip}>
-          Recording
+          Watch
         </PlayRecordingButtonLink>
       </Box>
     </Box>

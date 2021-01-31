@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";
+import Image from "next/image";
 
 import ButtonLink from "@/components/ButtonLink";
 import { useVideoModalHref } from "@/components/VideoModal";
@@ -8,6 +9,15 @@ import plausible from "@/lib/plausible";
 const useStyles = makeStyles((theme) => ({
   button: {
     borderRadius: 20,
+    paddingLeft: "1em",
+    paddingRight: "1em",
+    width: "11em",
+  },
+  externalLink: {
+    paddingLeft: ".5em",
+    "& > div": {
+      verticalAlign: "text-bottom",
+    },
   },
 }));
 
@@ -43,6 +53,12 @@ const PlayRecordingButtonLink = ({
     };
   }
 
+  const externalLink = (
+    <span className={classes.externalLink}>
+      <Image src="/external-link.svg" width="16" height="16" />
+    </span>
+  );
+
   return (
     <ButtonLink
       className={classes.button}
@@ -50,7 +66,8 @@ const PlayRecordingButtonLink = ({
       variant="contained"
       {...props}
     >
-      {children} {recording.embed ? "⎚" : "↗"}
+      {children}
+      {!recording.embed && externalLink}
     </ButtonLink>
   );
 };
