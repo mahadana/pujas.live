@@ -56,7 +56,8 @@ const ChannelRecordingsModal = ({ children }) => {
   const [getChannel, result] = useLazyQuery(CHANNEL_QUERY, {
     fetchPolicy: "cache-and-network",
   });
-  const [state, setState] = useState("curated");
+  const startingState = "recent";
+  const [state, setState] = useState(startingState);
   const router = useRouter();
   const classes = useStyles();
 
@@ -82,7 +83,7 @@ const ChannelRecordingsModal = ({ children }) => {
   const onClose = () => {
     router.push(closeProps.href, closeProps.as, closeProps);
   };
-  const onExited = () => setState("curated");
+  const onExited = () => setState(startingState);
   const toggleState = () =>
     setState(state === "curated" ? "recent" : "curated");
 

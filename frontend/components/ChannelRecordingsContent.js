@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ChannelRecordingsContent = ({ channel }) => {
-  const [state, setState] = useState("curated");
+  const [state, setState] = useState("recent");
   const classes = useStyles();
 
   const toggleState = () =>
