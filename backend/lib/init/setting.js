@@ -40,6 +40,9 @@ const initSettings = async () => {
   });
   strapi.log.info("  plugin:users-permissions:advanced");
 
+  const fromName = strapi.config.get("plugins.email.settings.defaultFromName");
+  const fromEmail = strapi.config.get("plugins.email.settings.defaultFrom");
+
   await pluginStore.set({
     key: "email",
     value: {
@@ -47,7 +50,7 @@ const initSettings = async () => {
         display: "Email.template.email_confirmation",
         icon: "check-square",
         options: {
-          from: { name: "Pujas.live", email: "no-reply@pujas.live" },
+          from: { name: fromName, email: fromEmail },
           message: emailConfirmationMessage,
           object: "[Pujas.live] Confirm your email",
           response_email: null,
@@ -57,7 +60,7 @@ const initSettings = async () => {
         display: "Email.template.reset_password",
         icon: "sync",
         options: {
-          from: { name: "Pujas.live", email: "no-reply@pujas.live" },
+          from: { name: fromName, email: fromEmail },
           message: resetPasswordMessage,
           object: "[Pujas.live] Reset password",
           response_email: null,
