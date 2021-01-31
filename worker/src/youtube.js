@@ -1,7 +1,7 @@
 import cheerio from "cheerio";
 import crypto from "crypto";
 import fetch from "cross-fetch";
-import isNil from "lodash/isNil"
+import isNil from "lodash/isNil";
 
 import Cache from "./cache";
 
