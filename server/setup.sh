@@ -58,7 +58,7 @@ for env in "$BASE_DIR/.env" "$PLAUSIBLE_BASE_DIR/.env"; do
   fi
 done
 
-if test -n missing; then
+if test -n "$missing"; then
   echo "Please create and edit the missing .env files"
   exit 1
 fi
