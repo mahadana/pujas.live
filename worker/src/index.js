@@ -2,6 +2,7 @@ import Queue from "bull";
 import dotenv from "dotenv";
 
 import { processAutomations } from "./automate";
+import logger from "./logger";
 
 dotenv.config();
 
@@ -12,7 +13,6 @@ const setupQueues = async () => {
   const jobs = await automateQueue.getRepeatableJobs();
   jobs.forEach((job) => {
     automateQueue.removeRepeatableByKey(job.key);
-    console.log(`Removed repeatable job ${job.key}`);
   });
 
   if (process.env.YOUTUBE_API_KEY) {
@@ -33,14 +33,15 @@ const setupQueues = async () => {
   }
 
   automateQueue.process(async (job) => {
-    console.log(`Start automateQueue job ${job.id}`);
+    logger.info(`Start automateQueue job ${job.id}`);
     try {
       await processAutomations();
     } catch (error) {
+      logger.error(error.message);
       console.error(error);
     }
-    console.log(`End automateQueue job ${job.id}`);
+    logger.info(`End automateQueue job ${job.id}`);
   });
 };
 
-setupQueues().then().catch(console.error);
+setupQueues().catch(console.error);

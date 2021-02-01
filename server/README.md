@@ -15,14 +15,15 @@ components:
 - The GeoIP database for analytics is from
   [MaxMind](https://www.maxmind.com/en/home).
 
-## Common Server Tasks
+## Logs
+
+Logs for deploys and worker tasks can be found at https://pujas.live/logs/.
+
+## Common Tasks
 
 On `pujas.live` as `root`:
 
 ```sh
-# Follow deployment log
-tail -f /var/log/pujas.live-deploy.log
-
 # Re-run deployment
 /opt/pujas.live/server/deploy.sh
 
@@ -34,8 +35,8 @@ docker-compose ps
 cd /opt/pujas.live/server
 docker-compose logs -f --tail=20
 
-# Show status of analytics processes
-cd /opt/plausible.pujas.live
+# Show status of analytics docker processes
+cd /opt/plausible
 docker-compose ps
 ```
 

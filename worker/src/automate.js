@@ -2,11 +2,12 @@ import dotenv from "dotenv";
 import _ from "lodash";
 
 import db from "./db";
+import logger from "./logger";
 import { dayjs } from "./time";
 import YouTube from "./youtube";
 
 const getChannels = async (knex) => {
-  console.log(`Pass 1: get channels`);
+  logger.info(`Pass 1: get channels`);
   const channels = await knex
     .select("channels.*", "recordings.id AS rid")
     .from("channels")
@@ -35,30 +36,29 @@ const getChannels = async (knex) => {
 };
 
 const getVideoIdsFromChannels = async (channels) => {
-  console.log(`Pass 2: get YouTube video ids from channels`);
+  logger.info(`Pass 2: get YouTube video ids from channels`);
   const videoIds = [];
   const yt = new YouTube();
   const cyt = new YouTube({ cache: true, cacheTimeout: 60 * 60 * 24 });
   try {
     for (const channel of channels) {
-      console.log(`  channel id = ${channel.id}, title = ${channel.title}`);
+      logger.info(`  channel id = ${channel.id}, title = ${channel.title}`);
       channel.videoId = false;
       try {
         const ytChannelId = await cyt.getChannelIdFromUrl(channel.channelUrl);
-        console.log(`    ytChannelId = ${ytChannelId}`);
+        logger.info(`    ytChannelId = ${ytChannelId}`);
         if (!ytChannelId) {
-          console.warn(`    aborting (no ytChannelId)...`);
+          logger.warn(`    aborting (no ytChannelId)...`);
           continue;
         }
         const videoId = await yt.getLatestVideoIdFromChannelId(ytChannelId);
-        console.log(`    videoId = ${videoId}`);
+        logger.info(`    videoId = ${videoId}`);
         if (videoId) {
           channel.videoId = videoId;
           videoIds.push(videoId);
         }
       } catch (error) {
-        console.error(`    got error: ${error.message}`);
-        console.error(error);
+        logger.error(`    got error: ${error.message}`);
       }
     }
   } finally {
@@ -68,30 +68,29 @@ const getVideoIdsFromChannels = async (channels) => {
 };
 
 const getYouTubeDatas = async (videoIds) => {
-  console.log(`Pass 3: get latest YouTube data for channels`);
+  logger.info(`Pass 3: get latest YouTube data for channels`);
   const yt = new YouTube();
   let datas;
   try {
     // TODO, there is a limit of 50 videos per request
     datas = await yt.getVideoDataFromVideoIds(videoIds);
   } catch (error) {
-    console.error(`  got error: ${error.message}`);
-    console.error(error);
+    logger.error(`  got error: ${error.message}`);
     datas = false;
   }
   if (datas) {
-    console.log(`  ${Object.keys(datas).length} data entries`);
+    logger.info(`  ${Object.keys(datas).length} data entries`);
   } else {
-    console.warn("  aborting (no data)...");
+    logger.warn("  aborting (no data)...");
   }
   return datas;
 };
 
 const updateChannels = async (knex, channels, datas) => {
-  console.log(`Pass 4: update channels with latest data`);
+  logger.info(`Pass 4: update channels with latest data`);
   for (const channel of channels) {
     const videoId = channel.videoId;
-    console.log(
+    logger.info(
       `  channel id = ${channel.id}, ` +
         `videoId = ${channel.videoId}, title = ${channel.title}`
     );
@@ -100,7 +99,7 @@ const updateChannels = async (knex, channels, datas) => {
       if (data) {
         await updateChannelWithData(knex, channel, data);
       } else {
-        console.warn(`    unexpectedly data not found, aborting...`);
+        logger.warn(`    unexpectedly data not found, aborting...`);
       }
     } else {
       await updateChannelWithoutData(knex, channel);
@@ -149,7 +148,7 @@ const updateChannelWithData = async (knex, channel, data) => {
     )?.[0];
     if (existing) {
       if (existing.automate != "youtube") {
-        console.log(
+        logger.info(
           `    skipping existing recording id = ${existing.id}` +
             `, automate = ${existing.automate}`
         );
@@ -174,15 +173,14 @@ const updateChannelWithData = async (knex, channel, data) => {
         .returning("id");
       action = "created";
     }
-    console.log(
+    logger.info(
       `    ${action} recording id = ${recordingId}, title = ${values.title}`
     );
     await knex("channels")
       .update({ activeStream: recordingId })
       .where("id", channel.id);
   } catch (error) {
-    console.error(`    error during update: ${error}`);
-    console.error(error);
+    logger.error(`    error during update: ${error}`);
   }
 };
 
@@ -191,9 +189,9 @@ const updateChannelWithoutData = async (knex, channel) => {
     await knex("channels")
       .update({ activeStream: null })
       .where("id", channel.id);
-    console.log(`    removed activeStream from channel id = ${channel.id}`);
+    logger.info(`    removed activeStream from channel id = ${channel.id}`);
   } else {
-    console.log(`    nothing to do...`);
+    logger.info(`    nothing to do...`);
   }
 };
 
@@ -218,25 +216,24 @@ const getInactiveYouTubeRecordings = async (knex) => {
 };
 
 const updateInactiveYouTubeRecordings = async (knex) => {
-  console.log(`Pass 5: update inactive YouTube recordings`);
+  logger.info(`Pass 5: update inactive YouTube recordings`);
 
-  console.log(`  get inactive YouTube recordings`);
+  logger.info(`  get inactive YouTube recordings`);
   let recordings;
   try {
     recordings = await getInactiveYouTubeRecordings(knex);
   } catch (error) {
-    console.error(`    got error: ${error.message}`);
-    console.error(error);
+    logger.error(`    got error: ${error.message}`);
     return;
   }
   if (recordings.length > 0) {
-    console.log(`    ${recordings.length} entries`);
+    logger.info(`    ${recordings.length} entries`);
   } else {
-    console.warn(`     aborting (no recordings)...`);
+    logger.warn(`     aborting (no recordings)...`);
     return;
   }
 
-  console.log(`  get latest YouTube data for recordings`);
+  logger.info(`  get latest YouTube data for recordings`);
   const yt = new YouTube();
   const videoIds = _.uniq(recordings.map((r) => r.videoId));
   let datas;
@@ -244,32 +241,30 @@ const updateInactiveYouTubeRecordings = async (knex) => {
     // TODO, there is a limit of 50 videos per request
     datas = await yt.getVideoDataFromVideoIds(videoIds);
   } catch (error) {
-    console.error(`    got error: ${error.message}`);
-    console.error(error);
+    logger.error(`    got error: ${error.message}`);
     return;
   }
   const datasLength = Object.keys(datas).length;
   if (datas && datasLength > 0) {
-    console.log(`    ${datasLength} entries`);
+    logger.info(`    ${datasLength} entries`);
   } else {
-    console.warn("     aborting (no data)...");
+    logger.warn("     aborting (no data)...");
     return;
   }
 
-  console.log(`  update recordings`);
+  logger.info(`  update recordings`);
   for (const recording of recordings) {
-    console.log(`    id = ${recording.id}, videoId = ${recording.videoId}`);
+    logger.info(`    id = ${recording.id}, videoId = ${recording.videoId}`);
     const data = datas[recording.videoId];
     if (!data) {
-      console.warn(`      data not found, skipping...`);
+      logger.warn(`      data not found, skipping...`);
       continue;
     }
     const values = makeRecordingValuesFromData(data);
     try {
       await knex("recordings").update(values).where("id", recording.id);
     } catch (error) {
-      console.error(`      got error: ${error.message}`);
-      console.error(error);
+      logger.error(`      got error: ${error.message}`);
     }
   }
 };
@@ -278,24 +273,24 @@ export const processAutomations = async () => {
   try {
     const knex = db.init();
     try {
-      console.log();
+      logger.info();
       const channels = await getChannels(knex);
-      console.log();
+      logger.info();
       const videoIds = await getVideoIdsFromChannels(channels);
-      console.log();
+      logger.info();
       const datas = await getYouTubeDatas(videoIds);
       if (datas) {
-        console.log();
+        logger.info();
         await updateChannels(knex, channels, datas);
       }
-      console.log();
+      logger.info();
       await updateInactiveYouTubeRecordings(knex);
-      console.log();
+      logger.info();
     } finally {
       await knex.destroy();
     }
   } catch (error) {
-    console.error("Got uncaught exception:");
+    logger.error(`Uncaught exception in processAutomations: ${error.message}`);
     console.error(error);
   }
 };
@@ -303,7 +298,7 @@ export const processAutomations = async () => {
 if (require.main === module) {
   dotenv.config();
   if (process.env.YOUTUBE_API_KEY) {
-    processAutomations().then().catch(console.error);
+    processAutomations().catch(console.error);
   } else {
     console.warn("YOUTUBE_API_KEY not defined in worker/.env");
   }
