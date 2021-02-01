@@ -19,9 +19,9 @@ const logger = createLogger({
       dirname: logDir,
       filename: "worker-%DATE%.log",
       datePattern: "YYYY-MM-DD-HH",
-      maxFiles: "5",
+      maxFiles: "14d",
       createSymlink: true,
-      symlinkName: resolve(logDir, "latest.log"),
+      symlinkName: "latest-worker.log",
     }),
   ],
 });

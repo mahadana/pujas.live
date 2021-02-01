@@ -6,12 +6,13 @@ set -eu
 SCRIPT_PATH="$(realpath "$0")"
 cd "$(dirname "$0")/.."
 
-LOG_DIR="$(pwd)/logs/deploy/$(date +%Y/%m)"
-LOG_FILE="pujas.live-deploy-$(date +%Y-%m-%d).log"
+LOG_NAME="pujas.live-deploy"
+LOG_DIR="$(pwd)/logs/deploy"
+LOG_FILE="$LOG_NAME-$(date +%Y-%m-%d).log"
+LOG_PATH="$LOG_DIR/$LOG_FILE"
+LATEST_PATH="$LOG_DIR/latest-$LOG_NAME.log"
 
 mkdir -p "$LOG_DIR"
-
-test -x /usr/bin/ts || apt-get install -yqq moreutils
 
 (
   echo "$SCRIPT_PATH START"
@@ -31,4 +32,7 @@ test -x /usr/bin/ts || apt-get install -yqq moreutils
 
   echo "$SCRIPT_PATH END"
 
-) 2>&1 | ts "[%Y-%m-%d %H:%M:%S]" | tee -a "$LOG_DIR/$LOG_FILE"
+) 2>&1 | ts "[%Y-%m-%d %H:%M:%S]" | tee -a "$LOG_PATH"
+
+ls -rt1 "$LOG_DIR/$LOG_PREFIX"*.log | head -n -30 | xargs --no-run-if-empty rm
+ln -sf "$LOG_FILE" "$LATEST_PATH"
