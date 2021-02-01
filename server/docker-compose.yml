@@ -11,7 +11,7 @@ services:
       ADMIN_EMAIL: ${BACKEND_ADMIN_EMAIL?}
       ADMIN_JWT_SECRET: ${BACKEND_ADMIN_JWT_SECRET?}
       ADMIN_PASSWORD: ${BACKEND_ADMIN_PASSWORD?}
-      FRONTEND_URL: ${FRONTEND_URL:-https://pujas.live}
+      FRONTEND_URL: ${FRONTEND_URL?}
       HCAPTCHA_SECRET: ${HCAPTCHA_SECRET?}
       JWT_SECRET: ${BACKEND_JWT_SECRET?}
     restart: unless-stopped
@@ -28,18 +28,22 @@ services:
       S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY?}
     restart: unless-stopped
     volumes:
-      - uploads:/uploads
+      - uploads:/uploads:ro
 
   caddy:
-    image: caddy:2.3.0
+    build:
+      context: caddy
+    environment:
+      FRONTEND_URL: ${FRONTEND_URL?}
+      BACKEND_URL: ${BACKEND_URL?}
+      PLAUSIBLE_URL: ${PLAUSIBLE_URL?}
     ports:
       - "80:80"
       - "443:443"
     restart: unless-stopped
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - ../logs:/logs
-      - /opt/chanting:/opt/chanting
+      - ../logs:/logs:ro
+      - /opt/chanting:/opt/chanting:ro
       - caddy_data:/data
       - caddy_config:/config
 
@@ -48,21 +52,21 @@ services:
       context: ..
       dockerfile: ./frontend/Dockerfile
       args:
-        API_URL: ${BACKEND_URL:-https://api.pujas.live}
+        API_URL: ${BACKEND_URL?}
         HCAPTCHA_SITE_KEY: ${HCAPTCHA_SITE_KEY?}
-        PLAUSIBLE_DOMAIN: ${PLAUSIBLE_DOMAIN:-pujas.live}
+        PLAUSIBLE_DOMAIN_KEY: ${PLAUSIBLE_DOMAIN_KEY?}
     environment:
-      NEXT_PUBLIC_API_URL: ${BACKEND_URL:-https://api.pujas.live}
+      NEXT_PUBLIC_API_URL: ${BACKEND_URL?}
       NEXT_PUBLIC_HCAPTCHA_SITE_KEY: ${HCAPTCHA_SITE_KEY?}
-      NEXT_PUBLIC_PLAUSIBLE_DOMAIN: ${PLAUSIBLE_DOMAIN:-pujas.live}
+      NEXT_PUBLIC_PLAUSIBLE_DOMAIN_KEY: ${PLAUSIBLE_DOMAIN_KEY?}
     restart: unless-stopped
 
   mail:
     build:
       context: ../mail
     environment:
-      MAIL_RELAY_HOST: ${MAIL_RELAY_HOST:-in.mailjet.com}
-      MAIL_RELAY_PORT: ${MAIL_RELAY_PORT:-2525}
+      MAIL_RELAY_HOST: ${MAIL_RELAY_HOST?}
+      MAIL_RELAY_PORT: ${MAIL_RELAY_PORT?}
       MAIL_RELAY_USER: ${MAIL_RELAY_USER?}
       MAIL_RELAY_PASSWORD: ${MAIL_RELAY_PASSWORD?}
     restart: unless-stopped

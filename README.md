@@ -8,6 +8,7 @@ Install [Docker](https://docs.docker.com/get-docker/) and
 ```sh
 git clone https://github.com/mahadana/pujas.live.git
 cd pujas.live
+touch .env
 docker-compose up
 ```
 
@@ -74,7 +75,3 @@ developing locally.
 
     - Frontend: http://pujas.test:3000/
     - Backend: http://pujas.test:1337/admin/
-
-## Server Setup
-
-See the [server documentation](server/README.md).

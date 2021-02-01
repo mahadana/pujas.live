@@ -10,23 +10,24 @@ LOG_FILE="pujas.live-deploy-$(date +%Y-%m-%d).log"
 
 mkdir -p "$LOG_DIR"
 
+test -x /usr/bin/ts || apt-get install -yqq moreutils
+
 (
-  echo "$(date) start $0"
+  echo "$(realpath "$0") START"
 
   git fetch
   git reset --hard origin/main
 
   cd server
 
-  docker-compose pull
-  docker pull node:14 # Specified in Dockerfiles
+  docker-compose pull -q
+  docker pull -q node:14 # Specified in Dockerfiles
   docker-compose build
   docker-compose up -d -t 1 postgres
   docker-compose up -d -t 1 backend frontend
   docker-compose up -d -t 3 # everything else
-
   docker image prune -f
 
-  echo "$(date) end $0"
+  echo "$(realpath "$0") END"
 
-) 2>&1 | tee -a "$LOG_DIR/$LOG_FILE"
+) 2>&1 | ts "[%Y-%m-%d %H:%M:%S]" | tee -a "$LOG_DIR/$LOG_FILE"

@@ -17,6 +17,30 @@ PLAUSIBLE_BASE_DIR="/opt/$PLAUSIBLE_PROJECT"
 WEBHOOK_CONF="/etc/webhook.conf"
 WEBHOOK_SECRET="/etc/webhook.secret"
 
+wget -qO- https://download.docker.com/linux/debian/gpg | \
+  gpg --dearmor >/etc/apt/trusted.gpg.d/docker.gpg
+
+echo "deb [arch=amd64] https://download.docker.com/linux/debian buster stable" \
+  > /etc/apt/sources.list.d/docker.list
+
+apt-get update
+apt-get install -y \
+  build-essential \
+  curl \
+  containerd.io \
+  docker-ce \
+  docker-ce-cli \
+  moreutils \
+  webhook
+
+DOCKER_COMPOSE_VERSION="$( \
+  curl -s https://api.github.com/repos/docker/compose/releases/latest \
+    | grep tag_name | cut -d '"' -f 4)"
+
+curl -sL "https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" \
+  -o /usr/local/bin/docker-compose
+chmod a+x /usr/local/bin/docker-compose
+
 test -d "$BASE_DIR" || git clone "$GIT_URL" "$BASE_DIR"
 
 test -d "$CHANTING_BASE_DIR" || \
@@ -35,13 +59,12 @@ for env in "$BASE_DIR/.env" "$PLAUSIBLE_BASE_DIR/.env"; do
 done
 
 if test -n missing; then
+  echo "Please create and edit the missing .env files"
   exit 1
 fi
 
 chmod 600 "$BASE_DIR/.env"
 chmod 600 "$PLAUSIBLE_BASE_DIR/.env"
-
-test -x /usr/bin/webhook || apt-get install -y webhook
 
 if ! test -f "$WEBHOOK_SECRET"; then
   touch "$WEBHOOK_SECRET"
@@ -56,6 +79,8 @@ perl -pi -e "s/SECRET/$(cat "$WEBHOOK_SECRET")/" "$WEBHOOK_CONF"
 
 systemctl restart webhook.service
 
+"$PLAUSIBLE_BASE_DIR/server/deploy.sh"
+
 "$BASE_DIR/server/deploy.sh"
 
-"$PLAUSIBLE_BASE_DIR/server/deploy.sh"
+echo "GitHub webhook secret: $(cat "$WEBHOOK_SECRET")"

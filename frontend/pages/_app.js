@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import LoadingProvider from "@/components/LoadingProvider";
 import SnackbarProvider from "@/components/SnackbarProvider";
 import UserProvider from "@/components/UserProvider";
-import { plausibleDomain } from "@/lib/plausible";
+import { plausibleUrl, plausibleDomainKey } from "@/lib/plausible";
 import theme from "@/lib/theme";
 
 const MyApp = ({ Component, pageProps }) => {
@@ -32,8 +32,8 @@ const MyApp = ({ Component, pageProps }) => {
         <script
           async
           defer
-          data-domain={plausibleDomain}
-          src="https://plausible.pujas.live/js/plausible.js"
+          data-domain={plausibleDomainKey}
+          src={`${plausibleUrl}/js/plausible.js`}
         />
       </Head>
       <style jsx global>
