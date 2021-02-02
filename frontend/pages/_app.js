@@ -1,5 +1,9 @@
 // See https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
 
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
