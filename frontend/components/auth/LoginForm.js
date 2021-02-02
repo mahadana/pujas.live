@@ -10,10 +10,9 @@ import FormTextField from "@/components/FormTextField";
 import FormSubmitButton from "@/components/FormSubmitButton";
 import { loginSchema } from "@/lib/validation";
 
-const LoginForm = ({ disabled, ...props }) => (
+const LoginForm = (props) => (
   <AuthForm
     disableCaptcha
-    disabled={disabled}
     lead="Login to your account to continue..."
     validateOnBlur={false}
     validateOnChange={false}
@@ -25,7 +24,6 @@ const LoginForm = ({ disabled, ...props }) => (
         <FormTextField
           autoComplete="username"
           autoFocus
-          disabled={disabled}
           label="Email"
           name="email"
           type="email"
@@ -34,17 +32,12 @@ const LoginForm = ({ disabled, ...props }) => (
       <Grid item xs={12}>
         <FormPasswordField
           autoComplete="current-password"
-          disabled={disabled}
           label="Password"
           name="password"
         />
       </Grid>
       <Grid item xs={12}>
-        <FormSubmitButton
-          disabled={disabled}
-          size="large"
-          startIcon={<ExitToAppIcon />}
-        >
+        <FormSubmitButton size="large" startIcon={<ExitToAppIcon />}>
           Login
         </FormSubmitButton>
       </Grid>

@@ -9,11 +9,13 @@ const LogoutPage = () => {
   const router = useRouter();
   const { logout } = useUser();
   useEffect(() => {
-    logout();
-    plausible("logout");
-    pushBack(router, "/auth/login");
-  }, []);
-  return <div />;
+    if (router.isReady) {
+      logout();
+      plausible("logout");
+      pushBack(router, "/auth/login");
+    }
+  }, [router.isReady]);
+  return null;
 };
 
 export default LogoutPage;

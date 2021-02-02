@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AuthFormInner = ({ children, disabled, email, lead }) => {
+const AuthFormInner = ({ children, email, lead }) => {
   const formik = useFormikContext();
   const classes = useStyles();
   const { logout, user } = useUser();
@@ -50,7 +50,7 @@ const AuthFormInner = ({ children, disabled, email, lead }) => {
     <Paper m={4} className={classes.paper}>
       <Typography variant="h3">Pujas.live</Typography>
       <Typography variant="subtitle1" className={classes.lead}>
-        {!disabled && user ? (
+        {user && !formik.isSubmitting ? (
           <Alert severity="warning" className={classes.alert}>
             You are already logged in as <strong>{user.email}</strong>.
             <br />
@@ -69,7 +69,7 @@ const AuthFormInner = ({ children, disabled, email, lead }) => {
   );
 };
 
-const AuthForm = ({ children, disabled, lead, ...props }) => {
+const AuthForm = ({ children, lead, ...props }) => {
   const classes = useStyles();
   const router = useRouter();
   const email = router?.query?.email || "";
@@ -79,7 +79,7 @@ const AuthForm = ({ children, disabled, lead, ...props }) => {
       initialValues={{ email, password: "" }}
       {...props}
     >
-      <AuthFormInner disabled={disabled} email={email} lead={lead}>
+      <AuthFormInner email={email} lead={lead}>
         {children}
       </AuthFormInner>
     </CaptchaForm>

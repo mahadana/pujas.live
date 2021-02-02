@@ -3,8 +3,8 @@ import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
-import ChangeEmailControl from "@/components/auth/ChangeEmailControl";
-import ChangePasswordControl from "@/components/auth/ChangePasswordControl";
+import ChangeEmailContent from "@/components/auth/ChangeEmailContent";
+import ChangePasswordContent from "@/components/auth/ChangePasswordContent";
 
 const useStyles = makeStyles((theme) => ({
   section: {
@@ -18,10 +18,10 @@ const AccountContent = () => {
     <Container maxWidth="sm">
       <Typography variant="h3">Account Settings</Typography>
       <Box className={classes.section}>
-        <ChangeEmailControl />
+        <ChangeEmailContent />
       </Box>
       <Box className={classes.section}>
-        <ChangePasswordControl />
+        <ChangePasswordContent />
       </Box>
     </Container>
   );

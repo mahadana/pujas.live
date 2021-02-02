@@ -7,7 +7,7 @@ import ButtonLink from "@/components/ButtonLink";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginTop: "15vh",
+    marginTop: "2rem",
     padding: "3em",
   },
   link: {

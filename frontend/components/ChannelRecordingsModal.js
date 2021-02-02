@@ -52,9 +52,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const startingState = "recent";
+
 const ChannelRecordingsModal = ({ children }) => {
-  const [result, setResult] = useState({});
-  const startingState = "recent";
+  const [queryResult, setQueryResult] = useState({});
   const [state, setState] = useState(startingState);
   const router = useRouter();
   const classes = useStyles();
@@ -75,9 +76,9 @@ const ChannelRecordingsModal = ({ children }) => {
   useEffect(() => {
     (async () => {
       if (channelId) {
-        setResult({ loading: true });
+        setQueryResult({ loading: true });
         try {
-          setResult(
+          setQueryResult(
             await apolloClient.query({
               fetchPolicy: "network-only",
               query: CHANNEL_QUERY,
@@ -85,7 +86,7 @@ const ChannelRecordingsModal = ({ children }) => {
             })
           );
         } catch {
-          setResult({ error: true });
+          setQueryResult({ error: true });
         }
       }
     })();
@@ -95,7 +96,7 @@ const ChannelRecordingsModal = ({ children }) => {
     router.push(closeProps.href, closeProps.as, closeProps);
   };
   const onExited = () => {
-    setResult({});
+    setQueryResult({});
     setState(startingState);
   };
   const toggleState = () =>
@@ -104,7 +105,7 @@ const ChannelRecordingsModal = ({ children }) => {
   return (
     <>
       {children}
-      <Loading {...result}>
+      <Loading queryResult={queryResult}>
         {({ data: { channel } }) => (
           <Dialog
             classes={{ paper: classes.dialog }}

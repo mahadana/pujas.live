@@ -9,10 +9,11 @@ import FormTextField from "@/components/FormTextField";
 import FormSubmitButton from "@/components/FormSubmitButton";
 import { forgotPasswordSchema } from "@/lib/validation";
 
-const ForgotPasswordForm = ({ disabled, ...props }) => (
+const ForgotPasswordForm = (props) => (
   <AuthForm
-    disabled={disabled}
     lead="Forgot password?"
+    validateOnBlur={false}
+    validateOnChange={false}
     validationSchema={forgotPasswordSchema}
     {...props}
   >
@@ -21,18 +22,13 @@ const ForgotPasswordForm = ({ disabled, ...props }) => (
         <FormTextField
           autoComplete="username"
           autoFocus
-          disabled={disabled}
           label="Email"
           name="email"
           type="email"
         />
       </Grid>
       <Grid item xs={12}>
-        <FormSubmitButton
-          size="large"
-          disabled={disabled}
-          startIcon={<EmailIcon />}
-        >
+        <FormSubmitButton size="large" startIcon={<EmailIcon />}>
           Reset Password
         </FormSubmitButton>
       </Grid>

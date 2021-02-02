@@ -1,23 +1,21 @@
 import { useQuery } from "@apollo/client";
 import { useIdleTimer } from "react-idle-timer";
 
-import Banner from "@/components/Banner";
-import ChantingBooksBar from "@/components/ChantingBooksBar";
 import HomeContent from "@/components/HomeContent";
-import Loading from "@/components/Loading";
+import PageLayout from "@/components/PageLayout";
 import { withApollo } from "@/lib/apollo";
 import { HOME_QUERY } from "@/lib/schema";
 
 const HomePage = () => {
-  const result = useQuery(HOME_QUERY, {
+  const queryResult = useQuery(HOME_QUERY, {
     fetchPolicy: "cache-and-network",
   });
 
   const { reset: resetIdleTimer } = useIdleTimer({
     debounce: 500,
     onIdle: () => {
-      if (!result.error) {
-        result.refetch();
+      if (!queryResult.error) {
+        queryResult.refetch();
       }
       resetIdleTimer();
     },
@@ -25,15 +23,11 @@ const HomePage = () => {
   });
 
   return (
-    <>
-      <Banner />
-      <ChantingBooksBar />
-      <Loading {...result}>
-        {({ data }) => (
-          <HomeContent channels={data.channels} groups={data.groups} />
-        )}
-      </Loading>
-    </>
+    <PageLayout chantingBooks queryResult={queryResult}>
+      {({ data }) => (
+        <HomeContent channels={data.channels} groups={data.groups} />
+      )}
+    </PageLayout>
   );
 };
 

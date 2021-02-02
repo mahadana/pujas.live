@@ -4,8 +4,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import ReactPlayer from "react-player";
 
-import Banner from "@/components/Banner";
-import SiteMessageControl from "@/components/SiteMessageControl";
+import PageLayout from "@/components/PageLayout";
+import SiteMessageContent from "@/components/SiteMessageContent";
 import { withApollo } from "@/lib/apollo";
 
 const useStyles = makeStyles((theme) => ({
@@ -32,8 +32,7 @@ const About = () => {
   const classes = useStyles();
 
   return (
-    <>
-      <Banner />
+    <PageLayout>
       <Container maxWidth="md">
         <>
           <Typography variant="h2">How to Use</Typography>
@@ -83,11 +82,11 @@ const About = () => {
             out the form below to contact us:
           </Typography>
           <Box className={classes.form}>
-            <SiteMessageControl />
+            <SiteMessageContent />
           </Box>
         </>
       </Container>
-    </>
+    </PageLayout>
   );
 };
 

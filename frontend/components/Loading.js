@@ -4,24 +4,24 @@ import { useContext, useEffect, useRef } from "react";
 import { LoadingContext } from "@/components/LoadingProvider";
 import { useUser } from "@/lib/user";
 
-const Loading = ({ children, data, previousData, requireUser, ...props }) => {
+const Loading = ({ children, queryResult, requireUser = false }) => {
   const { deleteState, setState } = useContext(LoadingContext);
   const id = useRef(null);
   const { user, userError, userLoading } = useUser();
 
-  data = data || previousData;
-  const toShow = Boolean(data && (user || !requireUser));
+  const data = queryResult?.data || queryResult?.previousData;
+  const toShow = Boolean((!queryResult || data) && (user || !requireUser));
 
   let state;
-  if (props.error || (requireUser && userError)) {
+  if (queryResult?.error || (requireUser && userError)) {
     state = "error";
   } else if (requireUser && !user && !userLoading) {
     state = "noUser";
   } else if (
     userLoading ||
     (!toShow &&
-      props.loading !== undefined &&
-      (props.loading || props.called !== false))
+      queryResult?.loading !== undefined &&
+      (queryResult?.loading || queryResult?.called !== false))
   ) {
     state = "loading";
   } else {
@@ -29,7 +29,7 @@ const Loading = ({ children, data, previousData, requireUser, ...props }) => {
   }
 
   useEffect(() => {
-    setState(id, { refetch: props.refetch, state });
+    setState(id, { refetch: queryResult?.refetch, state });
   }, [state]);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const Loading = ({ children, data, previousData, requireUser, ...props }) => {
 
   if (toShow) {
     if (isFunction(children)) {
-      return children({ ...props, data, user });
+      return children({ data, queryResult, user });
     } else {
       return children;
     }

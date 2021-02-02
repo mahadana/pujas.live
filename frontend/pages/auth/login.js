@@ -1,16 +1,11 @@
-import Container from "@material-ui/core/Container";
-
-import Banner from "@/components/Banner";
-import LoginControl from "@/components/auth/LoginControl";
+import LoginContent from "@/components/auth/LoginContent";
+import PageLayout from "@/components/PageLayout";
 import { withApollo } from "@/lib/apollo";
 
 const LoginPage = () => (
-  <>
-    <Banner userButton={false} />
-    <Container maxWidth="sm">
-      <LoginControl />
-    </Container>
-  </>
+  <PageLayout title="Login" userButton={false}>
+    <LoginContent />
+  </PageLayout>
 );
 
 export default withApollo()(LoginPage);

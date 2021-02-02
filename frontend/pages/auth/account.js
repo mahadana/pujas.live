@@ -1,17 +1,11 @@
-import AccountContent from "@/components/AccountContent";
-import Banner from "@/components/Banner";
-import Loading from "@/components/Loading";
-import Title from "@/components/Title";
+import AccountContent from "@/components/auth/AccountContent";
+import PageLayout from "@/components/PageLayout";
 import { withApollo } from "@/lib/apollo";
 
 const AccountPage = () => (
-  <>
-    <Title title="Account" />
-    <Banner />
-    <Loading data requireUser>
-      {() => <AccountContent />}
-    </Loading>
-  </>
+  <PageLayout requireUser title="Account">
+    {() => <AccountContent />}
+  </PageLayout>
 );
 
 export default withApollo()(AccountPage);

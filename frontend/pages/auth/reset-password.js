@@ -1,16 +1,11 @@
-import Container from "@material-ui/core/Container";
-
-import Banner from "@/components/Banner";
-import ResetPasswordControl from "@/components/auth/ResetPasswordControl";
+import PageLayout from "@/components/PageLayout";
+import ResetPasswordContent from "@/components/auth/ResetPasswordContent";
 import { withApollo } from "@/lib/apollo";
 
 const ResetPasswordPage = () => (
-  <>
-    <Banner userButton={false} />
-    <Container maxWidth="sm">
-      <ResetPasswordControl />
-    </Container>
-  </>
+  <PageLayout title="Reset Password" userButton={false}>
+    <ResetPasswordContent />
+  </PageLayout>
 );
 
 export default withApollo()(ResetPasswordPage);

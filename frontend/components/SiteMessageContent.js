@@ -4,7 +4,7 @@ import SiteMessageForm from "@/components/SiteMessageForm";
 import { MESSAGE_SITE_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
 
-const SiteMessageControl = () => {
+const SiteMessageContent = () => {
   const [messageSite] = useMutation(MESSAGE_SITE_MUTATION);
   const { snackException, snackSuccess } = useSnackbar();
 
@@ -24,4 +24,4 @@ const SiteMessageControl = () => {
   return <SiteMessageForm onSubmit={onSubmit} />;
 };
 
-export default SiteMessageControl;
+export default SiteMessageContent;

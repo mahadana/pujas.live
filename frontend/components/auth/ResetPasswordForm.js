@@ -6,10 +6,9 @@ import FormPasswordField from "@/components/FormPasswordField";
 import FormSubmitButton from "@/components/FormSubmitButton";
 import { resetPasswordSchema } from "@/lib/validation";
 
-const ResetPasswordForm = ({ disabled, ...props }) => (
+const ResetPasswordForm = (props) => (
   <AuthForm
     disableCaptcha
-    disabled={disabled}
     lead="Please enter a new password..."
     validationSchema={resetPasswordSchema}
     {...props}
@@ -17,18 +16,13 @@ const ResetPasswordForm = ({ disabled, ...props }) => (
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <FormPasswordField
+          autoComplete="new-password"
           label="New Password"
           name="password"
-          autoComplete="new-password"
-          disabled={disabled}
         />
       </Grid>
       <Grid item xs={12}>
-        <FormSubmitButton
-          size="large"
-          disabled={disabled}
-          startIcon={<LockIcon />}
-        >
+        <FormSubmitButton size="large" startIcon={<LockIcon />}>
           Update Password
         </FormSubmitButton>
       </Grid>

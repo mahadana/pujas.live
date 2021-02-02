@@ -10,11 +10,7 @@ import { useUser } from "@/lib/user";
 import { groupMessageSchema } from "@/lib/validation";
 
 const useStyles = makeStyles((theme) => ({
-  title: {
-    marginBottom: ".5em",
-  },
   leader: {
-    fontSize: "1.14em",
     fontWeight: "bold",
   },
 }));
@@ -40,7 +36,7 @@ const GroupMessageForm = ({ group, onSubmit }) => {
     >
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h4" className={classes.title}>
+          <Typography variant="h4" gutterBottom>
             Join group "{group.title}"
           </Typography>
           <Typography variant="body1">
@@ -49,8 +45,10 @@ const GroupMessageForm = ({ group, onSubmit }) => {
             you with the links, etc. to participate in the group sittings.
           </Typography>
         </Grid>
-        <Grid item xs={12} className={classes.leader}>
-          Your information:
+        <Grid item xs={12}>
+          <Typography className={classes.leader} variant="body1">
+            Your information:
+          </Typography>
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormTextField name="name" label="Name" fullWidth required />
@@ -58,8 +56,10 @@ const GroupMessageForm = ({ group, onSubmit }) => {
         <Grid item xs={12} sm={6}>
           <FormTextField name="email" label="Email" fullWidth required />
         </Grid>
-        <Grid item xs={12} className={classes.leader}>
-          What are you looking for in a meditation group?
+        <Grid item xs={12}>
+          <Typography className={classes.leader} variant="body1">
+            What are you looking for in a meditation group?
+          </Typography>
         </Grid>
         <Grid item xs={12}>
           <FormTextField
@@ -70,8 +70,11 @@ const GroupMessageForm = ({ group, onSubmit }) => {
             rowsMax={10}
           />
         </Grid>
-        <Grid item xs={12} className={classes.leader}>
-          Please describe your experience/interest in the Thai Forest tradition:
+        <Grid item xs={12}>
+          <Typography className={classes.leader} variant="body1">
+            Please describe your experience/interest in the Thai Forest
+            tradition:
+          </Typography>
         </Grid>
         <Grid item xs={12}>
           <FormTextField

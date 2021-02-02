@@ -1,16 +1,11 @@
-import Container from "@material-ui/core/Container";
-
-import Banner from "@/components/Banner";
-import RegisterControl from "@/components/auth/RegisterControl";
+import PageLayout from "@/components/PageLayout";
+import RegisterContent from "@/components/auth/RegisterContent";
 import { withApollo } from "@/lib/apollo";
 
 const RegisterPage = () => (
-  <>
-    <Banner userButton={false} />
-    <Container maxWidth="sm">
-      <RegisterControl />
-    </Container>
-  </>
+  <PageLayout title="Register" userButton={false}>
+    <RegisterContent />
+  </PageLayout>
 );
 
 export default withApollo()(RegisterPage);

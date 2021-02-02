@@ -8,6 +8,27 @@ import { sleep } from "@/lib/util";
 
 const sitekey = process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY;
 
+const waitForHCaptcha = async () => {
+  let i = 0;
+  while (!window.hcaptcha) {
+    // Wait up to 10 seconds...
+    await sleep(100);
+    if (i++ > 100) {
+      throw "hCaptcha not available. Please try again.";
+    }
+    // Wait a little more to be safe.
+    await sleep(500);
+  }
+};
+
+const closeHCaptcha = () => {
+  try {
+    window.hcaptcha.close();
+  } catch {
+    //
+  }
+};
+
 const CaptchaForm = ({
   children,
   disableCaptcha,
@@ -15,59 +36,75 @@ const CaptchaForm = ({
   onSubmit,
   ...props
 }) => {
-  const captchaRef = useRef();
-  const submitRef = useRef(() => {});
+  const hcaptchaRef = useRef();
   const { snackError } = useSnackbar();
   const [mounted, setMounted] = useState(false);
+  const [withToken, setWithToken] = useState(null);
 
   if (!sitekey) disableCaptcha = true;
 
   const onError = () => {
-    submitRef.current(false);
+    withToken?.abort?.();
     snackError("Captcha was invalid. Please try again.");
   };
-  const onExpire = () => {
-    //
-  };
-  const onVerify = (token) => {
-    submitRef.current(token);
-  };
+
+  const onExpire = () => withToken?.abort?.();
+
+  const onVerify = (token) => withToken?.set?.(token);
 
   const closeCaptcha = () => {
-    submitRef.current(false);
-    if (window.hcaptcha) window.hcaptcha.close();
+    withToken?.abort?.();
+    closeHCaptcha();
   };
 
-  const wrappedOnSubmit = async (values, formik) => {
-    try {
-      let token = null;
-      if (!disableCaptcha) {
-        setMounted(true);
-        let i = 0;
-        while (!window.hcaptcha) {
-          // Wait up to 10 seconds...
-          await sleep(100);
-          if (i++ > 100) {
-            snackError("Could not load Captcha. Please try again.");
-            return;
-          }
-          // Wait a little more to be safe.
-          await sleep(500);
-        }
-        captchaRef.current.execute();
-        token = await new Promise((resolve) => {
-          submitRef.current = resolve;
-        });
-      }
-      if (disableCaptcha || token) {
-        await onSubmit(values, formik, token);
-      }
-    } finally {
-      submitRef.current = () => {};
-      if (!disableCaptcha && captchaRef.current) {
-        captchaRef.current.resetCaptcha();
+  const getCaptchaToken = async () => {
+    if (disableCaptcha) {
+      return undefined;
+    }
+    setMounted(true);
+    await waitForHCaptcha();
+    hcaptchaRef.current.execute();
+    return await new Promise((resolve, reject) => {
+      setWithToken({
+        abort: () => reject(new Error("Abort")),
+        set: resolve,
+      });
+    });
+  };
+
+  const resetCaptcha = () => {
+    setWithToken(null);
+    if (!disableCaptcha) {
+      try {
+        hcaptchaRef.current.resetCaptcha();
+      } catch {
+        //
       }
     }
+  };
+
+  const wrappedOnSubmit = (values, formik) => {
+    (async () => {
+      try {
+        let token;
+        try {
+          token = await getCaptchaToken();
+        } catch {
+          formik.setSubmitting(false);
+          return;
+        }
+        if (onSubmit && (token || disableCaptcha)) {
+          if (onSubmit.then) {
+            await onSubmit(values, formik, token);
+          } else {
+            onSubmit(values, formik, token);
+          }
+        }
+      } finally {
+        resetCaptcha();
+        onSubmit?.then && formik.setSubmitting(false);
+      }
+    })();
   };
 
   return (
@@ -84,7 +121,7 @@ const CaptchaForm = ({
       {!disableCaptcha && mounted && (
         <Box style={{ display: "none" }}>
           <HCaptcha
-            ref={captchaRef}
+            ref={hcaptchaRef}
             sitekey={sitekey}
             size="invisible"
             onError={onError}

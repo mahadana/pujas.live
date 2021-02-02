@@ -9,10 +9,11 @@ import FormTextField from "@/components/FormTextField";
 import FormSubmitButton from "@/components/FormSubmitButton";
 import { registerSchema } from "@/lib/validation";
 
-const RegisterForm = ({ disabled, ...props }) => (
+const RegisterForm = (props) => (
   <AuthForm
-    disabled={disabled}
     lead="Create an account to continue..."
+    validateOnBlur={false}
+    validateOnChange={false}
     validationSchema={registerSchema}
     {...props}
   >
@@ -21,7 +22,6 @@ const RegisterForm = ({ disabled, ...props }) => (
         <FormTextField
           autoComplete="username"
           autoFocus
-          disabled={disabled}
           label="Email"
           name="email"
           type="email"
@@ -30,7 +30,6 @@ const RegisterForm = ({ disabled, ...props }) => (
       <Grid item xs={12}>
         <FormPasswordField
           autoComplete="new-password"
-          disabled={disabled}
           label="Password"
           name="password"
         />
@@ -38,7 +37,6 @@ const RegisterForm = ({ disabled, ...props }) => (
       <Grid item xs={12}>
         <FormSubmitButton
           color="secondary"
-          disabled={disabled}
           size="large"
           startIcon={<EmojiPeopleIcon />}
         >

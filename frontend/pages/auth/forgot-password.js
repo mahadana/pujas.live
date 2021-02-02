@@ -1,16 +1,11 @@
-import Container from "@material-ui/core/Container";
-
-import Banner from "@/components/Banner";
-import ForgotPasswordControl from "@/components/auth/ForgotPasswordControl";
+import ForgotPasswordContent from "@/components/auth/ForgotPasswordContent";
+import PageLayout from "@/components/PageLayout";
 import { withApollo } from "@/lib/apollo";
 
 const ForgotPasswordPage = () => (
-  <>
-    <Banner userButton={false} />
-    <Container maxWidth="sm">
-      <ForgotPasswordControl />
-    </Container>
-  </>
+  <PageLayout title="Forgot Password" userButton={false}>
+    <ForgotPasswordContent />
+  </PageLayout>
 );
 
 export default withApollo()(ForgotPasswordPage);

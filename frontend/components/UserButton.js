@@ -5,13 +5,11 @@ import { useState } from "react";
 
 import ButtonLink from "@/components/ButtonLink";
 import plausible from "@/lib/plausible";
-import { useSnackbar } from "@/lib/snackbar";
 import { useUser } from "@/lib/user";
 import { getPushBackUrl } from "@/lib/util";
 
 const UserButton = () => {
   const router = useRouter();
-  const { snackInfo } = useSnackbar();
   const [anchor, setAnchor] = useState(null);
   const { logout, user, userLoading } = useUser();
 
@@ -29,7 +27,6 @@ const UserButton = () => {
   const doLogout = () => {
     closeMenu();
     logout();
-    snackInfo("You were logged out");
     plausible("logout");
   };
 

@@ -1,22 +1,21 @@
+import Container from "@material-ui/core/Container";
+import { useMutation } from "@apollo/client";
 import { useState } from "react";
 
 import ForgotPasswordForm from "@/components/auth/ForgotPasswordForm";
 import ForgotPasswordSuccess from "@/components/auth/ForgotPasswordSuccess";
-import { apolloClient } from "@/lib/apollo";
 import { FORGOT_PASSWORD_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
-import { useUser } from "@/lib/user";
-import { getStrapiError, sleep, translateStrapiError } from "@/lib/util";
+import { getStrapiError, sleep } from "@/lib/util";
 
-const ForgotPasswordControl = () => {
-  const { snackError } = useSnackbar();
+const ForgotPasswordContent = () => {
+  const [forgotPassword] = useMutation(FORGOT_PASSWORD_MUTATION);
+  const { snackException } = useSnackbar();
   const [completeEmail, setCompleteEmail] = useState(null);
-  const { logout } = useUser();
 
   const onSubmit = async ({ email }, formik, token) => {
-    logout();
     try {
-      await apolloClient.mutate({
+      await forgotPassword({
         context: token
           ? {
               headers: {
@@ -24,7 +23,6 @@ const ForgotPasswordControl = () => {
               },
             }
           : undefined,
-        mutation: FORGOT_PASSWORD_MUTATION,
         variables: { email },
       });
       setCompleteEmail(email);
@@ -38,17 +36,20 @@ const ForgotPasswordControl = () => {
         setCompleteEmail(email);
         console.warn("Email does not exist: ", email);
       } else {
-        snackError(translateStrapiError(error));
-        console.error(error);
+        snackException(error);
       }
     }
   };
 
-  if (completeEmail) {
-    return <ForgotPasswordSuccess email={completeEmail} />;
-  } else {
-    return <ForgotPasswordForm onSubmit={onSubmit} />;
-  }
+  return (
+    <Container maxWidth="sm">
+      {!completeEmail ? (
+        <ForgotPasswordForm onSubmit={onSubmit} />
+      ) : (
+        <ForgotPasswordSuccess email={completeEmail} />
+      )}
+    </Container>
+  );
 };
 
-export default ForgotPasswordControl;
+export default ForgotPasswordContent;

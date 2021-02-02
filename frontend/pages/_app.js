@@ -2,8 +2,8 @@
 
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/core/styles";
-import Head from "next/head";
 import PropTypes from "prop-types";
+import Head from "next/head";
 import { useEffect } from "react";
 
 import ChannelRecordingsModal from "@/components/ChannelRecordingsModal";

@@ -1,10 +1,11 @@
 import { useMutation } from "@apollo/client";
+
 import ChangeEmailForm from "@/components/auth/ChangeEmailForm";
 import { CHANGE_EMAIL_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
 import { useUser } from "@/lib/user";
 
-const ChangeEmailControl = () => {
+const ChangeEmailContent = () => {
   const [changeEmail] = useMutation(CHANGE_EMAIL_MUTATION);
   const { snackSuccess, snackException } = useSnackbar();
   const { setUser, user } = useUser();
@@ -23,4 +24,4 @@ const ChangeEmailControl = () => {
   return <ChangeEmailForm onSubmit={onSubmit} />;
 };
 
-export default ChangeEmailControl;
+export default ChangeEmailContent;
