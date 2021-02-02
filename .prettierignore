@@ -1,4 +1,5 @@
 /backend/.strapi-updater.json
 /backend/exports/graphql/schema.graphql
 /backend/strapi-config.json
+/logs
 package-lock.json
