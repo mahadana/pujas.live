@@ -9,6 +9,7 @@ import capitalize from "lodash/capitalize";
 import ButtonLink from "@/components/ButtonLink";
 import Upcoming from "@/components/Upcoming";
 import UploadImage from "@/components/UploadImage";
+import { getGroupEditPath, getGroupMessagePath } from "@/lib/path";
 import { dayjs, getNextGroupEventTime } from "@/lib/time";
 import { useUser } from "@/lib/user";
 
@@ -64,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Group = ({ events, timezone, ...props }) => {
+const HomeGroup = ({ events, timezone, ...props }) => {
   const classes = useStyles();
   const { user } = useUser();
 
@@ -113,10 +114,7 @@ const Group = ({ events, timezone, ...props }) => {
       <Box className={classes.links}>
         <Typography variant="body2">
           {props.owner && (
-            <ButtonLink
-              href={`/groups/${props.id}/message`}
-              variant="contained"
-            >
+            <ButtonLink href={getGroupMessagePath(props)} variant="contained">
               Join Group
             </ButtonLink>
           )}
@@ -125,10 +123,7 @@ const Group = ({ events, timezone, ...props }) => {
             parseInt(user.id) == parseInt(props.owner.id) && (
               <>
                 <br />
-                <ButtonLink
-                  href={`/groups/${props.id}/edit`}
-                  variant="contained"
-                >
+                <ButtonLink href={getGroupEditPath(props)} variant="contained">
                   Edit Group
                 </ButtonLink>
               </>
@@ -139,4 +134,4 @@ const Group = ({ events, timezone, ...props }) => {
   );
 };
 
-export default Group;
+export default HomeGroup;

@@ -1,6 +1,6 @@
 import Link from "@/components/Link";
 import { useChannelRecordingsModalHref } from "@/components/ChannelRecordingsModal";
-import { getChannelRecordingsPath } from "@/lib/util";
+import { getChannelRecordingsPath } from "@/lib/path";
 
 const ChannelRecordingsLink = ({ channel, children }) => {
   const getChannelRecordingsModalHref = useChannelRecordingsModalHref();

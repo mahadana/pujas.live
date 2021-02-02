@@ -3,6 +3,7 @@ import Container from "@material-ui/core/Container";
 import { useRouter } from "next/router";
 
 import GroupForm from "@/components/GroupForm";
+import { getGroupEditPath } from "@/lib/path";
 import { CREATE_GROUP_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
 import { dayjs } from "@/lib/time";
@@ -24,9 +25,9 @@ const GroupCreateContent = () => {
             input: { data: { ...data, listed: true, owner: user.id } },
           },
         });
-        const newGroup = result.data.createGroup.group;
+        const group = result.data.createGroup.group;
         snackSuccess("Successfully created group");
-        router.push(`/groups/${newGroup.id}/edit`, null, {
+        router.push(getGroupEditPath(group), null, {
           scroll: false,
           shallow: true,
         });

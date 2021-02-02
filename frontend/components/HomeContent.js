@@ -1,7 +1,7 @@
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 
-import GroupList from "@/components/GroupList";
+import HomeGroupList from "@/components/HomeGroupList";
 import HomeChannelList from "@/components/HomeChannelList";
 import Link from "@/components/Link";
 
@@ -16,11 +16,11 @@ const HomeContent = ({ channels, groups }) => (
     {groups.length > 0 && (
       <>
         <Typography variant="h2">Open Sitting Groups</Typography>
-        <GroupList groups={groups} />
+        <HomeGroupList groups={groups} />
       </>
     )}
     <Typography variant="body1">
-      <Link href="/groups/create">+ Click here to post new group</Link>
+      <Link href="/group/create">+ Click here to post new group</Link>
     </Typography>
   </Container>
 );

@@ -52,8 +52,8 @@ module.exports = {
       {
         ...params,
         address: encodeAddress(from),
-        groupMessageUrl: `${frontendUrl}/groups/${groupId}/message`,
-        groupEditUrl: `${frontendUrl}/groups/${groupId}/edit`,
+        groupMessageUrl: `${frontendUrl}/group/${groupId}/-/message`,
+        groupEditUrl: `${frontendUrl}/group/${groupId}/-/edit`,
         mailto: encodeMailto({ to: from }),
       }
     );

@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 import Title from "@/components/Title";
 import VideoPlayer from "@/components/VideoPlayer";
-import { getRecordingPath, getRecordingVideoUrl } from "@/lib/util";
+import { getRecordingPath, getRecordingVideoUrl } from "@/lib/path";
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -5,15 +5,17 @@ import { useState } from "react";
 
 import ResetPasswordCodeExpired from "@/components/auth/ResetPasswordCodeExpired";
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
+import { useRouteBack } from "@/lib/path";
 import plausible from "@/lib/plausible";
 import { RESET_PASSWORD_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
 import { useUser } from "@/lib/user";
-import { pushBack, getStrapiError } from "@/lib/util";
+import { getStrapiError } from "@/lib/util";
 
 const ResetPasswordContent = () => {
   const [resetPassword] = useMutation(RESET_PASSWORD_MUTATION);
   const router = useRouter();
+  const routeBack = useRouteBack(router);
   const { snackException, snackSuccess } = useSnackbar();
   const [expired, setExpired] = useState(false);
   const { login, logout } = useUser();
@@ -34,7 +36,7 @@ const ResetPasswordContent = () => {
         login(user, jwt);
         snackSuccess(`Successfully reset password`);
         plausible("resetPassword");
-        pushBack(router);
+        routeBack.push();
       } catch (error) {
         const strapiError = getStrapiError(error);
         if (strapiError?.id === "Auth.form.error.code.provide") {

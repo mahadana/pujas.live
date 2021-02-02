@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import ButtonLink from "@/components/ButtonLink";
 import { useVideoModalHref } from "@/components/VideoModal";
-import { getRecordingPath, getRecordingVideoUrl } from "@/lib/util";
+import { getRecordingPath, getRecordingVideoUrl } from "@/lib/path";
 import plausible from "@/lib/plausible";
 
 const useStyles = makeStyles((theme) => ({

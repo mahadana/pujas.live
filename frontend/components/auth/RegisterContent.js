@@ -3,15 +3,17 @@ import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 
 import RegisterForm from "@/components/auth/RegisterForm";
+import { useRouteBack } from "@/lib/path";
 import plausible from "@/lib/plausible";
 import { REGISTER_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
 import { useUser } from "@/lib/user";
-import { pushBack, getStrapiError } from "@/lib/util";
+import { getStrapiError } from "@/lib/util";
 
 const RegisterContent = () => {
   const [register] = useMutation(REGISTER_MUTATION);
   const router = useRouter();
+  const routeBack = useRouteBack(router);
   const { snackException, snackSuccess } = useSnackbar();
   const { login, logout } = useUser();
 
@@ -38,7 +40,7 @@ const RegisterContent = () => {
         login(user, jwt);
         snackSuccess(`Successfully created account`);
         plausible("register");
-        pushBack(router);
+        routeBack.push();
       } catch (error) {
         const strapiError = getStrapiError(error);
         if (strapiError?.id === "Auth.form.error.email.taken") {

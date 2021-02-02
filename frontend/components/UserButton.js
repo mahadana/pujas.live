@@ -4,12 +4,13 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 import ButtonLink from "@/components/ButtonLink";
+import { useRouteBack } from "@/lib/path";
 import plausible from "@/lib/plausible";
 import { useUser } from "@/lib/user";
-import { getPushBackUrl } from "@/lib/util";
 
 const UserButton = () => {
   const router = useRouter();
+  const routeBack = useRouteBack(router);
   const [anchor, setAnchor] = useState(null);
   const { logout, user, userLoading } = useUser();
 
@@ -33,11 +34,7 @@ const UserButton = () => {
   if (!user && userLoading) {
     return null;
   } else if (!user) {
-    return (
-      <ButtonLink href={getPushBackUrl(router, "/auth/login")}>
-        Login
-      </ButtonLink>
-    );
+    return <ButtonLink href={routeBack.get("/auth/login")}>Login</ButtonLink>;
   } else {
     return (
       <>

@@ -9,7 +9,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { useRouter } from "next/router";
 
 import ButtonLink from "@/components/ButtonLink";
-import { getPushBackUrl } from "@/lib/util";
+import { useRouteBack } from "@/lib/path";
 
 const useStyles = makeStyles((theme) => ({
   actions: {
@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 const LoadingNoUser = ({ noUser }) => {
   const router = useRouter();
+  const routeBack = useRouteBack(router);
   const classes = useStyles();
 
   const onBackdropClick = () => router.push("/");
@@ -41,13 +42,13 @@ const LoadingNoUser = ({ noUser }) => {
         </DialogContent>
         <DialogActions className={classes.actions}>
           <ButtonLink href="/">Cancel</ButtonLink>
-          <ButtonLink href={getPushBackUrl(router, "/auth/register")}>
+          <ButtonLink href={routeBack.get("/auth/register")}>
             New Account
           </ButtonLink>
           <ButtonLink
             autoFocus
             color="primary"
-            href={getPushBackUrl(router, "/auth/login")}
+            href={routeBack.get("/auth/login")}
             startIcon={<ExitToAppIcon />}
           >
             Login

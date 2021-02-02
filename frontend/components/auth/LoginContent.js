@@ -3,15 +3,17 @@ import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 
 import LoginForm from "@/components/auth/LoginForm";
+import { useRouteBack } from "@/lib/path";
 import plausible from "@/lib/plausible";
 import { LOGIN_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
 import { useUser } from "@/lib/user";
-import { pushBack, getStrapiError } from "@/lib/util";
+import { getStrapiError } from "@/lib/util";
 
 const LoginContent = () => {
   const [doLogin] = useMutation(LOGIN_MUTATION);
   const router = useRouter();
+  const routeBack = useRouteBack(router);
   const { snackException, snackInfo } = useSnackbar();
   const { login, logout } = useUser();
 
@@ -32,7 +34,7 @@ const LoginContent = () => {
         login(user, jwt);
         snackInfo(`Logged in as ${user.email}`);
         plausible("login");
-        pushBack(router);
+        routeBack.push();
       } catch (error) {
         const strapiError = getStrapiError(error);
         if (strapiError?.id === "Auth.form.error.invalid") {

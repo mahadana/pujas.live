@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, makeStyles } from "@material-ui/core";
 
-import Group from "@/components/Group";
+import HomeGroup from "@/components/HomeGroup";
 import Link from "@/components/Link";
 
 const MAX_INITIAL = 3;
@@ -32,7 +32,7 @@ function GroupList({ groups }) {
     <Box className={classes.root}>
       <Box>
         {shownGroups.map((group) => (
-          <Group key={group.id} {...group} />
+          <HomeGroup key={group.id} {...group} />
         ))}
       </Box>
       {showMore && hasMore && (
