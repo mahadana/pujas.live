@@ -1,4 +1,5 @@
-import { Box, makeStyles } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
+import { makeStyles } from "@material-ui/core/styles";
 import { forwardRef } from "react";
 
 import ChantingBookButton from "@/components/ChantingBookButton";

@@ -1,5 +1,6 @@
+import Box from "@material-ui/core/Box";
+import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
-import { Box, makeStyles } from "@material-ui/core";
 
 import HomeChannel from "@/components/HomeChannel";
 import Link from "@/components/Link";
