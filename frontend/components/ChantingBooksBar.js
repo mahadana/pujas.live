@@ -1,69 +1,50 @@
-import { Box, makeStyles } from "@material-ui/core";
-import { useState } from "react";
+import Box from "@material-ui/core/Box";
+import Container from "@material-ui/core/Container";
+import { makeStyles } from "@material-ui/core/styles";
 
-import IframeModal from "@/components/IframeModal";
-import Link from "@/components/Link";
-import plausible from "@/lib/plausible";
+import ChantingBookButton from "@/components/ChantingBookButton";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
-    justifyContent: "flex-end",
-    margin: "2em 2em 0",
+    fontSize: "1.2em",
     [theme.breakpoints.up("sm")]: {
       height: "3.5em",
-    },
-  },
-  book: {
-    marginLeft: "2em",
-    "& a": {
-      color: "black",
-      textDecoration: "none",
       fontSize: "1.5em",
     },
-    "& span": {
-      display: "inline-block",
-      verticalAlign: "top",
-      width: "90px",
+  },
+  bookContainer: {
+    marginTop: "-1.5em",
+    [theme.breakpoints.up("sm")]: {
+      marginTop: "-2.2em",
     },
-    "& img": {
-      width: "60px",
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+  book: {
+    "&:last-child": {
+      marginLeft: ".5em",
+      marginRight: "-.5em",
     },
   },
 }));
 
 const ChantingBooksBar = () => {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
-  const [url, setUrl] = useState(null);
-
-  const openChantingBook = (event, n) => {
-    event.preventDefault();
-    setUrl("https://pujas.live/chanting/iframe.html?book=" + n);
-    setOpen(true);
-    plausible("chantingBook", { props: { book: `${n}` } });
-  };
-
-  const onClose = () => {
-    setOpen(false);
-  };
-
   return (
-    <Box className={classes.root}>
-      <Box className={classes.book}>
-        <Link href="/#" onClick={(e) => openChantingBook(e, 1)}>
-          <span>Chanting Book 1</span>
-          <img src="/chanting1.jpg" />
-        </Link>
+    <Container className={classes.root} maxWidth="lg">
+      <Box className={classes.bookContainer}>
+        <ChantingBookButton
+          book="1"
+          className={classes.book}
+          direction="left"
+        />
+        <ChantingBookButton
+          book="2"
+          className={classes.book}
+          direction="left"
+        />
       </Box>
-      <Box className={classes.book}>
-        <Link href="/#" onClick={(e) => openChantingBook(e, 2)}>
-          <span>Chanting Book 2</span>
-          <img src="/chanting2.jpg" />
-        </Link>
-      </Box>
-      <IframeModal url={url} open={open} onClose={onClose} />
-    </Box>
+    </Container>
   );
 };
 

@@ -1,5 +1,4 @@
 import { createMuiTheme } from "@material-ui/core/styles";
-// import { red } from "@material-ui/core/colors";
 
 const theme = createMuiTheme({
   typography: {
@@ -12,20 +11,19 @@ const theme = createMuiTheme({
       margin: "0.5em",
     },
   },
-  // palette: {
-  //   primary: {
-  //     main: "#556cd6",
-  //   },
-  //   secondary: {
-  //     main: "#19857b",
-  //   },
-  //   error: {
-  //     main: red.A400,
-  //   },
-  //   background: {
-  //     default: "#fff",
-  //   },
-  // },
+  palette: {
+    // type: "dark",
+    // primary: {
+    //   main: "#ffaf6c",
+    // },
+    // secondary: {
+    //   main: "#234915",
+    // },
+    // background: {
+    //   default: "#421904",
+    //   paper: "#522914",
+    // },
+  },
 });
 
 export default theme;

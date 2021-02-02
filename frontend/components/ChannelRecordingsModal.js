@@ -1,4 +1,3 @@
-import { useLazyQuery } from "@apollo/client";
 import Box from "@material-ui/core/Box";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -12,6 +11,7 @@ import ChannelRecordingsList from "@/components/ChannelRecordingsList";
 import CloseButtonLink from "@/components/CloseButtonLink";
 import Loading from "@/components/Loading";
 import Title from "@/components/Title";
+import { apolloClient } from "@/lib/apollo";
 import { CHANNEL_QUERY } from "@/lib/schema";
 import { useEffect } from "react";
 
@@ -53,9 +53,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ChannelRecordingsModal = ({ children }) => {
-  const [getChannel, result] = useLazyQuery(CHANNEL_QUERY, {
-    fetchPolicy: "cache-and-network",
-  });
+  const [result, setResult] = useState({});
   const startingState = "recent";
   const [state, setState] = useState(startingState);
   const router = useRouter();
@@ -75,15 +73,31 @@ const ChannelRecordingsModal = ({ children }) => {
   const open = !!channelId;
 
   useEffect(() => {
-    if (channelId) {
-      getChannel({ variables: { id: channelId } });
-    }
+    (async () => {
+      if (channelId) {
+        setResult({ loading: true });
+        try {
+          setResult(
+            await apolloClient.query({
+              fetchPolicy: "network-only",
+              query: CHANNEL_QUERY,
+              variables: { id: channelId },
+            })
+          );
+        } catch {
+          setResult({ error: true });
+        }
+      }
+    })();
   }, [channelId]);
 
   const onClose = () => {
     router.push(closeProps.href, closeProps.as, closeProps);
   };
-  const onExited = () => setState(startingState);
+  const onExited = () => {
+    setResult({});
+    setState(startingState);
+  };
   const toggleState = () =>
     setState(state === "curated" ? "recent" : "curated");
 
@@ -100,7 +114,7 @@ const ChannelRecordingsModal = ({ children }) => {
             onExited={onExited}
             scroll="body"
           >
-            {open && <Title title={`Recordings | ${channel.title}`} />}
+            {open && <Title title={`${channel.title} | Recordings`} />}
             <CloseButtonLink className={classes.closeButton} {...closeProps} />
             <DialogTitle className={classes.title}>
               <Box>Recordings - {channel.title}</Box>

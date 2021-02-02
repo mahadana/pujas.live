@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { fade, makeStyles } from "@material-ui/core/styles";
 
 import Link from "@/components/Link";
 import UserButton from "@/components/UserButton";
@@ -8,7 +8,11 @@ const useStyles = makeStyles((theme) => ({
   root: {
     position: "relative",
     height: "10em",
-    marginBottom: "2em",
+    backgroundImage: `linear-gradient(
+        ${fade(theme.palette.background.default, 0.0)} 0%,
+        ${fade(theme.palette.background.default, 0.1)} 70%,
+        ${fade(theme.palette.background.default, 0.95)} 95%,
+        ${fade(theme.palette.background.default, 1)} 100%), url('/banner.jpg')`,
   },
   image: {
     position: "absolute",
@@ -20,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     zIndex: 100,
     margin: 0,
-    top: "1.5rem",
+    top: "0.75rem",
     left: "1.5rem",
     color: "white",
     "& > a": {
@@ -34,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     zIndex: 100,
     margin: 0,
-    top: "4.75rem",
+    top: "4rem",
     left: "1.65rem",
     fontSize: "1.2em",
     fontWeight: 500,
@@ -55,7 +59,7 @@ const Banner = ({ userButton = true }) => {
   const classes = useStyles();
   return (
     <header className={classes.root}>
-      <img className={classes.image} src="/banner.jpg" alt="banner" />
+      {/* <img className={classes.image} src="/banner.jpg" alt="banner" /> */}
       <h1 className={classes.title}>
         <Link href="/">Pujas.live</Link>
       </h1>

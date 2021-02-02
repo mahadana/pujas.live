@@ -1,5 +1,5 @@
 import Box from "@material-ui/core/Box";
-import { makeStyles } from "@material-ui/core/styles";
+import { emphasize, makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
 import ChannelRecordingsLink from "@/components/ChannelRecordingsLink";
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "wrap",
     padding: "1.5em",
     "&:nth-child(odd)": {
-      backgroundColor: "#eee",
+      backgroundColor: emphasize(theme.palette.background.default, 0.05),
     },
   },
   image: {

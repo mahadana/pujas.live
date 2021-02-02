@@ -6,9 +6,12 @@ import Head from "next/head";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 
+import ChannelRecordingsModal from "@/components/ChannelRecordingsModal";
+import ChantingBooksModal from "@/components/ChantingBooksModal";
 import LoadingProvider from "@/components/LoadingProvider";
 import SnackbarProvider from "@/components/SnackbarProvider";
 import UserProvider from "@/components/UserProvider";
+import VideoModal from "@/components/VideoModal";
 import { plausibleUrl, plausibleDomainKey } from "@/lib/plausible";
 import theme from "@/lib/theme";
 
@@ -47,8 +50,14 @@ const MyApp = ({ Component, pageProps }) => {
         <UserProvider>
           <SnackbarProvider>
             <LoadingProvider>
-              <CssBaseline />
-              <Component {...pageProps} />
+              <ChantingBooksModal>
+                <VideoModal>
+                  <ChannelRecordingsModal>
+                    <CssBaseline />
+                    <Component {...pageProps} />
+                  </ChannelRecordingsModal>
+                </VideoModal>
+              </ChantingBooksModal>
             </LoadingProvider>
           </SnackbarProvider>
         </UserProvider>

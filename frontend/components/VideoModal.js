@@ -21,17 +21,13 @@ export const useVideoModalHref = () => {
 };
 
 const useStyles = makeStyles((theme) => ({
+  modal: {
+    zIndex: "1301 !important",
+  },
   container: {
     position: "relative",
     height: "100%",
     width: "100%",
-  },
-  closeButton: {
-    position: "absolute",
-    right: 0,
-    top: 0,
-    color: "#999",
-    fontSize: 45,
   },
 }));
 
@@ -62,7 +58,7 @@ const VideoModal = ({ children }) => {
       {children}
       {open && !!title && <Title title={title} />}
       <NoSsr>
-        <Modal onClose={onClose} open={open}>
+        <Modal className={classes.modal} onClose={onClose} open={open}>
           <Box className={classes.container}>
             <VideoPlayer
               autoplay={true}

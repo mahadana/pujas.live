@@ -6,7 +6,6 @@ import { useState } from "react";
 
 import ChannelRecordingsToggle from "@/components/ChannelRecordingsToggle";
 import ChannelRecordingsList from "@/components/ChannelRecordingsList";
-import VideoModal from "@/components/VideoModal";
 
 const useStyles = makeStyles((theme) => ({
   heading: {
@@ -24,20 +23,18 @@ const ChannelRecordingsContent = ({ channel }) => {
     setState(state === "curated" ? "recent" : "curated");
 
   return (
-    <VideoModal>
-      <Container maxWidth="lg">
-        <Title title={`${channel.title} Recordings`} />
-        <ChannelRecordingsToggle
-          className={classes.toggle}
-          onChange={toggleState}
-          state={state}
-        />
-        <Typography className={classes.heading} variant="h2">
-          Recordings - {channel.title}
-        </Typography>
-        <ChannelRecordingsList channel={channel} state={state} />
-      </Container>
-    </VideoModal>
+    <Container maxWidth="lg">
+      <Title title={`${channel.title} | Recordings`} />
+      <ChannelRecordingsToggle
+        className={classes.toggle}
+        onChange={toggleState}
+        state={state}
+      />
+      <Typography className={classes.heading} variant="h2">
+        Recordings - {channel.title}
+      </Typography>
+      <ChannelRecordingsList channel={channel} state={state} />
+    </Container>
   );
 };
 

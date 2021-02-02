@@ -19,7 +19,9 @@ const Loading = ({ children, data, previousData, requireUser, ...props }) => {
     state = "noUser";
   } else if (
     userLoading ||
-    (!toShow && (props.loading || props.called !== false))
+    (!toShow &&
+      props.loading !== undefined &&
+      (props.loading || props.called !== false))
   ) {
     state = "loading";
   } else {

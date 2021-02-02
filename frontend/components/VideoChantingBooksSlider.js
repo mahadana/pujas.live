@@ -12,10 +12,12 @@ const useStyles = makeStyles((theme) => ({
     top: "50%",
     marginTop: "-30vh",
     height: "60vh",
+    cursor: "pointer",
   },
 }));
 
 const VideoChantingBooksSlider = () => {
+  const ref = useRef(null);
   const timeout = useRef(null);
   const [showing, setShowing] = useState(true);
   const classes = useStyles();
@@ -54,7 +56,9 @@ const VideoChantingBooksSlider = () => {
     timeout.current = setTimeout(() => setShowing(false), 500);
   };
 
-  const onCloseChantingBook = () => setShowing(false);
+  const closeSlider = () => {
+    setShowing(false);
+  };
 
   return (
     <Box
@@ -62,6 +66,7 @@ const VideoChantingBooksSlider = () => {
       onMouseEnter={onMouseEnter}
       onMouseOver={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      ref={ref}
     >
       <Slide
         direction="right"
@@ -70,7 +75,7 @@ const VideoChantingBooksSlider = () => {
         timeout={400}
         unmountOnExit
       >
-        <VideoChantingBooksBar onClose={onCloseChantingBook} />
+        <VideoChantingBooksBar onClose={closeSlider} onOpen={closeSlider} />
       </Slide>
     </Box>
   );
