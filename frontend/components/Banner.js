@@ -1,3 +1,6 @@
+import Box from "@material-ui/core/Box";
+import Container from "@material-ui/core/Container";
+import Typography from "@material-ui/core/Typography";
 import { fade, makeStyles } from "@material-ui/core/styles";
 
 import Link from "@/components/Link";
@@ -6,15 +9,25 @@ import ButtonLink from "@/components/ButtonLink";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    position: "relative",
-    height: "10em",
+    height: "9rem",
+    width: "100%",
     backgroundImage: `linear-gradient(
-        ${fade(theme.palette.background.default, 0.0)} 0%,
-        ${fade(theme.palette.background.default, 0.1)} 70%,
-        ${fade(theme.palette.background.default, 0.95)} 95%,
-        ${fade(theme.palette.background.default, 1)} 100%), url('/banner.jpg')`,
+        ${fade(theme.palette.background.default, 0)} 0%,
+        ${fade(theme.palette.background.default, 0)} 60%,
+        ${fade(theme.palette.background.default, 0.4)} 75%,
+        ${fade(theme.palette.background.default, 1)} 90%), url('/banner.jpg')`,
+    backgroundSize: "cover",
   },
-  image: {
+  container: {
+    position: "relative",
+    height: "9rem",
+    width: "100%",
+    color: "white",
+    "& a": {
+      color: "white",
+    },
+  },
+  ximage: {
     position: "absolute",
     objectFit: "cover",
     width: "100%",
@@ -22,36 +35,23 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     position: "absolute",
-    zIndex: 100,
-    margin: 0,
-    top: "0.75rem",
-    left: "1.5rem",
-    color: "white",
-    "& > a": {
-      fontSize: "1.5em",
-      fontWeight: 400,
-      color: "white",
-      textDecoration: "none",
-    },
+    top: "1.5rem",
+    left: -1,
+    fontSize: "2.5rem",
+    fontWeight: 400,
   },
   summary: {
     position: "absolute",
-    zIndex: 100,
-    margin: 0,
-    top: "4rem",
-    left: "1.65rem",
-    fontSize: "1.2em",
-    fontWeight: 500,
-    color: "white",
+    top: "4.4rem",
+    left: 1,
+    fontSize: "0.9rem",
+    lineHeight: "1.1em",
+    fontWeight: "bold",
   },
   login: {
     position: "absolute",
-    top: ".5em",
-    right: "1em",
-    color: "white",
-    "& a, & button": {
-      color: "white",
-    },
+    top: ".5rem",
+    right: "-.5rem",
   },
 }));
 
@@ -59,21 +59,23 @@ const Banner = ({ userButton = true }) => {
   const classes = useStyles();
   return (
     <header className={classes.root}>
-      {/* <img className={classes.image} src="/banner.jpg" alt="banner" /> */}
-      <h1 className={classes.title}>
-        <Link href="/">Pujas.live</Link>
-      </h1>
-      <p className={classes.summary}>
-        Livestreams and meditation groups in the Thai Forest tradition of Ajahn
-        Chah
-      </p>
-
-      <div className={classes.login}>
-        {userButton && <UserButton />}
-        <ButtonLink className={classes.loginLink} href="/about">
-          About
-        </ButtonLink>
-      </div>
+      <Container maxWidth="lg">
+        <Box className={classes.container}>
+          <Typography variant="h1" className={classes.title}>
+            <Link href="/">Pujas.live</Link>
+          </Typography>
+          <Typography variant="caption" className={classes.summary}>
+            Livestreams and meditation groups in the Thai Forest tradition of
+            Ajahn Chah
+          </Typography>
+          <Box className={classes.login}>
+            {userButton && <UserButton />}
+            <ButtonLink className={classes.loginLink} href="/about">
+              About
+            </ButtonLink>
+          </Box>
+        </Box>
+      </Container>
     </header>
   );
 };

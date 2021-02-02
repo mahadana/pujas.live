@@ -8,14 +8,18 @@ const useStyles = makeStyles((theme) => ({
   root: {
     fontSize: "1.2em",
     [theme.breakpoints.up("sm")]: {
-      height: "3.5em",
+      height: "2.5em",
+      fontSize: "1.25em",
+    },
+    [theme.breakpoints.up("md")]: {
+      height: "3em",
       fontSize: "1.5em",
     },
   },
   bookContainer: {
-    marginTop: "-1.5em",
+    marginTop: "-2em",
     [theme.breakpoints.up("sm")]: {
-      marginTop: "-2.2em",
+      marginTop: "-3em",
     },
     display: "flex",
     justifyContent: "flex-end",

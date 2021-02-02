@@ -12,19 +12,19 @@ const useStyles = makeStyles((theme) => ({
   player: {
     position: "relative",
     overflow: "hidden",
-    width: "calc(100% - 2em)",
+    width: "calc(100% - 4.4em)",
     paddingTop: "56.25%", // 16:9 Aspect Ratio
-    margin: "2em 2.5em",
+    margin: "2em 2.2em",
     "& > div": {
       position: "absolute",
       top: 0,
     },
   },
   description: {
-    marginLeft: "2em",
+    margin: "1em 2em",
   },
   form: {
-    margin: "2em 2.5em",
+    margin: "2em 2.3em",
   },
 }));
 
@@ -36,9 +36,7 @@ const About = () => {
       <Banner />
       <Container maxWidth="md">
         <>
-          <Typography className={classes.lead} variant="h2">
-            How to Use
-          </Typography>
+          <Typography variant="h2">How to Use</Typography>
           <Box className={classes.player}>
             <ReactPlayer
               controls={true}
@@ -50,9 +48,7 @@ const About = () => {
         </>
 
         <>
-          <Typography className={classes.lead} variant="h2">
-            About Pujas.live
-          </Typography>
+          <Typography variant="h2">About Pujas.live</Typography>
           <Typography className={classes.description} variant="body1">
             Pujas.live was created as a way to gather the various livestream
             activities of Thai Forest monasteries that popped up during the
@@ -72,9 +68,7 @@ const About = () => {
         </>
 
         <>
-          <Typography className={classes.lead} variant="h2">
-            Contact Us
-          </Typography>
+          <Typography variant="h2">Contact Us</Typography>
           <Typography className={classes.description} variant="body1">
             We can always use help making this site better. Any help you can
             offer with development, design, or with managing the streams and

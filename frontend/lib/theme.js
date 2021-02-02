@@ -3,12 +3,14 @@ import { createMuiTheme } from "@material-ui/core/styles";
 const theme = createMuiTheme({
   typography: {
     h2: {
-      margin: "0.5em",
-      fontSize: "2.5em",
+      fontSize: "2.2rem",
       fontWeight: 400,
     },
-    body1: {
-      margin: "0.5em",
+    h3: {
+      fontSize: "1.8rem",
+    },
+    h4: {
+      fontSize: "1.6rem",
     },
   },
   palette: {
