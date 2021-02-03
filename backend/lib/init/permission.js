@@ -27,11 +27,6 @@ const initPermissions = async () => {
 
   await enablePermissions(
     ["Authenticated", "Public"],
-    ["extra"],
-    ["loginwithtoken", "preparegroup"]
-  );
-  await enablePermissions(
-    ["Authenticated", "Public"],
     ["channel", "group", "monastery", "recording"],
     ["count", "find", "findone"]
   );
@@ -42,6 +37,11 @@ const initPermissions = async () => {
   );
   await enablePermissions(["Authenticated"], ["group"], ["create", "update"]);
   await enablePermissions(["Authenticated"], ["upload"], ["upload"]);
+  await enablePermissions(
+    ["Authenticated"],
+    ["auth"],
+    ["changeemail", "changepassword"]
+  );
 };
 
 module.exports = { initPermissions };
@@ -49,3 +49,20 @@ module.exports = { initPermissions };
 if (require.main === module) {
   bootstrap(initPermissions);
 }
+
+// // This is for changepassword...and should be integrated into strapi upstream.
+
+// const roles = await strapi
+//   .query("role", "users-permissions")
+//   .find({ type: "authenticated" });
+
+// for (const action of ["changeemail", "changepassword"]) {
+//   for (const role of roles) {
+//     await strapi
+//       .query("permission", "users-permissions")
+//       .update(
+//         { action, controller: "auth", role: role.id },
+//         { enabled: true }
+//       );
+//   }
+// }
