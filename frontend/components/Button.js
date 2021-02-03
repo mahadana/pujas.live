@@ -4,12 +4,17 @@ import clsx from "clsx";
 import { forwardRef } from "react";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: emphasize(theme.palette.background.default, 0.15),
-    "&:hover": {
-      backgroundColor: emphasize(theme.palette.background.default, 0.3),
-    },
-    color: theme.palette.getContrastText(theme.palette.background.default),
+  root: ({ color = "inherit" }) => {
+    if (color === "inherit") {
+      const backgroundColor = theme.palette.background.default;
+      return {
+        backgroundColor: emphasize(backgroundColor, 0.15),
+        "&:hover": {
+          backgroundColor: emphasize(backgroundColor, 0.25),
+        },
+        color: theme.palette.getContrastText(backgroundColor),
+      };
+    }
   },
 }));
 
