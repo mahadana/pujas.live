@@ -130,6 +130,7 @@ case "$SERVICE" in
           backend/exports backend/node_modules \
           backend/public/uploads/* \
           frontend/.next frontend/node_modules \
+          logs/deploy logs/worker \
           worker/build worker/node_modules
     exit 0
     ;;

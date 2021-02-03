@@ -44,6 +44,6 @@ fi
 if test "$*" = bash; then
   exec su -s /bin/bash $user
 else
-  cmd="$(printf '"%q" ' "$@")"
+  cmd="$(for i in "$@"; do echo -n "${i@Q} "; done)"
   exec su -c "$cmd" $user
 fi

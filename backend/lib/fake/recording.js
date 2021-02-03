@@ -10,6 +10,9 @@ const YOUTUBE_VIDEOS = [
   "https://youtu.be/BgsbBWcKch8",
   "https://youtu.be/h31f6iD2GZ8",
   "https://youtu.be/a7f7g_mQO6E",
+  "https://youtu.be/7YVh4JVFp5k",
+  "https://youtu.be/_RtpftURyO0", // Private
+  "https://youtu.be/k0823E1FYE8", // Private
 ];
 
 const applyFakeRecordings = async () => {

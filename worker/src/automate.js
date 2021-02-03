@@ -116,6 +116,7 @@ const makeRecordingValuesFromData = (data) => {
     data.liveStreamingDetails?.actualEndTime ||
     data.liveStreamingDetails?.scheduledEndTime ||
     null;
+  const now = new Date();
   return {
     title: data.snippet?.title,
     description: data.snippet?.description,
@@ -131,7 +132,8 @@ const makeRecordingValuesFromData = (data) => {
           image: { provider: "youtube", thumbnails: data.snippet.thumbnails },
         }
       : null,
-    updated_at: new Date(),
+    published_at: now,
+    updated_at: now,
   };
 };
 
@@ -157,7 +159,7 @@ const updateChannelWithData = async (knex, channel, data) => {
       }
       recordingId = existing.id;
       await knex("recordings")
-        .update({ ...values, updated_at: now })
+        .update(values)
         .where("recordingUrl", recordingUrl);
       action = "updated";
     } else {
@@ -166,8 +168,6 @@ const updateChannelWithData = async (knex, channel, data) => {
           ...values,
           recordingUrl,
           channel: channel.id,
-          published_at: now,
-          updated_at: now,
           created_at: now,
         })
         .into("recordings")
@@ -201,8 +201,12 @@ const getInactiveYouTubeRecordings = async (knex) => {
     .select("recordings.id", "recordings.recordingUrl")
     .from("recordings")
     .leftJoin("channels", "channels.activeStream", "recordings.id")
-    .where("recordings.automate", "youtube")
-    .whereNull("channels.activeStream")
+    .where("recordings.automate", "=", "youtube")
+    .where(function () {
+      this.where("channels.automate", "!=", "youtube").orWhereNull(
+        "channels.activeStream"
+      );
+    })
     .orderBy("recordings.updated_at", "asc")
     .orderBy("recordings.id", "desc")
     .limit(50); // TODO we currently limit these queries by 50 per YouTube limits
@@ -218,12 +222,23 @@ const getInactiveYouTubeRecordings = async (knex) => {
   return recordings;
 };
 
+const updateRecording = async (knex, recording, values) => {
+  await knex("recordings").update(values).where("id", recording.id);
+};
+
+const unpublishRecording = async (knex, recording) => {
+  await knex("recordings")
+    .update({ published_at: null, updated_at: new Date() })
+    .where("id", recording.id);
+};
+
 const updateInactiveYouTubeRecordings = async (knex) => {
   logger.info(`Pass 5: update inactive YouTube recordings`);
 
   logger.info(`  get inactive YouTube recordings`);
   let recordings;
   try {
+    // TODO, there is a limit of 50 videos per request
     recordings = await getInactiveYouTubeRecordings(knex);
   } catch (error) {
     logger.error(`    got error: ${error.message}`);
@@ -259,13 +274,14 @@ const updateInactiveYouTubeRecordings = async (knex) => {
   for (const recording of recordings) {
     logger.info(`    id = ${recording.id}, videoId = ${recording.videoId}`);
     const data = datas[recording.videoId];
-    if (!data) {
-      logger.warn(`      data not found, skipping...`);
-      continue;
-    }
-    const values = makeRecordingValuesFromData(data);
     try {
-      await knex("recordings").update(values).where("id", recording.id);
+      if (data) {
+        const values = makeRecordingValuesFromData(data);
+        await updateRecording(knex, recording, values);
+      } else {
+        logger.info(`      no data (private?), unpublishing`);
+        await unpublishRecording(knex, recording);
+      }
     } catch (error) {
       logger.error(`      got error: ${error.message}`);
     }
