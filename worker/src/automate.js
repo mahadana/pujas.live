@@ -131,6 +131,7 @@ const makeRecordingValuesFromData = (data) => {
           image: { provider: "youtube", thumbnails: data.snippet.thumbnails },
         }
       : null,
+    updated_at: new Date(),
   };
 };
 
@@ -202,7 +203,9 @@ const getInactiveYouTubeRecordings = async (knex) => {
     .leftJoin("channels", "channels.activeStream", "recordings.id")
     .where("recordings.automate", "youtube")
     .whereNull("channels.activeStream")
-    .orderBy("recordings.id");
+    .orderBy("recordings.updated_at", "asc")
+    .orderBy("recordings.id", "desc")
+    .limit(50); // TODO we currently limit these queries by 50 per YouTube limits
   const yt = new YouTube();
   let recordings = [];
   for (const recording of dbRecordings) {
