@@ -15,15 +15,18 @@ const theme = createMuiTheme({
   },
   palette: {
     // type: "dark",
+    // background: {
+    //   default: "#3a1704",
+    //   paper: "#542006",
+    // },
     // primary: {
-    //   main: "#ffaf6c",
+    //   main: "#bf8432",
     // },
     // secondary: {
-    //   main: "#234915",
+    //   main: "#6a611d",
     // },
-    // background: {
-    //   default: "#421904",
-    //   paper: "#522914",
+    // error: {
+    //   main: "#ff7744",
     // },
   },
 });
