@@ -82,7 +82,7 @@ const ChannelRecordingsModal = ({ children }) => {
             await apolloClient.query({
               fetchPolicy: "network-only",
               query: CHANNEL_QUERY,
-              variables: { id: channelId },
+              variables: { id: channelId, time: new Date().toISOString() },
             })
           );
         } catch {

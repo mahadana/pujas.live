@@ -72,7 +72,7 @@ export const HOME_QUERY = gql`
 `;
 
 export const CHANNEL_QUERY = gql`
-  query Channel($id: ID!) {
+  query Channel($id: ID!, $time: DateTime!) {
     channel(id: $id) {
       ${CHANNEL_FIELDS}
       curatedRecordings {
@@ -83,7 +83,15 @@ export const CHANNEL_QUERY = gql`
         }
         skip
       }
-      recordings(sort: "created_at:DESC", limit: 20) {
+      recordings(
+        sort: "startAt:DESC"
+        where: {
+          automate_ne: "manual",
+          startAt_null: false,
+          startAt_lt: $time
+        }
+        limit: 10
+      ) {
         ${RECORDING_FIELDS}
       }
     }
