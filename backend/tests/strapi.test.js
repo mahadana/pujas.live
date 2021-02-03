@@ -3,7 +3,7 @@ const { dirname } = require("path");
 const Strapi = require("strapi");
 
 beforeAll(async (done) => {
-  jest.setTimeout(30 * 1000);
+  jest.setTimeout(90 * 1000); // 90 seconds
   await Strapi({ dir: dirname(__dirname) }).load();
   await strapi.app
     .use(strapi.router.routes())
@@ -31,5 +31,5 @@ beforeEach(async (done) => {
 });
 
 require("glob")
-  .sync("*.test.js", { cwd: __dirname })
+  .sync("**/*.strapi.js", { cwd: __dirname })
   .map((file) => require(`./${file}`));

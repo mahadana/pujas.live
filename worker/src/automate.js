@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
 import _ from "lodash";
 
-import db from "./db";
-import logger from "./logger";
-import { dayjs } from "./time";
-import YouTube from "./youtube";
+import db from "@/db";
+import logger from "@/logger";
+import { dayjs } from "@/time";
+import YouTube from "@/youtube";
 
 const getChannels = async (knex) => {
   logger.info(`Pass 1: get channels`);

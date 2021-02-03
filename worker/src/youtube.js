@@ -3,7 +3,7 @@ import crypto from "crypto";
 import fetch from "cross-fetch";
 import isNil from "lodash/isNil";
 
-import Cache from "./cache";
+import Cache from "@/cache";
 
 const DEFAULT_CACHE_PREFIX = "worker-cache";
 const DEFAULT_CACHE_TIMEOUT = 60; // seconds

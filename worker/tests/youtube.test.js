@@ -1,5 +1,5 @@
 import { getTextFromFixtureOrUrl } from "./helpers";
-import YouTube from "../youtube";
+import YouTube from "@/youtube";
 
 describe("cached", () => {
   let yt;

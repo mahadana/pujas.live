@@ -1,8 +1,11 @@
 module.exports = {
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1",
+  },
   setupFiles: ["dotenv/config"],
   testPathIgnorePatterns: [
-    "/__tests__/fixtures/",
-    "/__tests__/helpers.js",
+    "/tests/fixtures/",
+    "/tests/helpers\\.js",
     "/node_modules/",
   ],
   verbose: true,

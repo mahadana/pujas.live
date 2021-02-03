@@ -1,8 +1,8 @@
 import Queue from "bull";
 import dotenv from "dotenv";
 
-import { processAutomations } from "./automate";
-import logger from "./logger";
+import { processAutomations } from "@/automate";
+import logger from "@/logger";
 
 dotenv.config();
 
