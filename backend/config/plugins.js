@@ -6,8 +6,10 @@ module.exports = ({ env }) => ({
       port: env.int("MAIL_PORT", 25),
     },
     settings: {
-      defaultFrom: env("MAIL_DEFAULT_FROM", "contact@pujas.live"),
-      defaultFromName: env("MAIL_DEFAULT_FROM_NAME", "Pujas.live"),
+      defaultFrom: {
+        address: env("MAIL_DEFAULT_FROM_ADDRESS", "contact@pujas.live"),
+        name: env("MAIL_DEFAULT_FROM_NAME", "Pujas.live"),
+      },
     },
   },
 });

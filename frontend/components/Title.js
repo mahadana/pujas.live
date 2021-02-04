@@ -1,10 +1,10 @@
 import Head from "next/head";
+import { siteName } from "@/lib/util";
 
-const Title = ({ title = "?" }) => {
-  title = title.slice(0, 44);
+const Title = ({ title = siteName }) => {
   return (
     <Head>
-      <title>{title} | Pujas.live</title>
+      <title>{title}</title>
     </Head>
   );
 };

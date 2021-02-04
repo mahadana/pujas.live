@@ -30,15 +30,12 @@ module.exports = {
 
     await strapi.plugins["email"].services.email.sendTemplatedEmail(
       {
-        from: {
-          name: strapi.config.get("plugins.email.settings.defaultFromName"),
-          address: strapi.config.get("plugins.email.settings.defaultFrom"),
-        },
+        from: strapi.config.get("plugins.email.settings.defaultFrom"),
         replyTo: from,
         to: strapi.config.get("server.admin.auth.email"),
       },
       {
-        subject: "[Pujas.live] Message from ${name}",
+        subject: "[${siteName}] Message from ${name}",
         text: await getEmailTemplate("site-message.txt"),
         html: await getEmailTemplate("site-message.html"),
       },
@@ -47,6 +44,7 @@ module.exports = {
         address: encodeAddress(from),
         aboutUrl: `${frontendUrl}/about`,
         mailto: encodeMailto({ to: from }),
+        siteName: strapi.config.get("server.siteName"),
       }
     );
   },

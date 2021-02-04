@@ -4,15 +4,15 @@ import { setContext } from "@apollo/client/link/context";
 import { createUploadLink } from "apollo-upload-client";
 import JsCookie from "js-cookie";
 
-export const apiUrl =
+export const backendUrl =
   typeof window === "undefined"
     ? // server
       "http://backend:1337"
     : // client
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:1337";
+      process.env.NEXT_PUBLIC_BACKENDURL || "http://localhost:1337";
 
 const httpLink = createUploadLink({
-  uri: `${apiUrl}/graphql`,
+  uri: `${backendUrl}/graphql`,
 });
 
 const authLink = setContext((_, { headers }) => {

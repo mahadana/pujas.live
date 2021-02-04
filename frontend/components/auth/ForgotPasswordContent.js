@@ -6,15 +6,18 @@ import ForgotPasswordForm from "@/components/auth/ForgotPasswordForm";
 import ForgotPasswordSuccess from "@/components/auth/ForgotPasswordSuccess";
 import { FORGOT_PASSWORD_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
+import { useUser } from "@/lib/user";
 import { getStrapiError, sleep } from "@/lib/util";
 
 const ForgotPasswordContent = () => {
   const [forgotPassword] = useMutation(FORGOT_PASSWORD_MUTATION);
   const { snackException } = useSnackbar();
   const [completeEmail, setCompleteEmail] = useState(null);
+  const { logout } = useUser();
 
   const onSubmit = async ({ email }, formik, token) => {
     try {
+      logout();
       await forgotPassword({
         context: token
           ? {

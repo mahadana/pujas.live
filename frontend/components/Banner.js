@@ -6,6 +6,7 @@ import { fade, makeStyles } from "@material-ui/core/styles";
 import Link from "@/components/Link";
 import UserButton from "@/components/UserButton";
 import ButtonLink from "@/components/ButtonLink";
+import { siteName } from "@/lib/util";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,7 +63,7 @@ const Banner = ({ userButton = true }) => {
       <Container maxWidth="lg">
         <Box className={classes.container}>
           <Typography variant="h1" className={classes.title}>
-            <Link href="/">Pujas.live</Link>
+            <Link href="/">{siteName}</Link>
           </Typography>
           <Typography variant="caption" className={classes.summary}>
             Livestreams and meditation groups in the Thai Forest tradition of

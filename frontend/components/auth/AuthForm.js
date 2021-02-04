@@ -9,6 +9,7 @@ import { useFormikContext } from "formik";
 import CaptchaForm from "@/components/CaptchaForm";
 import Link from "@/components/Link";
 import { useUser } from "@/lib/user";
+import { siteName } from "@/lib/util";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,7 +49,7 @@ const AuthFormInner = ({ children, email, lead }) => {
 
   return (
     <Paper m={4} className={classes.paper}>
-      <Typography variant="h3">Pujas.live</Typography>
+      <Typography variant="h3">{siteName}</Typography>
       <Typography variant="subtitle1" className={classes.lead}>
         {user && !formik.isSubmitting ? (
           <Alert severity="warning" className={classes.alert}>

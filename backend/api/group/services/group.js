@@ -39,15 +39,12 @@ module.exports = {
 
     await strapi.plugins["email"].services.email.sendTemplatedEmail(
       {
-        from: {
-          name: strapi.config.get("plugins.email.settings.defaultFromName"),
-          address: strapi.config.get("plugins.email.settings.defaultFrom"),
-        },
+        from: strapi.config.get("plugins.email.settings.defaultFrom"),
         replyTo: from,
         to: { name: group.title, address: group.owner.email },
       },
       {
-        subject: "[Pujas.live] Join request from ${name}",
+        subject: "[${siteName}] Join request from ${name}",
         text: await getEmailTemplate("group-message.txt"),
         html: await getEmailTemplate("group-message.html"),
       },
@@ -57,6 +54,7 @@ module.exports = {
         groupMessageUrl: frontendUrl + getGroupMessagePath(group),
         groupEditUrl: frontendUrl + getGroupEditPath(group),
         mailto: encodeMailto({ to: from }),
+        siteName: strapi.config.get("server.siteName"),
       }
     );
   },

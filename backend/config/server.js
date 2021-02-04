@@ -10,4 +10,5 @@ module.exports = ({ env }) => ({
   },
   frontendUrl: env("FRONTEND_URL", "http://localhost:3000"),
   hcaptchaSecret: env("HCAPTCHA_SECRET"),
+  siteName: env("SITE_NAME", "Pujas.live"),
 });

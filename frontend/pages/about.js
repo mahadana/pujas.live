@@ -7,6 +7,7 @@ import ReactPlayer from "react-player";
 import PageLayout from "@/components/PageLayout";
 import SiteMessageContent from "@/components/SiteMessageContent";
 import { withApollo } from "@/lib/apollo";
+import { siteName } from "@/lib/util";
 
 const useStyles = makeStyles((theme) => ({
   player: {
@@ -47,9 +48,9 @@ const About = () => {
         </>
 
         <>
-          <Typography variant="h2">About Pujas.live</Typography>
+          <Typography variant="h2">About {siteName}</Typography>
           <Typography className={classes.description} variant="body1">
-            Pujas.live was created as a way to gather the various livestream
+            {siteName} was created as a way to gather the various livestream
             activities of Thai Forest monasteries that popped up during the
             COVID-19 pandemic. The intention is to support a more communal
             experience of participating in livestreams (remotely), and to

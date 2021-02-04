@@ -18,6 +18,7 @@ import UserProvider from "@/components/UserProvider";
 import VideoModal from "@/components/VideoModal";
 import { plausibleUrl, plausibleDomainKey } from "@/lib/plausible";
 import theme from "@/lib/theme";
+import { siteName } from "@/lib/util";
 
 const MyApp = ({ Component, pageProps }) => {
   useEffect(() => {
@@ -31,7 +32,7 @@ const MyApp = ({ Component, pageProps }) => {
   return (
     <>
       <Head>
-        <title>Pujas.live</title>
+        <title>{siteName}</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"

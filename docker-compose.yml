@@ -20,7 +20,7 @@ services:
     image: node:14
     command: /app/docker/start frontend
     environment:
-      NEXT_PUBLIC_API_URL: ${BACKEND_URL:-http://localhost:1337}
+      NEXT_PUBLIC_BACKEND_URL: ${BACKEND_URL:-http://localhost:1337}
       NEXT_PUBLIC_HCAPTCHA_SITE_KEY: ${HCAPTCHA_SITE_KEY:-}
       NEXT_PUBLIC_PLAUSIBLE_DOMAIN_KEY: ${PLAUSIBLE_DOMAIN_KEY:-localhost}
       NEXT_PUBLIC_PLAUSIBLE_URL: ${PLAUSIBLE_URL:-https://plausible.pujas.live}

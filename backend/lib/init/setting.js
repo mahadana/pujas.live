@@ -4,7 +4,7 @@ const emailConfirmationMessage = `<p>Thank you for registering!</p>
 
 <p>You have to confirm your email address. Please click on the link below.</p>
 
-<p><%= URL %>?confirmation=<%= CODE %></p>
+<p><a href="<%- URL %>?confirmation=<%- CODE %>">Confirm Email</a></p>
 
 <p>Thanks.</p>`;
 
@@ -12,7 +12,7 @@ const resetPasswordMessage = `<p>We heard that you lost your password. Sorry abo
 
 <p>But don’t worry! You can use the following link to reset your password:</p>
 
-<p><%= URL %>?code=<%= TOKEN %></p>
+<p><a href="<%- URL %>?code=<%- TOKEN %>">Reset Password</a></p>
 
 <p>Thanks.</p>`;
 
@@ -25,7 +25,8 @@ const initSettings = async () => {
     name: "users-permissions",
   });
 
-  const resetPasswordUrl = `${strapi.config.server.frontendUrl}/auth/reset-password`;
+  const frontendUrl = strapi.config.get("server.frontendUrl");
+  const resetPasswordUrl = `${frontendUrl}/auth/reset-password`;
 
   await pluginStore.set({
     key: "advanced",
@@ -40,8 +41,9 @@ const initSettings = async () => {
   });
   strapi.log.info("  plugin:users-permissions:advanced");
 
-  const fromName = strapi.config.get("plugins.email.settings.defaultFromName");
-  const fromEmail = strapi.config.get("plugins.email.settings.defaultFrom");
+  const defaultFrom = strapi.config.get("plugins.email.settings.defaultFrom");
+  const from = { email: defaultFrom.address, name: defaultFrom.name };
+  const siteName = strapi.config.get("server.siteName");
 
   await pluginStore.set({
     key: "email",
@@ -50,9 +52,9 @@ const initSettings = async () => {
         display: "Email.template.email_confirmation",
         icon: "check-square",
         options: {
-          from: { name: fromName, email: fromEmail },
+          from,
           message: emailConfirmationMessage,
-          object: "[Pujas.live] Confirm your email",
+          object: `[${siteName}] Confirm your email`,
           response_email: null,
         },
       },
@@ -60,9 +62,9 @@ const initSettings = async () => {
         display: "Email.template.reset_password",
         icon: "sync",
         options: {
-          from: { name: fromName, email: fromEmail },
+          from,
           message: resetPasswordMessage,
-          object: "[Pujas.live] Reset password",
+          object: `[${siteName}] Reset password`,
           response_email: null,
         },
       },

@@ -1,4 +1,4 @@
-# `pujas.live`
+# [Pujas.live](https://pujas.live/)
 
 ## Quick Start
 
