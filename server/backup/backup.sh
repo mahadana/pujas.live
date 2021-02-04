@@ -6,8 +6,7 @@ trap '{ set +eu; rm -rf "$TEMP_BACKUP_DIR"; }' EXIT
 
 echo "Backup start: $(date)"
 
-S3_BUCKET="pujas-live"
-BACKUP_USER="runner"
+S3_BUCKET="$(cat "$HOME/s3-bucket")"
 
 BACKUP_FILE="pujas.live-db-$(date +%Y-%m-%d).sql.gz"
 RCLONE_BACKUP_DIR="s3:$S3_BUCKET/backups"

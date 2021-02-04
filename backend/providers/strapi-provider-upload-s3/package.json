@@ -1,0 +1,8 @@
+{
+  "name": "strapi-provider-upload-s3",
+  "main": "./lib",
+  "dependencies": {
+    "aws-sdk": "^2.836.0",
+    "stream-buffers": "^3.0.2"
+  }
+}

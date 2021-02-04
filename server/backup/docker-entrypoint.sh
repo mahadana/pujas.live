@@ -1,14 +1,15 @@
-#/bin/bash
+#!/bin/bash
 
-set -eu
+set -Eeuo pipefail
 
-S3_ENDPOINT=us-east-1.linodeobjects.com
-S3_BUCKET=pujas-live
-# S3_ACCESS_KEY_ID is provided by environment
-# S3_SECRET_ACCESS_KEY is provided by environment
+if [ $# != "0" ]; then
+  exec "$@"
+  exit 0
+fi
 
 BACKUP_USER="runner"
 RCLONE_CONFIG_PATH="/home/$BACKUP_USER/.config/rclone/rclone.conf"
+BUCKET_CONFIG_PATH="/home/$BACKUP_USER/s3-bucket"
 CRON_LOG="/home/$BACKUP_USER/backup.log"
 
 if ! getent passwd "$BACKUP_USER" > /dev/null; then
@@ -28,6 +29,8 @@ access_key_id = $S3_ACCESS_KEY_ID
 secret_access_key = $S3_SECRET_ACCESS_KEY
 endpoint = $S3_ENDPOINT
 EOF
+
+echo "$S3_BUCKET" > "$BUCKET_CONFIG_PATH"
 
 touch "$CRON_LOG"
 chown -R "$BACKUP_USER:$BACKUP_USER" \

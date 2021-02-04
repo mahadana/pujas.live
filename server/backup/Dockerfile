@@ -10,8 +10,8 @@ RUN apt-get update -qq && \
 RUN curl -s https://rclone.org/install.sh | bash > /dev/null 2>&1
 
 COPY backup.sh /backup.sh
-COPY entrypoint.sh /entrypoint.sh
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 
-RUN chmod 0755 /backup.sh /entrypoint.sh
+RUN chmod 0755 /backup.sh /docker-entrypoint.sh
 
-ENTRYPOINT /entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
