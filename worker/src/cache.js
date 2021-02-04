@@ -1,13 +1,12 @@
 import redis from "redis";
 import { promisify } from "util";
 
-const REDIS_HOST = "redis";
-const REDIS_PORT = 6379;
+export const redisHost = process.env.REDIS_HOST || "redis";
+export const redisPort = process.env.REDIS_PORT || 6379;
 
 class Cache {
   constructor({ redisClient } = {}) {
-    this.redisClient =
-      redisClient || redis.createClient(REDIS_PORT, REDIS_HOST);
+    this.redisClient = redisClient || redis.createClient(redisPort, redisHost);
     // Async proxy for redis
     return new Proxy(this, {
       get: (target, key) => {
