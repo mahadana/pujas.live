@@ -34,5 +34,5 @@ mkdir -p "$LOG_DIR"
 
 ) 2>&1 | ts "[%Y-%m-%d %H:%M:%S]" | tee -a "$LOG_PATH"
 
-ls -rt1 "$LOG_DIR/$LOG_PREFIX"*.log | head -n -30 | xargs --no-run-if-empty rm
+ls -rt1 "$LOG_DIR/$LOG_NAME-"*.log | head -n -10 | xargs --no-run-if-empty rm
 ln -sf "$LOG_FILE" "$LATEST_PATH"
