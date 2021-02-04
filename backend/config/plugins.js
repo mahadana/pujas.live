@@ -7,8 +7,8 @@ module.exports = ({ env }) => ({
     },
     settings: {
       defaultFrom: {
-        address: env("MAIL_DEFAULT_FROM_ADDRESS", "contact@pujas.live"),
-        name: env("MAIL_DEFAULT_FROM_NAME", "Pujas.live"),
+        address: env("MAIL_FROM_ADDRESS", "contact@pujas.live"),
+        name: env("MAIL_FROM_NAME", "Pujas.live"),
       },
     },
   },
