@@ -51,7 +51,7 @@ const RecordingContent = ({ recording }) => {
         live={recording.live}
         onEnded={onEnded}
         skip={skip}
-        url={recording.url}
+        url={videoUrl}
       />
     </Box>
   ) : null;
