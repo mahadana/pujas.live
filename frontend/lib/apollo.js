@@ -9,7 +9,7 @@ export const backendUrl =
     ? // server
       "http://backend:1337"
     : // client
-      process.env.NEXT_PUBLIC_BACKENDURL || "http://localhost:1337";
+      process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:1337";
 
 const httpLink = createUploadLink({
   uri: `${backendUrl}/graphql`,
