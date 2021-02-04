@@ -4,6 +4,7 @@
     "hcaptcha": "0.0.2",
     "knex": "^0.21.16",
     "pg": "^8.5.1",
+    "shared": "file:../shared",
     "strapi": "3.4.1",
     "strapi-admin": "3.4.1",
     "strapi-connector-bookshelf": "3.4.1",
@@ -23,9 +24,9 @@
     "supertest": "^6.1.1"
   },
   "scripts": {
-    "dev": "strapi develop",
+    "dev": "node lib/init && npx strapi develop",
     "build": "strapi build",
-    "start": "strapi start",
+    "start": "node lib/init && npx strapi start",
     "strapi": "strapi",
     "test": "jest --forceExit --detectOpenHandles"
   }

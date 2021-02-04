@@ -5,8 +5,6 @@ services:
     build:
       context: ..
       dockerfile: ./backend/Dockerfile
-    depends_on:
-      - postgres
     environment:
       ADMIN_EMAIL: ${BACKEND_ADMIN_EMAIL?}
       ADMIN_JWT_SECRET: ${BACKEND_ADMIN_JWT_SECRET?}

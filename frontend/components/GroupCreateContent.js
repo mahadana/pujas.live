@@ -3,12 +3,12 @@ import Container from "@material-ui/core/Container";
 import { useRouter } from "next/router";
 
 import GroupForm from "@/components/GroupForm";
-import { getGroupEditPath } from "@/lib/path";
 import { CREATE_GROUP_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
-import { dayjs } from "@/lib/time";
 import { useUser } from "@/lib/user";
 import { groupSchema, groupCreateDbCast } from "@/lib/validation";
+import { getGroupEditPath } from "shared/path";
+import { dayjs } from "shared/time";
 
 const GroupCreateContent = () => {
   const [createGroup] = useMutation(CREATE_GROUP_MUTATION);

@@ -4,9 +4,9 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 import ButtonLink from "@/components/ButtonLink";
-import { useRouteBack } from "@/lib/path";
 import plausible from "@/lib/plausible";
 import { useUser } from "@/lib/user";
+import { useRouteBack } from "@/lib/util";
 
 const UserButton = () => {
   const router = useRouter();

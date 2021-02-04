@@ -9,9 +9,9 @@ import capitalize from "lodash/capitalize";
 import ButtonLink from "@/components/ButtonLink";
 import Upcoming from "@/components/Upcoming";
 import UploadImage from "@/components/UploadImage";
-import { getGroupEditPath, getGroupMessagePath } from "@/lib/path";
-import { dayjs, getNextGroupEventTime } from "@/lib/time";
 import { useUser } from "@/lib/user";
+import { getGroupEditPath, getGroupMessagePath } from "shared/path";
+import { dayjs, getNextGroupEventTime } from "shared/time";
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -1,14 +1,14 @@
-import dayjs from "dayjs";
-import en from "dayjs/locale/en";
-import advancedFormat from "dayjs/plugin/advancedFormat";
-import duration from "dayjs/plugin/duration";
-import localizedFormat from "dayjs/plugin/localizedFormat";
-import minMax from "dayjs/plugin/minMax";
-import relativeTime from "dayjs/plugin/relativeTime";
-import timezone from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
-import weekday from "dayjs/plugin/weekday";
-import { listTimeZones } from "timezone-support";
+const dayjs = require("dayjs");
+const en = require("dayjs/locale/en");
+const advancedFormat = require("dayjs/plugin/advancedFormat");
+const duration = require("dayjs/plugin/duration");
+const localizedFormat = require("dayjs/plugin/localizedFormat");
+const minMax = require("dayjs/plugin/minMax");
+const relativeTime = require("dayjs/plugin/relativeTime");
+const timezone = require("dayjs/plugin/timezone");
+const utc = require("dayjs/plugin/utc");
+const weekday = require("dayjs/plugin/weekday");
+const { listTimeZones } = require("timezone-support");
 
 const relativeTimeConfig = {
   thresholds: [
@@ -35,11 +35,10 @@ dayjs.extend(relativeTime, relativeTimeConfig);
 dayjs.extend(timezone);
 dayjs.extend(utc);
 dayjs.extend(weekday);
-export { dayjs };
 
-export const TIMEZONES = listTimeZones();
+const TIMEZONES = listTimeZones();
 
-export const getLocalTimeZone = () => {
+const getLocalTimeZone = () => {
   try {
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
   } catch {
@@ -47,7 +46,7 @@ export const getLocalTimeZone = () => {
   }
 };
 
-export const getNextGroupEventTime = (args) => {
+const getNextGroupEventTime = (args) => {
   // Normalize now
   let now = dayjs(args.now).utc();
   if (!now.isValid()) {
@@ -96,7 +95,7 @@ const timeString = (option, dayjsClass) => {
       return this.format("HH:mm:ss.SSS");
     }
     const dts = this.format("YYYY-MM-DD") + "T" + ts;
-    const timezone = this.$x?.$timezone;
+    const timezone = this.$x && this.$x.$timezone;
     if (timezone) {
       try {
         return dayjs.tz(dts, timezone);
@@ -110,3 +109,10 @@ const timeString = (option, dayjsClass) => {
 };
 
 dayjs.extend(timeString);
+
+module.exports = {
+  dayjs,
+  getLocalTimeZone,
+  getNextGroupEventTime,
+  TIMEZONES,
+};

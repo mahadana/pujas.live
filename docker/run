@@ -10,22 +10,26 @@ fi
 SERVICE="$1"
 shift
 
+DIR="/app/$SERVICE"
+VOLUME_DIRS=
+
 case "$SERVICE" in
   backend)
-    VOLUME_DIRS=".cache build"
+    VOLUME_DIRS="/app/backend/.cache /app/backend/build"
     ;;
   frontend)
-    VOLUME_DIRS=".next"
+    VOLUME_DIRS="/app/frontend/.next"
+    ;;
+  shared)
+    SERVICE=worker
+    DIR=/app/shared
     ;;
   worker)
-    VOLUME_DIRS=""
     ;;
   *)
     echo "Invalid service: $SERVICE"
     exit 1
 esac
-
-cd "/app/$SERVICE"
 
 uid=$(stat -c %u .)
 gid=$(stat -c %g .)
@@ -38,8 +42,13 @@ else
   groupmod -g $gid $user
   usermod -u $uid -g $gid $user 2> /dev/null
   chown -R node:node /home/node
-  chown node:node node_modules $VOLUME_DIRS
+  chown node:node \
+    /app/$SERVICE/node_modules \
+    /app/shared/node_modules \
+    $VOLUME_DIRS
 fi
+
+cd "$DIR"
 
 if test "$*" = bash; then
   exec su -s /bin/bash $user

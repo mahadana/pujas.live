@@ -1,4 +1,5 @@
 import isNil from "lodash/isNil";
+import { useRouter } from "next/router";
 
 // TODO redundant with worker/src/youtube.js
 export const getYouTubeVideoIdFromUrl = (url) => {
@@ -25,6 +26,18 @@ export const getYouTubeVideoUrlFromVideoId = (videoId, options = {}) => {
   if (!isNil(options.skip)) extras.push("t=" + options.skip);
   if (extras.length) url += "?" + extras.join("&");
   return url;
+};
+
+export const useRouteBack = (router) => {
+  if (!router) {
+    router = useRouter();
+  }
+  return {
+    get: (path) =>
+      path +
+      (router.asPath ? "?back=" + encodeURIComponent(router.asPath) : ""),
+    push: (path = "/") => router.push(router.query?.back || path),
+  };
 };
 
 export const getStrapiError = (error) => {

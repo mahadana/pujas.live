@@ -15,6 +15,8 @@ const {
   requiredStringSchema,
 } = require("../../../lib/util");
 
+const { getGroupEditPath, getGroupMessagePath } = require("shared/path");
+
 const messageGroupSchema = yup.object({
   email: emailSchema,
   experience: requiredStringSchema,
@@ -52,8 +54,8 @@ module.exports = {
       {
         ...params,
         address: encodeAddress(from),
-        groupMessageUrl: `${frontendUrl}/group/${groupId}/-/message`,
-        groupEditUrl: `${frontendUrl}/group/${groupId}/-/edit`,
+        groupMessageUrl: frontendUrl + getGroupMessagePath(group),
+        groupEditUrl: frontendUrl + getGroupEditPath(group),
         mailto: encodeMailto({ to: from }),
       }
     );

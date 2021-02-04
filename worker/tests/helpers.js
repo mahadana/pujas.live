@@ -1,10 +1,7 @@
-import dotenv from "dotenv";
 import { promises as fs } from "fs";
 import path from "path";
 
 import YouTube from "@/youtube";
-
-dotenv.config();
 
 const fixtureDir = path.join(__dirname, "fixtures");
 

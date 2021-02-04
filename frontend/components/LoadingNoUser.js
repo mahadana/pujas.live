@@ -9,7 +9,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { useRouter } from "next/router";
 
 import ButtonLink from "@/components/ButtonLink";
-import { useRouteBack } from "@/lib/path";
+import { useRouteBack } from "@/lib/util";
 
 const useStyles = makeStyles((theme) => ({
   actions: {

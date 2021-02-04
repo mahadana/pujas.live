@@ -21,6 +21,7 @@
     "react-dom": "^17.0.1",
     "react-idle-timer": "^4.5.2",
     "react-player": "^2.8.2",
+    "shared": "file:../shared",
     "slugify": "^1.4.6",
     "timezone-support": "^2.0.2",
     "yup": "^0.32.8"

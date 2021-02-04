@@ -1,11 +1,10 @@
-import { useRouter } from "next/router";
-import slugify from "slugify";
+const slugify = require("slugify");
 
-import {
+const {
   getYouTubeEmbedVideoUrlFromVideoId,
   getYouTubeVideoIdFromUrl,
   getYouTubeVideoUrlFromVideoId,
-} from "@/lib/util";
+} = require("./youtube");
 
 const makeSlug = (title) =>
   slugify(title || "-", {
@@ -13,31 +12,19 @@ const makeSlug = (title) =>
     strict: true,
   }).slice(0, 32);
 
-export const useRouteBack = (router) => {
-  if (!router) {
-    router = useRouter();
-  }
-  return {
-    get: (path) =>
-      path +
-      (router.asPath ? "?back=" + encodeURIComponent(router.asPath) : ""),
-    push: (path = "/") => router.push(router.query?.back || path),
-  };
-};
-
-export const getChannelRecordingsPath = (channel) =>
+const getChannelRecordingsPath = (channel) =>
   `/channel/${channel.id}/${makeSlug(channel.title)}/recordings`;
 
-export const getGroupEditPath = (group) =>
+const getGroupEditPath = (group) =>
   `/group/${group.id}/${makeSlug(group.title)}/edit`;
 
-export const getGroupMessagePath = (group) =>
+const getGroupMessagePath = (group) =>
   `/group/${group.id}/${makeSlug(group.title)}/message`;
 
-export const getRecordingPath = (recording) =>
+const getRecordingPath = (recording) =>
   `/recording/${recording.id}/${makeSlug(recording.title)}`;
 
-export const getRecordingVideoUrl = (recording, { autoplay, skip } = {}) => {
+const getRecordingVideoUrl = (recording, { autoplay, skip } = {}) => {
   let videoUrl = recording.recordingUrl;
   const youTubeVideoId = getYouTubeVideoIdFromUrl(videoUrl);
   if (youTubeVideoId) {
@@ -49,4 +36,12 @@ export const getRecordingVideoUrl = (recording, { autoplay, skip } = {}) => {
     });
   }
   return videoUrl;
+};
+
+module.exports = {
+  getChannelRecordingsPath,
+  getGroupEditPath,
+  getGroupMessagePath,
+  getRecordingPath,
+  getRecordingVideoUrl,
 };

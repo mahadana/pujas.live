@@ -1,8 +1,6 @@
-import dotenv from "dotenv";
 import knex from "knex";
 
 export const init = () => {
-  dotenv.config();
   return knex({
     client: "pg",
     connection: {

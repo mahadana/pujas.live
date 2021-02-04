@@ -11,16 +11,14 @@ SERVICE="$1"
 
 cd "/app/$SERVICE"
 
-if [ $(ls node_modules | wc -l) = 0 ]; then
+if [ $(ls node_modules | wc -l) = 0 ] || \
+   [ $(ls ../shared/node_modules | wc -l) = 0 ]; then
   echo "Installing node modules..."
   npm install --silent
 fi
 
-if [ "$SERVICE" = backend ]; then
-  if [ $(ls build | wc -l) = 0 ]; then
-    npm run build
-  fi
-  node lib/init
+if [ "$SERVICE" = backend ] && [ $(ls build | wc -l) = 0 ]; then
+  npm run build
 fi
 
 npm run dev

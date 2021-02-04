@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-import { useRouteBack } from "@/lib/path";
 import plausible from "@/lib/plausible";
 import { useUser } from "@/lib/user";
+import { useRouteBack } from "@/lib/util";
 
 const LogoutPage = () => {
   const router = useRouter();

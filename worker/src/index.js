@@ -1,10 +1,7 @@
 import Queue from "bull";
-import dotenv from "dotenv";
 
 import { processAutomations } from "@/automate";
 import logger from "@/logger";
-
-dotenv.config();
 
 const setupQueues = async () => {
   const queueOptions = { redis: { host: "redis" } };
@@ -16,6 +13,7 @@ const setupQueues = async () => {
   });
 
   if (process.env.YOUTUBE_API_KEY) {
+    console.log("Setting up automateQueue");
     automateQueue.add(
       {},
       {

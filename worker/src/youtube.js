@@ -1,9 +1,13 @@
 import cheerio from "cheerio";
 import crypto from "crypto";
 import fetch from "cross-fetch";
-import isNil from "lodash/isNil";
 
 import Cache from "@/cache";
+
+import {
+  getYouTubeEmbedStreamUrlFromChannelId,
+  getYouTubeVideoIdFromUrl,
+} from "shared/youtube";
 
 const DEFAULT_CACHE_PREFIX = "worker-cache";
 const DEFAULT_CACHE_TIMEOUT = 60; // seconds
@@ -67,31 +71,18 @@ class YouTube {
     return channelId;
   }
 
-  getEmbedStreamUrlFromChannelId(channelId) {
-    return `https://www.youtube.com/embed/live_stream?channel=${channelId}`;
-  }
-
-  getEmbedVideoUrlFromVideoId(videoId, options = {}) {
-    let url = `https://www.youtube.com/embed/${videoId}`;
-    const extras = [];
-    if (options.autoplay) extras.push("autoplay=1");
-    if (!isNil(options.skip)) extras.push("start=" + options.skip);
-    if (extras.length) url += "?" + extras.join("&");
-    return url;
-  }
-
   async getJsonFromUrl(url) {
     return JSON.parse(await this.getTextFromUrl(url));
   }
 
   async getLatestVideoIdFromChannelId(channelId) {
-    const url = this.getEmbedStreamUrlFromChannelId(channelId);
+    const url = getYouTubeEmbedStreamUrlFromChannelId(channelId);
     const html = await this.getTextFromUrl(url);
     const $ = cheerio.load(html);
     const nodes = $('link[rel="canonical"]');
     const videoUrl = nodes.first().attr("href");
     if (videoUrl) {
-      const videoId = await this.getVideoIdFromUrl(videoUrl);
+      const videoId = getYouTubeVideoIdFromUrl(videoUrl);
       if (videoId !== "live_stream") {
         return videoId;
       }
@@ -127,21 +118,6 @@ class YouTube {
     return result;
   }
 
-  async getVideoIdFromUrl(url) {
-    // Based on https://stackoverflow.com/a/37704433
-    const regex = /^\s*(?:(?:https?:)?\/\/)?(?:(?:www|m)\.)?(?:(?:youtube\.com|youtu\.be))(?:\/(?:[-\w]+\?v=|embed\/|v\/)?)([-\w]+)(?:\S+)?$/;
-    const m = String(url).match(regex);
-    return m ? m[1] : false;
-  }
-
-  getVideoUrlFromVideoId(videoId, options = {}) {
-    let url = `https://youtu.be/${videoId}`;
-    const extras = [];
-    if (!isNil(options.skip)) extras.push("t=" + options.skip);
-    if (extras.length) url += "?" + extras.join("&");
-    return url;
-  }
-
   async _getCachedTextFromUrl(url) {
     const key = this._makeCacheKey(url);
     let data = await this.cache.get(key);
@@ -168,4 +144,4 @@ class YouTube {
   }
 }
 
-export default YouTube;
+module.exports = YouTube;

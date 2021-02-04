@@ -1,4 +1,4 @@
-import { dayjs, getNextGroupEventTime } from "@/lib/time";
+const { dayjs, getNextGroupEventTime } = require("shared/time");
 
 describe("getNextGroupEventTime", () => {
   test("everyday", () => {

@@ -5,12 +5,11 @@ import { useState } from "react";
 
 import ResetPasswordCodeExpired from "@/components/auth/ResetPasswordCodeExpired";
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
-import { useRouteBack } from "@/lib/path";
 import plausible from "@/lib/plausible";
 import { RESET_PASSWORD_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
 import { useUser } from "@/lib/user";
-import { getStrapiError } from "@/lib/util";
+import { getStrapiError, useRouteBack } from "@/lib/util";
 
 const ResetPasswordContent = () => {
   const [resetPassword] = useMutation(RESET_PASSWORD_MUTATION);

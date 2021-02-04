@@ -34,7 +34,7 @@ jobs:
 
     strategy:
       matrix:
-        service: [backend, frontend, worker]
+        service: [backend, frontend, shared, worker]
 
     steps:
       - uses: actions/checkout@v2

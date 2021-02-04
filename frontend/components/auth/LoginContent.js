@@ -3,12 +3,11 @@ import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 
 import LoginForm from "@/components/auth/LoginForm";
-import { useRouteBack } from "@/lib/path";
 import plausible from "@/lib/plausible";
 import { LOGIN_MUTATION } from "@/lib/schema";
 import { useSnackbar } from "@/lib/snackbar";
 import { useUser } from "@/lib/user";
-import { getStrapiError } from "@/lib/util";
+import { getStrapiError, useRouteBack } from "@/lib/util";
 
 const LoginContent = () => {
   const [doLogin] = useMutation(LOGIN_MUTATION);

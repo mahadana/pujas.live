@@ -1,0 +1,16 @@
+{
+  "name": "shared",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "watch": "jest --watchAll"
+  },
+  "dependencies": {
+    "dayjs": "^1.10.4",
+    "slugify": "^1.4.6",
+    "timezone-support": "^2.0.2"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
+}

@@ -6,15 +6,15 @@ if [ $# = 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
   cat <<EOF
 Usage: $0 <service> [command...]
 
-  Bash shell                        $0 <backend|frontend|worker>
+  Bash shell                        $0 <service>
   Strapi console                    $0 backend console
   PostgreSQL console                $0 postgres console
   Redis console                     $0 redis console
   Mail console                      $0 mail console
 
   Run all tests                     $0 test
-  Run <service> tests               $0 <backend|frontend|worker> test
-  Watch <service> tests             $0 <backend|frontend|worker> watch
+  Run <service> tests               $0 <service> test
+  Watch <service> tests             $0 <service> watch
 
   Run npm install in node services  $0 install
   Apply auto-formatting (prettier)  $0 pretty
@@ -31,8 +31,10 @@ SERVICE="$1"
 shift
 
 case "$SERVICE" in
-  frontend)
-    if [ "$*" == "test" ]; then
+  frontend|shared|worker)
+    if [ "$*" == "install" ]; then
+      set npm install
+    elif [ "$*" == "test" ]; then
       set npm run test
     elif [ "$*" == "watch" ]; then
       set npm run watch
@@ -40,7 +42,9 @@ case "$SERVICE" in
     ;;
   backend|strapi)
     SERVICE="backend"
-    if [ "$*" == "test" ]; then
+    if [ "$*" == "install" ]; then
+      set npm install
+    elif [ "$*" == "test" ]; then
       set npm run test
     elif [ "$*" == "watch" ]; then
       set npm run watch
@@ -69,23 +73,18 @@ case "$SERVICE" in
       set redis-cli
     fi
     ;;
-  worker)
-    if [ "$*" == "test" ]; then
-      set npm run test
-    elif [ "$*" == "watch" ]; then
-      set npm run watch
-    fi
-    ;;
   test)
     "$0" backend test
     "$0" frontend test
+    "$0" shared test
     "$0" worker test
     exit 0
     ;;
   install)
-    "$0" backend npm install
-    "$0" frontend npm install
-    "$0" worker npm install
+    "$0" backend install
+    "$0" frontend install
+    "$0" shared install
+    "$0" worker install
     exit 0
     ;;
   pretty|prettier)
@@ -131,6 +130,7 @@ case "$SERVICE" in
           backend/public/uploads/* \
           frontend/.next frontend/node_modules \
           logs/deploy logs/worker \
+	  shared/node_modules \
           worker/build worker/node_modules
     exit 0
     ;;
@@ -144,23 +144,29 @@ if [ $# = 0 ]; then
   set bash
 fi
 
+if [ "$SERVICE" = "shared" ]; then
+  DOCKER_SERVICE=worker
+else
+  DOCKER_SERVICE="$SERVICE"
+fi
+
 COMMAND=run
-SERVICE_ID=$(docker-compose ps -q $SERVICE)
-if echo "$SERVICE_ID" | grep -q .; then
+DOCKER_ID=$(docker-compose ps -q "$DOCKER_SERVICE")
+if echo "$DOCKER_ID" | grep -q .; then
   if docker ps -qa --filter status=running \
-                   --filter "id=$SERVICE_ID" | grep -q .; then
+                   --filter "id=$DOCKER_ID" | grep -q .; then
     COMMAND=exec
   fi
 fi
 
 case "$SERVICE" in
-  backend|frontend|worker)
+  backend|frontend|worker|shared)
     set -- /app/docker/run "$SERVICE" "$@"
     ;;
 esac
 
-echo "> docker-compose $COMMAND $SERVICE $@"
-docker-compose "$COMMAND" "$SERVICE" "$@"
+echo "> docker-compose $COMMAND $DOCKER_SERVICE $@"
+docker-compose "$COMMAND" "$DOCKER_SERVICE" "$@"
 
 if test "$COMMAND" = "run"; then
   docker-compose rm -vf > /dev/null 2>&1

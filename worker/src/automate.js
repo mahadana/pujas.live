@@ -1,10 +1,13 @@
-import dotenv from "dotenv";
 import _ from "lodash";
 
 import db from "@/db";
 import logger from "@/logger";
-import { dayjs } from "@/time";
 import YouTube from "@/youtube";
+import { dayjs } from "shared/time";
+import {
+  getYouTubeVideoIdFromUrl,
+  getYouTubeVideoUrlFromVideoId,
+} from "shared/youtube";
 
 const getChannels = async (knex) => {
   logger.info(`Pass 1: get channels`);
@@ -141,7 +144,7 @@ const updateChannelWithData = async (knex, channel, data) => {
   let recordingId, action;
   const now = new Date();
   const values = makeRecordingValuesFromData(data);
-  const recordingUrl = new YouTube().getVideoUrlFromVideoId(channel.videoId);
+  const recordingUrl = getYouTubeVideoUrlFromVideoId(channel.videoId);
   try {
     const existing = (
       await knex
@@ -210,10 +213,9 @@ const getInactiveYouTubeRecordings = async (knex) => {
     .orderBy("recordings.updated_at", "asc")
     .orderBy("recordings.id", "desc")
     .limit(50); // TODO we currently limit these queries by 50 per YouTube limits
-  const yt = new YouTube();
   let recordings = [];
   for (const recording of dbRecordings) {
-    const videoId = await yt.getVideoIdFromUrl(recording.recordingUrl);
+    const videoId = getYouTubeVideoIdFromUrl(recording.recordingUrl);
     if (videoId) {
       recording.videoId = videoId;
       recordings.push(recording);
@@ -315,7 +317,6 @@ export const processAutomations = async () => {
 };
 
 if (require.main === module) {
-  dotenv.config();
   if (process.env.YOUTUBE_API_KEY) {
     processAutomations().catch(console.error);
   } else {

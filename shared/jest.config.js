@@ -1,6 +1,6 @@
 module.exports = {
   moduleNameMapper: {
-    "^@/(.*)$": "<rootDir>/src/$1",
+    "^shared(/.*|)$": "<rootDir>$1",
   },
   testPathIgnorePatterns: ["/node_modules/"],
   verbose: true,

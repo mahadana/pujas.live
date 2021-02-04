@@ -4,8 +4,6 @@ services:
   backend:
     image: node:14
     command: /app/docker/start backend
-    depends_on:
-      - postgres
     env_file: .env
     ports:
       - "127.0.0.1:${BACKEND_PORT:-1337}:1337"
@@ -15,6 +13,7 @@ services:
       - /app/backend/.cache
       - /app/backend/build
       - backend_nm:/app/backend/node_modules
+      - backend_snm:/app/shared/node_modules
     working_dir: /app/backend
 
   frontend:
@@ -32,6 +31,7 @@ services:
       - .:/app
       - /app/frontend/.next
       - frontend_nm:/app/frontend/node_modules
+      - frontend_snm:/app/shared/node_modules
     working_dir: /app/frontend
 
   mail:
@@ -60,9 +60,13 @@ services:
     volumes:
       - .:/app
       - worker_nm:/app/worker/node_modules
+      - worker_snm:/app/shared/node_modules
     working_dir: /app/worker
 
 volumes:
   backend_nm:
+  backend_snm:
   frontend_nm:
+  frontend_snm:
   worker_nm:
+  worker_snm:
