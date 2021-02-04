@@ -28,7 +28,7 @@ const GroupEditContent = ({ group }) => {
 
   return (
     <Container maxWidth="sm">
-      <Title title={`${group.title} | Edit Group`} />
+      {!!group.title && <Title title={group.title} />}
       <GroupForm group={group} onSubmit={onSubmit} />
     </Container>
   );

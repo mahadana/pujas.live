@@ -115,7 +115,7 @@ const ChannelRecordingsModal = ({ children }) => {
             onExited={onExited}
             scroll="body"
           >
-            {open && <Title title={`${channel.title} | Recordings`} />}
+            {open && !!channel.title && <Title title={channel.title} />}
             <CloseButtonLink className={classes.closeButton} {...closeProps} />
             <DialogTitle className={classes.title}>
               <Box>Recordings - {channel.title}</Box>

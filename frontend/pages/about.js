@@ -6,6 +6,7 @@ import ReactPlayer from "react-player";
 
 import PageLayout from "@/components/PageLayout";
 import SiteMessageContent from "@/components/SiteMessageContent";
+import Title from "@/components/Title";
 import { withApollo } from "@/lib/apollo";
 import { siteName } from "@/lib/util";
 
@@ -34,6 +35,7 @@ const About = () => {
 
   return (
     <PageLayout>
+      <Title title="About" />
       <Container maxWidth="md">
         <>
           <Typography variant="h2">How to Use</Typography>

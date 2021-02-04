@@ -48,7 +48,7 @@ const RecordingContent = ({ recording }) => {
           }
         `}
       </style>
-      <Title title={`${recording.title} | Recording`} />
+      {!!recording.title && <Title title={recording.title} />}
       <VideoPlayer
         autoplay={false}
         closeProps={closeProps}

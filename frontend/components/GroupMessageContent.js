@@ -36,7 +36,7 @@ const GroupMessageContent = ({ group }) => {
 
   return (
     <Container maxWidth="sm">
-      <Title title={`Join ${group.title}`} />
+      {!!group.title && <Title title={group.title} />}
       {!success ? (
         <GroupMessageForm group={group} onSubmit={onSubmit} />
       ) : (

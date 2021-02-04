@@ -24,7 +24,7 @@ const ChannelRecordingsContent = ({ channel }) => {
 
   return (
     <Container maxWidth="lg">
-      <Title title={`${channel.title} | Recordings`} />
+      {!!channel.title && <Title title={channel.title} />}
       <ChannelRecordingsToggle
         className={classes.toggle}
         onChange={toggleState}
