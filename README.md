@@ -27,15 +27,15 @@ The default credentials (for both):
 ```
 Usage: ./task <service> [command...]
 
-  Bash shell                        ./task <backend|frontend|worker>
+  Bash shell                        ./task <service>
   Strapi console                    ./task backend console
   PostgreSQL console                ./task postgres console
   Redis console                     ./task redis console
   Mail console                      ./task mail console
 
   Run all tests                     ./task test
-  Run <service> tests               ./task <backend|frontend|worker> test
-  Watch <service> tests             ./task <backend|frontend|worker> watch
+  Run <service> tests               ./task <service> test
+  Watch <service> tests             ./task <service> watch
 
   Run npm install in node services  ./task install
   Apply auto-formatting (prettier)  ./task pretty

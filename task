@@ -74,16 +74,16 @@ case "$SERVICE" in
     fi
     ;;
   test)
+    "$0" shared test
     "$0" backend test
     "$0" frontend test
-    "$0" shared test
     "$0" worker test
     exit 0
     ;;
   install)
+    "$0" shared install
     "$0" backend install
     "$0" frontend install
-    "$0" shared install
     "$0" worker install
     exit 0
     ;;

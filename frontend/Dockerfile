@@ -1,14 +1,16 @@
 FROM node:14
-RUN mkdir -p /app/frontend && chown -R node:node /app
+RUN mkdir -p /app/shared /app/frontend && \
+    chown -R node:node /app
 WORKDIR /app/frontend
 USER node
 ENV NODE_ENV=production
 EXPOSE 3000
 
+COPY --chown=node:node shared/package*.json /app/shared/
 COPY --chown=node:node frontend/package*.json /app/frontend/
 RUN npm clean-install --silent --production
 
-COPY --chown=node:node docker /app/docker
+COPY --chown=node:node shared /app/shared
 COPY --chown=node:node frontend /app/frontend
 
 ARG API_URL
