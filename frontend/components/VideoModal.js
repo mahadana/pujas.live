@@ -9,11 +9,13 @@ import VideoPlayer from "@/components/VideoPlayer";
 
 export const useVideoModalHref = () => {
   const router = useRouter();
-  return ({ title, url }) => ({
+  return ({ live, skip, title, url }) => ({
     pathname: router.pathname,
     query: {
       ...router.query,
       videoModalBackPath: router.asPath,
+      videoModalLive: live ? "1" : "0",
+      videoModalSkip: skip,
       videoModalTitle: title,
       videoModalUrl: url,
     },
@@ -37,10 +39,13 @@ const VideoModal = ({ children }) => {
 
   const {
     videoModalBackPath: backPath,
+    videoModalLive,
+    videoModalSkip: skip,
     videoModalTitle: title,
     videoModalUrl: url,
     ...query
   } = router.query;
+  const live = videoModalLive === "1";
   const closeProps = {
     as: backPath,
     href: { pathname: router.pathname, query },
@@ -63,7 +68,9 @@ const VideoModal = ({ children }) => {
             <VideoPlayer
               autoplay={true}
               closeProps={closeProps}
+              live={live}
               onEnded={onClose}
+              skip={skip}
               url={url}
             />
           </Box>

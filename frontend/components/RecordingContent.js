@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 import Title from "@/components/Title";
 import VideoPlayer from "@/components/VideoPlayer";
-import { getRecordingPath, getRecordingVideoUrl } from "shared/path";
+import { getRecordingVideoUrl } from "shared/path";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,20 +20,16 @@ const RecordingContent = ({ recording }) => {
   const router = useRouter();
   const classes = useStyles();
 
-  const recordingPath = getRecordingPath(recording);
+  const skip = router.query.skip;
   const videoUrl = getRecordingVideoUrl(recording, {
     autoplay: false,
-    skip: router.query.skip,
+    skip,
   });
   const closeProps = { href: "/" };
 
   useEffect(() => {
     if (typeof window !== "undefined" && !recording.embed) {
       window.location.href = videoUrl;
-    } else if (recordingPath !== router.asPath) {
-      router.replace(recordingPath, null, {
-        shallow: true,
-      });
     }
   }, []);
 
@@ -52,8 +48,10 @@ const RecordingContent = ({ recording }) => {
       <VideoPlayer
         autoplay={false}
         closeProps={closeProps}
+        live={recording.live}
         onEnded={onEnded}
-        url={videoUrl}
+        skip={skip}
+        url={recording.url}
       />
     </Box>
   ) : null;

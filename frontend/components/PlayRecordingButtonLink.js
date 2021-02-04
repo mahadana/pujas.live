@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PlayRecordingButtonLink = ({
-  active,
+  active = false,
   children,
   recording,
   skip,
@@ -32,13 +32,15 @@ const PlayRecordingButtonLink = ({
   const classes = useStyles();
 
   const props = {};
-  const options = { autoplay: true, skip: skip || 0 };
+  const options = { autoplay: true, skip };
   const recordingPath = getRecordingPath(recording, options);
   const videoUrl = getRecordingVideoUrl(recording, options);
 
   if (recording.embed) {
     props.as = recordingPath;
     props.href = getVideoModalHref({
+      live: recording.live,
+      skip,
       title: title || recording.title,
       url: videoUrl,
     });

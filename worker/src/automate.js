@@ -125,7 +125,9 @@ const makeRecordingValuesFromData = (data) => {
     description: data.snippet?.description,
     automate: "youtube",
     embed: !!data.status?.embeddable,
-    live: data.snippet?.liveBroadcastContent === "live",
+    live:
+      data.snippet?.liveBroadcastContent &&
+      data.snippet.liveBroadcastContent !== "none",
     startAt,
     endAt,
     duration:

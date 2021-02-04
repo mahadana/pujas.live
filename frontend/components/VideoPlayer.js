@@ -1,5 +1,6 @@
 import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
+import { useRef, useState } from "react";
 import ReactPlayer from "react-player";
 
 import CloseButtonLink from "@/components/CloseButtonLink";
@@ -31,8 +32,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const VideoPlayer = ({ autoplay = false, closeProps = {}, onEnded, url }) => {
+const VideoPlayer = ({
+  autoplay = false,
+  closeProps = {},
+  live = false,
+  onEnded,
+  skip,
+  url,
+}) => {
+  const ref = useRef();
+  const [playing, setPlaying] = useState(live ? true : autoplay);
+  const [muted, setMuted] = useState(!live);
   const classes = useStyles();
+
+  const onPause = () => setPlaying(false);
+  const onPlay = () => setPlaying(true);
+  const onStart = () => {
+    if (!live) {
+      setTimeout(() => {
+        console.log("onStart skip", skip);
+        ref.current?.seekTo(skip || 0);
+        setMuted(false);
+      }, 1);
+    }
+  };
 
   const config = {
     youtube: {},
@@ -47,8 +70,13 @@ const VideoPlayer = ({ autoplay = false, closeProps = {}, onEnded, url }) => {
         config={config}
         controls={true}
         height="100%"
+        muted={muted}
         onEnded={onEnded}
-        playing={autoplay}
+        onPause={onPause}
+        onPlay={onPlay}
+        onStart={onStart}
+        playing={playing}
+        ref={ref}
         width="100%"
         url={url}
       />
