@@ -66,8 +66,7 @@ const Banner = ({ userButton = true }) => {
             <Link href="/">{siteName}</Link>
           </Typography>
           <Typography variant="caption" className={classes.summary}>
-            Livestreams and meditation groups in the Thai Forest tradition of
-            Ajahn Chah
+            Livestreams and meditation groups in the Thai Forest tradition
           </Typography>
           <Box className={classes.login}>
             {userButton && <UserButton />}

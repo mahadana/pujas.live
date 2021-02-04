@@ -100,7 +100,11 @@ const ChantingBookButton = ({
         {...props}
       >
         <span className={getClass("title")}>Chanting Book {book}</span>
-        <img className={getClass("image")} src={`/chanting${book}.jpg`} />
+        <img
+          alt={`Chanting Book ${book}`}
+          className={getClass("image")}
+          src={`/chanting${book}.jpg`}
+        />
       </ButtonBase>
     </>
   );
