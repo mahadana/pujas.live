@@ -35,15 +35,24 @@ const processQueue = (name, queue, work) => {
   });
 };
 
+const checkEnvironment = (name, keys, callback) => {
+  for (const key of keys) {
+    if (!process.env[key]) {
+      console.warn(`${key} not defined, not scheduling ${name}`);
+      return;
+    }
+  }
+  callback();
+};
+
 const setupQueues = async () => {
   const automateQueue = await createQueue("automateQueue");
   const errorCheckQueue = await createQueue("errorCheckQueue");
 
-  if (process.env.YOUTUBE_API_KEY) {
+  checkEnvironment("automateQueue", ["YOUTUBE_API_KEY"], () => {
     automateQueue.add(
       {},
       {
-        delay: 5 * 1000, // 5 seconds
         removeOnComplete: true,
         removeOnFail: true,
         repeat: {
@@ -52,23 +61,23 @@ const setupQueues = async () => {
       }
     );
     processQueue("automateQueue", automateQueue, processAutomations);
-  } else {
-    console.warn(
-      "YOUTUBE_API_KEY not defined in worker/.env" +
-        ", not scheduling automateQueue"
-    );
-  }
+  });
 
-  errorCheckQueue.add(
-    {},
-    {
-      removeOnComplete: true,
-      removeOnFail: true,
-      // 3:15am PST
-      repeat: { cron: "15 11 * * *" },
+  checkEnvironment(
+    "errorCheckQueue",
+    ["ADMIN_EMAIL", "FRONTEND_URL", "MAIL_FROM_ADDRESS", "MAIL_FROM_NAME"],
+    () => {
+      errorCheckQueue.add(
+        {},
+        {
+          removeOnComplete: true,
+          removeOnFail: true,
+          repeat: { cron: "15 11 * * *" }, // 3:15am PST
+        }
+      );
+      processQueue("errorCheckQueue", errorCheckQueue, processErrorCheck);
     }
   );
-  processQueue("errorCheckQueue", errorCheckQueue, processErrorCheck);
 };
 
 setupQueues().catch(console.error);

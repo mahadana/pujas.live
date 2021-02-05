@@ -58,12 +58,16 @@ docker-compose ps
     hostname -F /etc/hostname
     perl -pi -e "s/^#?PasswordAuthentication.*$/PasswordAuthentication no/" /etc/ssh/sshd_config
     systemctl restart ssh.service
+    echo "[sshd]" > /etc/fail2ban/jail.local
+    echo "enabled = true" >> /etc/fail2ban/jail.local
+    echo "banaction = iptables-multiport" >> /etc/fail2ban/jail.local
+    systemctl restart fail2ban.service
     ```
 
 4.  Begin the install:
 
     ```sh
-    curl -s https://raw.githubusercontent.com/mahadana/pujas.live/main/server/setup.sh | bash
+    wget -qO - https://raw.githubusercontent.com/mahadana/pujas.live/main/server/setup.sh | bash
     ```
 
 5.  When prompted, create and edit `/opt/pujas.live/.env` and

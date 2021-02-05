@@ -4,12 +4,12 @@ import nodemailer from "nodemailer";
 
 import logger from "@/logger";
 
-const siteName = process.env.SITE_NAME || "Pujas.live";
-const frontendUrl = process.env.FRONTEND_URL || "http://localhost:1337";
-const to = process.env.BACKEND_ADMIN_EMAIL || "admin@pujas.live";
+const siteName = process.env.SITE_NAME;
+const frontendUrl = process.env.FRONTEND_URL;
+const to = process.env.ADMIN_EMAIL;
 const from = {
-  address: process.env.MAIL_FROM_ADDRESS || "contact@pujas.live",
-  name: process.env.MAIL_FROM_NAME || "Pujas.live",
+  address: process.env.MAIL_FROM_ADDRESS,
+  name: process.env.MAIL_FROM_NAME,
 };
 
 const transporter = nodemailer.createTransport({

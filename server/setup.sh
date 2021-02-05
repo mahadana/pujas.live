@@ -17,6 +17,8 @@ PLAUSIBLE_BASE_DIR="/opt/$PLAUSIBLE_PROJECT"
 WEBHOOK_CONF="/etc/webhook.conf"
 WEBHOOK_SECRET="/etc/webhook.secret"
 
+test -x /usr/bin/gpg || apt-get install -y gpg
+
 wget -qO- https://download.docker.com/linux/debian/gpg | \
   gpg --dearmor >/etc/apt/trusted.gpg.d/docker.gpg
 
