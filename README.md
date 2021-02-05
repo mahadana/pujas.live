@@ -12,7 +12,7 @@ touch .env
 docker-compose up
 ```
 
-Then browse:
+After Docker finishes, browse to:
 
 - Frontend: http://localhost:3000/
 - Backend: http://localhost:1337/admin/

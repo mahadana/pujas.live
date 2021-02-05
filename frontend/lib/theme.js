@@ -14,20 +14,20 @@ const theme = createMuiTheme({
     },
   },
   palette: {
-    // type: "dark",
-    // background: {
-    //   default: "#3a1704",
-    //   paper: "#542006",
-    // },
-    // primary: {
-    //   main: "#bf8432",
-    // },
-    // secondary: {
-    //   main: "#6a611d",
-    // },
-    // error: {
-    //   main: "#ff7744",
-    // },
+    type: "dark",
+    background: {
+      default: "#3a1704",
+      paper: "#4a2006",
+    },
+    primary: {
+      main: "#bf8432",
+    },
+    secondary: {
+      main: "#6a611d",
+    },
+    error: {
+      main: "#ff7744",
+    },
   },
 });
 

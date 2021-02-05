@@ -2,7 +2,7 @@ import AuthButtonLink from "@/components/auth/AuthButtonLink";
 
 const LoginButtonLink = () => {
   return (
-    <AuthButtonLink path="/auth/login" size="small" variant="outlined">
+    <AuthButtonLink path="/auth/login" size="small">
       Login
     </AuthButtonLink>
   );

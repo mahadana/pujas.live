@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import ReactPlayer from "react-player";
 
+import Link from "@/components/Link";
 import PageLayout from "@/components/PageLayout";
 import SiteMessageContent from "@/components/SiteMessageContent";
 import Title from "@/components/Title";
@@ -17,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
     width: "calc(100% - 4.4em)",
     paddingTop: "56.25%", // 16:9 Aspect Ratio
     margin: "2em 2.2em",
+    backgroundColor: "black",
     "& > div": {
       position: "absolute",
       top: 0,
@@ -75,9 +77,9 @@ const About = () => {
             We can always use help making this site better. Any help you can
             offer with development, design, or with managing the streams and
             recordings would be most welcome. Please see{" "}
-            <a href="https://docs.google.com/document/d/1sWfOdk1nNixKOEbRTge5fVYkTxTmGbnRwk4TR9KcWhk/edit#">
+            <Link href="https://docs.google.com/document/d/1sWfOdk1nNixKOEbRTge5fVYkTxTmGbnRwk4TR9KcWhk/edit#">
               here
-            </a>{" "}
+            </Link>{" "}
             for our active list of potential roles.
           </Typography>
           <Typography className={classes.description} variant="body1">

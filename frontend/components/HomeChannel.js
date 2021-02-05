@@ -1,5 +1,5 @@
 import Box from "@material-ui/core/Box";
-import { emphasize, makeStyles } from "@material-ui/core/styles";
+import { emphasize, fade, makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
 import ChannelRecordingsLink from "@/components/ChannelRecordingsLink";
@@ -15,7 +15,10 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "wrap",
     padding: "1.5em",
     "&:nth-child(odd)": {
-      backgroundColor: emphasize(theme.palette.background.default, 0.05),
+      backgroundColor: fade(
+        emphasize(theme.palette.background.default, 0.5),
+        0.15
+      ),
     },
   },
   image: {
@@ -38,6 +41,9 @@ const useStyles = makeStyles((theme) => ({
     "& > p": {
       marginBottom: 0,
       fontSize: "1.1em",
+    },
+    "& a": {
+      color: emphasize(theme.palette.primary.main, 0.5),
     },
   },
   monasteryLinks: {
