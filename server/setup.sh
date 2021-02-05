@@ -81,6 +81,9 @@ perl -pi -e "s/SECRET/$(cat "$WEBHOOK_SECRET")/" "$WEBHOOK_CONF"
 
 systemctl restart webhook.service
 
+mkdir -p "$BASE_DIR/logs/worker"
+chown 1000:1000 "$BASE_DIR/logs/worker"
+
 "$PLAUSIBLE_BASE_DIR/server/deploy.sh"
 
 "$BASE_DIR/server/deploy.sh"
