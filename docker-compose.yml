@@ -9,7 +9,8 @@ services:
       - "127.0.0.1:${BACKEND_PORT:-1337}:1337"
     restart: unless-stopped
     volumes:
-      - .:/app
+      - .:/app:delegated
+      - ~/.npm/docker-cache:/home/node/.npm:cached
       - /app/backend/.cache
       - /app/backend/build
       - backend_nm:/app/backend/node_modules
@@ -20,15 +21,17 @@ services:
     image: node:14
     command: /app/docker/start frontend
     environment:
-      NEXT_PUBLIC_BACKEND_URL: ${BACKEND_URL:-http://localhost:1337}
+      NEXT_PUBLIC_BACKEND_URL: ${BACKEND_URL:-}
       NEXT_PUBLIC_HCAPTCHA_SITE_KEY: ${HCAPTCHA_SITE_KEY:-}
-      NEXT_PUBLIC_PLAUSIBLE_DOMAIN_KEY: ${PLAUSIBLE_DOMAIN_KEY:-localhost}
-      NEXT_PUBLIC_PLAUSIBLE_URL: ${PLAUSIBLE_URL:-https://plausible.pujas.live}
+      NEXT_PUBLIC_PLAUSIBLE_DOMAIN_KEY: ${PLAUSIBLE_DOMAIN_KEY:-}
+      NEXT_PUBLIC_PLAUSIBLE_URL: ${PLAUSIBLE_URL:-}
+      NEXT_PUBLIC_SITE_NAME: ${SITE_NAME:-}
     ports:
       - "127.0.0.1:${FRONTEND_PORT:-3000}:3000"
     restart: unless-stopped
     volumes:
-      - .:/app
+      - .:/app:delegated
+      - ~/.npm/docker-cache:/home/node/.npm:cached
       - /app/frontend/.next
       - frontend_nm:/app/frontend/node_modules
       - frontend_snm:/app/shared/node_modules
@@ -58,7 +61,8 @@ services:
     env_file: .env
     restart: unless-stopped
     volumes:
-      - .:/app
+      - .:/app:delegated
+      - ~/.npm/docker-cache:/home/node/.npm:cached
       - worker_nm:/app/worker/node_modules
       - worker_snm:/app/shared/node_modules
     working_dir: /app/worker
