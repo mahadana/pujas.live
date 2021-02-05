@@ -77,7 +77,11 @@
       workerEl.addEventListener("scroll", setActive);
 
       const updateEl = async (el, url) => {
-        const response = await fetch(url);
+        const headers = new Headers();
+        headers.append("pragma", "no-cache");
+        headers.append("cache-control", "no-cache");
+        const options = { method: "GET", headers };
+        const response = await fetch(url, options);
         el.textContent = await response.text();
         el.scrollTop = el.scrollHeight;
       };
