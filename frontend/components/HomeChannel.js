@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 
 const HomeChannel = (props) => {
   const classes = useStyles();
-  const active = isActiveRecording(props);
+  const active = isActiveRecording(props.activeStream);
   return (
     <Box className={classes.root}>
       <Box className={classes.image}>

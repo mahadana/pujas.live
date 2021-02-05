@@ -1,7 +1,5 @@
 import { useRouteBack, isActiveRecording } from "@/lib/util";
 
-import { dayjs } from "shared/time";
-
 describe("useRouteBack", () => {
   test("routeBack.get", () => {
     const routeBack = useRouteBack({ asPath: "/foo" });
@@ -28,20 +26,55 @@ describe("useRouteBack", () => {
   });
 });
 
-test("isActiveRecording", () => {
-  const now = dayjs("2021-02-02T05:30:15Z").utc();
-  const exp = (startAt, live) =>
-    expect(isActiveRecording({ startAt, live }, now));
+describe("isActiveRecording", () => {
+  const exp = (recording, now) => expect(isActiveRecording(recording, now));
 
-  exp(null, false).toBe(false);
-  exp(null, true).toBe(false);
+  test("no data", () => {
+    exp(null, "2021-02-02T05:30:00Z").toBe(false);
+    exp({}, "2021-02-02T05:30:00Z").toBe(false);
+  });
 
-  exp("2021-02-02T05:30:00Z", false).toBe(false);
-  exp("2021-02-02T05:31:00Z", false).toBe(false);
+  test("not live", () => {
+    exp({ startAt: "2021-02-02T05:30:00Z" }, "2021-02-02T05:31:00Z").toBe(
+      false
+    );
+    exp(
+      {
+        startAt: "2021-02-02T05:30:00Z",
+        endAt: "2021-02-02T06:00:00Z",
+        live: false,
+      },
+      "2021-02-02T05:31:00Z"
+    ).toBe(false);
+  });
 
-  exp("2021-02-02T05:25:00Z", true).toBe(false);
-  exp("2021-02-02T05:25:15Z", true).toBe(true);
-  exp("2021-02-02T05:30:00Z", true).toBe(true);
-  exp("2021-02-02T05:31:00Z", true).toBe(true);
-  exp("2021-02-03T05:31:00Z", true).toBe(true);
+  test("live", () => {
+    exp({ live: true }, "2021-02-02T05:30:00Z").toBe(false);
+    const recording = {
+      startAt: "2021-02-02T05:30:00Z",
+      endAt: null,
+      live: true,
+    };
+    exp(recording, "2021-02-02T05:20:00Z").toBe(false);
+    exp(recording, "2021-02-02T05:24:59Z").toBe(false);
+    exp(recording, "2021-02-02T05:25:00Z").toBe(true);
+    exp(recording, "2021-02-02T05:31:00Z").toBe(true);
+    exp(recording, "2021-02-03T05:30:00Z").toBe(true);
+  });
+
+  test("live w/ endAt", () => {
+    const recording = {
+      startAt: "2021-02-02T05:30:00Z",
+      endAt: "2021-02-02T06:00:00Z",
+      live: true,
+    };
+    exp(recording, "2021-02-02T05:20:00Z").toBe(false);
+    exp(recording, "2021-02-02T05:24:59Z").toBe(false);
+    exp(recording, "2021-02-02T05:25:00Z").toBe(true);
+    exp(recording, "2021-02-02T05:31:00Z").toBe(true);
+    exp(recording, "2021-02-02T06:00:00Z").toBe(true);
+    exp(recording, "2021-02-02T06:05:00Z").toBe(true);
+    exp(recording, "2021-02-02T06:05:01Z").toBe(false);
+    exp(recording, "2021-02-03T05:30:00Z").toBe(false);
+  });
 });
