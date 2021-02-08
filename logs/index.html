@@ -17,8 +17,8 @@
         display: flex;
         justify-content: space-evenly;
       }
-      #deploy,
-      #worker {
+      #deploy-log,
+      #worker-log {
         margin: 0.5rem auto;
         width: calc(50vw - 1rem);
         height: calc(100vh - 8rem);
@@ -30,6 +30,10 @@
         text-align: left;
         font-size: 1.5vh;
         white-space: pre-wrap;
+      }
+      footer {
+        display: flex;
+        justify-content: space-around;
       }
       h1,
       h2,
@@ -49,56 +53,90 @@
     <div id="container">
       <div>
         <h2>Deploy Log</h2>
-        <pre id="deploy">Loading...</pre>
-        <p><a href="deploy/">More deploy logs...</a></p>
+        <pre id="deploy-log">Loading...</pre>
+        <footer>
+          <span>
+            <input id="deploy-checkbox" type="checkbox" />
+            <label for="deploy-checkbox">Follow log</label>
+          </span>
+          <a href="deploy/">More deploy logs...</a>
+        </footer>
       </div>
       <div>
         <h2>Worker Log</h2>
-        <pre id="worker">Loading...</pre>
-        <p><a href="worker/">More worker logs...</a></p>
+        <pre id="worker-log">Loading...</pre>
+        <footer>
+          <span>
+            <input id="worker-checkbox" type="checkbox" />
+            <label for="worker-checkbox">Follow log</label>
+          </span>
+          <a href="worker/">More worker logs...</a>
+        </footer>
       </div>
     </div>
   </body>
   <script>
     (async () => {
-      const deployUrl = "deploy/latest-pujas.live-deploy.log";
-      const workerUrl = "worker/latest-worker.log";
+      const LogFollower = class {
+        constructor(url, logId, checkboxId) {
+          this.url = url;
+          this.logEl = document.getElementById(logId);
+          this.logEl.addEventListener("scroll", this.onLogScroll);
+          this.checkboxEl = document.getElementById(checkboxId);
+          this.checkboxEl.addEventListener("change", this.onCheckboxChange);
+          this.checkboxEl.checked = this.follow = true;
+          this.ignoreScroll = false;
+        }
 
-      let lastActive;
-      const setActive = () => (lastActive = new Date());
-      setActive();
+        onLogScroll = () => {
+          if (!this.ignoreScroll) {
+            this.checkboxEl.checked = this.follow = false;
+          }
+        };
 
-      const deployEl = document.getElementById("deploy");
-      const workerEl = document.getElementById("worker");
+        onCheckboxChange = (event) => {
+          this.follow = event.target.checked;
+        };
 
-      deployEl.addEventListener("mousemove", setActive);
-      deployEl.addEventListener("scroll", setActive);
-      workerEl.addEventListener("mousemove", setActive);
-      workerEl.addEventListener("scroll", setActive);
+        async update() {
+          if (this.follow) {
+            this.logEl.textContent = await this.getText();
+            this.ignoreScroll = true;
+            setTimeout(() => {
+              this.ignoreScroll = false;
+            }, 100);
+            this.logEl.scrollTop = this.logEl.scrollHeight;
+          }
+        }
 
-      const updateEl = async (el, url) => {
-        const headers = new Headers();
-        headers.append("pragma", "no-cache");
-        headers.append("cache-control", "no-cache");
-        const options = { method: "GET", headers };
-        const response = await fetch(url, options);
-        el.textContent = await response.text();
-        el.scrollTop = el.scrollHeight;
+        async getText() {
+          const headers = new Headers();
+          headers.append("pragma", "no-cache");
+          headers.append("cache-control", "no-cache");
+          const options = { method: "GET", headers };
+          const response = await fetch(this.url, options);
+          return await response.text();
+        }
       };
 
+      const deployLogFollower = new LogFollower(
+        "deploy/latest-pujas.live-deploy.log",
+        "deploy-log",
+        "deploy-checkbox"
+      );
+      const workerLogFollower = new LogFollower(
+        "worker/latest-worker.log",
+        "worker-log",
+        "worker-checkbox"
+      );
+
       const update = async () => {
-        updateEl(deployEl, deployUrl);
-        updateEl(workerEl, workerUrl);
+        await deployLogFollower.update();
+        await workerLogFollower.update();
+        setTimeout(update, 2000);
       };
 
       await update();
-
-      setInterval(async () => {
-        const interval = new Date().getTime() - lastActive.getTime();
-        if (interval > 10000) {
-          await update();
-        }
-      }, 2000);
     })().catch(console.error);
   </script>
 </html>

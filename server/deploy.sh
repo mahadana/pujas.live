@@ -13,6 +13,7 @@ LOG_PATH="$LOG_DIR/$LOG_FILE"
 LATEST_PATH="$LOG_DIR/latest-$LOG_NAME.log"
 
 mkdir -p "$LOG_DIR"
+ln -sf "$LOG_FILE" "$LATEST_PATH"
 
 (
   echo "$SCRIPT_PATH START"
@@ -35,4 +36,3 @@ mkdir -p "$LOG_DIR"
 ) 2>&1 | ts "[%Y-%m-%d %H:%M:%S]" | tee -a "$LOG_PATH"
 
 ls -rt1 "$LOG_DIR/$LOG_NAME-"*.log | head -n -10 | xargs --no-run-if-empty rm
-ln -sf "$LOG_FILE" "$LATEST_PATH"
