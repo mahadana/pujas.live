@@ -8,6 +8,7 @@ import UserButton from "@/components/UserButton";
 import ButtonLink from "@/components/ButtonLink";
 import { siteName } from "@/lib/util";
 
+const validImageNumbers = [2, 4, 7, 9, 10, 11, 13];
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "9rem",
@@ -16,7 +17,9 @@ const useStyles = makeStyles((theme) => ({
         ${fade(theme.palette.background.default, 0)} 0%,
         ${fade(theme.palette.background.default, 0)} 60%,
         ${fade(theme.palette.background.default, 0.4)} 75%,
-        ${fade(theme.palette.background.default, 1)} 90%), url('/banner.jpg')`,
+        ${fade(theme.palette.background.default, 1)} 90%), url('/cropped${
+      validImageNumbers[Math.floor(Math.random() * validImageNumbers.length)]
+    }.jpg')`,
     backgroundSize: "cover",
   },
   container: {
@@ -24,8 +27,10 @@ const useStyles = makeStyles((theme) => ({
     height: "9rem",
     width: "100%",
     color: "white",
+    textShadow: "2px 2px 2px black",
     "& a": {
       color: "white",
+      textShadow: "2px 2px 2px black",
     },
   },
   ximage: {
@@ -40,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
     left: -1,
     fontSize: "2.5rem",
     fontWeight: 400,
+    textShadow: "2px 2px 2px black",
   },
   summary: {
     position: "absolute",
@@ -48,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "0.9rem",
     lineHeight: "1.1em",
     fontWeight: "bold",
+    textShadow: "2px 2px 2px black",
   },
   login: {
     position: "absolute",
