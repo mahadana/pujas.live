@@ -45,7 +45,7 @@ const HomeChannel = ({ channel }) => {
       endIcon: recording.embed ? undefined : <ExternalLinkIcon />,
       label: "Livestream",
     });
-  } else {
+  } else if (channel.channelUrl) {
     actionLinkProps.push({
       href: channel.channelUrl,
       target: "_blank",
