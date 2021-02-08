@@ -1,11 +1,14 @@
 import { makeStyles } from "@material-ui/core/styles";
-import Image from "next/image";
 
 const useStyles = makeStyles((theme) => ({
-  externalLink: {
-    paddingLeft: ".5em",
-    "& > div": {
-      verticalAlign: "text-bottom",
+  root: {
+    display: "inline-block",
+    marginLeft: "0.2em",
+    "& > img": {
+      position: "relative",
+      top: "0.08em",
+      width: "0.95em",
+      height: "0.95em",
     },
   },
 }));
@@ -14,7 +17,7 @@ const ExternalLinkIcon = () => {
   const classes = useStyles();
   return (
     <span className={classes.root}>
-      <Image src="/external-link.svg" width="14" height="14" />
+      <img src="/external-link-white.gif" width="256" height="256" />
     </span>
   );
 };

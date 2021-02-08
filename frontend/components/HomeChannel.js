@@ -2,11 +2,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import { useRouter } from "next/router";
 
-import ExternalLinkIcon from "@/components/ExternalLinkIcon";
 import PreviewRecording from "@/components/PreviewRecording";
 import RowCard from "@/components/RowCard";
 import Upcoming from "@/components/Upcoming";
 import {
+  externalize,
   getChannelRecordingsLinkProps,
   getRecordingLinkProps,
   getUploadImageUrl,
@@ -42,8 +42,7 @@ const HomeChannel = ({ channel }) => {
     actionLinkProps.push({
       ...getRecordingLinkProps(router, recording),
       color: active ? "primary" : undefined,
-      endIcon: recording.embed ? undefined : <ExternalLinkIcon />,
-      label: "Livestream",
+      label: externalize("Livestream", !recording.embed),
       variant: active ? "contained" : "outlined",
     });
   } else if (channel.channelUrl) {
@@ -51,7 +50,7 @@ const HomeChannel = ({ channel }) => {
       href: channel.channelUrl,
       target: "_blank",
       rel: "noreferrer",
-      label: "Channel",
+      label: externalize("Channel"),
       variant: "outlined",
     });
   }
@@ -70,7 +69,7 @@ const HomeChannel = ({ channel }) => {
       href: channel.monastery.websiteUrl,
       target: "_blank",
       rel: "noopener",
-      label: `${channel.monastery.title} Website`,
+      label: externalize(`${channel.monastery.title} Website`),
     });
   }
   if (channel.channelUrl) {
@@ -78,7 +77,7 @@ const HomeChannel = ({ channel }) => {
       href: channel.channelUrl,
       target: "_blank",
       rel: "noreferrer",
-      label: `${channel.monastery?.title || "Livestream"} Channel`,
+      label: externalize(`${channel.monastery?.title || "Livestream"} Channel`),
     });
   }
 

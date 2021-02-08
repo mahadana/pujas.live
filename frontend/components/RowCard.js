@@ -177,6 +177,11 @@ const useStyles = makeStyles((theme) => {
         fontSize: "1em",
       },
     },
+    menuItem: {
+      "&, &:hover": {
+        textDecoration: "none",
+      },
+    },
   };
 });
 
@@ -258,13 +263,23 @@ const RowCard = ({
       {menuLinkProps?.length > 0 && (
         <Menu
           anchorEl={anchorEl}
+          anchorOrigin={{
+            horizontal: "left",
+            vertical: "center",
+          }}
+          anchorReference="anchorEl"
           keepMounted
           onClose={onClose}
           open={Boolean(anchorEl)}
+          transformOrigin={{
+            horizontal: "right",
+            vertical: "top",
+          }}
         >
           {menuLinkProps.map(({ label, onClick, ...props }, index) => (
             <MenuItem
               {...props}
+              className={classes.menuItem}
               component={Link}
               key={index}
               onClick={(event) => menuOnClick(event, onClick)}

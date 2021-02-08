@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import ReactPlayer from "react-player";
 
+import ExternalLinkIcon from "@/components/icon/ExternalLinkIcon";
 import Link from "@/components/Link";
 import PageLayout from "@/components/PageLayout";
 import SiteMessageContent from "@/components/SiteMessageContent";
@@ -79,8 +80,8 @@ const About = () => {
             recordings would be most welcome. Please see{" "}
             <Link href="https://docs.google.com/document/d/1sWfOdk1nNixKOEbRTge5fVYkTxTmGbnRwk4TR9KcWhk/edit#">
               here
-            </Link>{" "}
-            for our active list of potential roles.
+            </Link>
+            <ExternalLinkIcon /> for our active list of potential roles.
           </Typography>
           <Typography className={classes.description} variant="body1">
             We welcome any feedback or questions you have as well. Please fill

@@ -3,7 +3,11 @@ import Typography from "@material-ui/core/Typography";
 import { useRouter } from "next/router";
 
 import RowCard from "@/components/RowCard";
-import { getRecordingLinkProps, getUploadImageUrl } from "@/lib/util";
+import {
+  externalize,
+  getRecordingLinkProps,
+  getUploadImageUrl,
+} from "@/lib/util";
 
 const useStyles = makeStyles((theme) => ({
   description: {
@@ -21,7 +25,7 @@ const ChannelRecording = ({ recording }) => {
   const imageUrl = getUploadImageUrl(recording.image);
   const actionLinkProps = {
     ...getRecordingLinkProps(router, recording),
-    label: "Watch",
+    label: externalize("Watch", !recording.embed),
   };
 
   return (

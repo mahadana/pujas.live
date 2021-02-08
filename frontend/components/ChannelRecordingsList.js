@@ -35,11 +35,7 @@ const ChannelRecordingsList = ({ channel, state = "curated" }) => {
       </Box>
     );
   } else {
-    return (
-      <Box style={{ color: "white", height: "50vh" }}>
-        {new Array(100).join("@ ")}
-      </Box>
-    );
+    return null;
   }
 };
 

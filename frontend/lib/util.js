@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 
+import ExternalLinkIcon from "@/components/icon/ExternalLinkIcon";
 import plausible from "@/lib/plausible";
 import {
   getChannelRecordingsPath,
@@ -26,6 +27,15 @@ export const useRouteBack = (router) => {
     push: (path = "/") => router.push(router.query?.back || path),
   };
 };
+
+export const externalize = (component, external = true) =>
+  external ? (
+    <>
+      {component} <ExternalLinkIcon />
+    </>
+  ) : (
+    component
+  );
 
 export const getChannelRecordingsLinkProps = (router, channel) => ({
   as: getChannelRecordingsPath(channel),
