@@ -31,6 +31,8 @@ ln -sf "$LOG_FILE" "$LATEST_PATH"
   docker-compose up -d -t 3 # everything else
   docker image prune -f
 
+  git log -1
+
   echo "$SCRIPT_PATH END"
 
 ) 2>&1 | ts "[%Y-%m-%d %H:%M:%S]" | tee -a "$LOG_PATH"
