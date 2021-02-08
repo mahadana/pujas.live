@@ -15,18 +15,6 @@ import { apolloClient } from "@/lib/apollo";
 import { CHANNEL_QUERY } from "@/lib/schema";
 import { useEffect } from "react";
 
-export const useChannelRecordingsModalHref = () => {
-  const router = useRouter();
-  return ({ id }) => ({
-    pathname: router.pathname,
-    query: {
-      ...router.query,
-      channelRecordingsModalBackPath: router.asPath,
-      channelRecordingsModalChannelId: id,
-    },
-  });
-};
-
 const useStyles = makeStyles((theme) => ({
   dialog: {
     minHeight: "calc(100vh - 64px)",

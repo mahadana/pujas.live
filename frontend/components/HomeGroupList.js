@@ -5,7 +5,7 @@ import { useState } from "react";
 import HomeGroup from "@/components/HomeGroup";
 import Link from "@/components/Link";
 
-const MAX_INITIAL = 3;
+const MAX_INITIAL = 5;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +33,7 @@ function GroupList({ groups }) {
     <Box className={classes.root}>
       <Box>
         {shownGroups.map((group) => (
-          <HomeGroup key={group.id} {...group} />
+          <HomeGroup key={group.id} group={group} />
         ))}
       </Box>
       {showMore && hasMore && (

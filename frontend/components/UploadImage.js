@@ -1,14 +1,8 @@
-import { backendUrl } from "@/lib/apollo";
+import { getUploadImageUrl } from "@/lib/util";
 
-const UploadImage = ({
-  image,
-  size = "thumbnail",
-  defaultUrl = "/default-group-square.png",
-}) => {
-  const imageUrl = image
-    ? `${backendUrl}${image?.formats?.[size]?.url}`
-    : defaultUrl;
-  return <img src={imageUrl} />;
+const UploadImage = ({ image, size, defaultImageUrl, ...props }) => {
+  const imageUrl = getUploadImageUrl(image, { size, defaultImageUrl });
+  return <img src={imageUrl} {...props} />;
 };
 
 export default UploadImage;

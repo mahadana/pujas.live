@@ -1,57 +1,26 @@
-import Box from "@material-ui/core/Box";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { emphasize, makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import capitalize from "lodash/capitalize";
 
-import ButtonLink from "@/components/ButtonLink";
+import { emphasize, makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+
+import RowCard from "@/components/RowCard";
 import Upcoming from "@/components/Upcoming";
-import UploadImage from "@/components/UploadImage";
 import { useUser } from "@/lib/user";
+import { getUploadImageUrl } from "@/lib/util";
 import { getGroupEditPath, getGroupMessagePath } from "shared/path";
 import { dayjs, getNextGroupEventTime } from "shared/time";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexWrap: "wrap",
-    padding: "1.5em",
-    "&:nth-child(odd)": {
-      backgroundColor: emphasize(theme.palette.background.default, 0.05),
-    },
-  },
-  image: {
-    flex: "0 0 12em",
-    "& > img": {
-      display: "block",
-      objectFit: "cover",
-      width: "10em",
-      height: "10em",
-    },
-  },
-  text: {
-    flex: "1 1 20em",
-    marginRight: "2em",
-    "& > h3": {
-      margin: "0 0 .2rem",
-      fontSize: "1.5em",
-      fontWeight: 400,
-    },
-    "& > p": {
-      fontSize: "1.1em",
-      marginBottom: 0,
-    },
-  },
-  links: {
-    display: "flex",
-    alignItems: "center",
-    textAlign: "center",
-    "& a": {
-      borderRadius: 20,
-      marginTop: 20,
-    },
+  meta: {
+    display: "box",
+    boxOrient: "vertical",
+    overflow: "hidden",
+    lineClamp: 1,
+    fontWeight: "500",
+    color: emphasize(theme.palette.primary.main, 0.5),
   },
   events: {
     margin: ".6em",
@@ -63,11 +32,31 @@ const useStyles = makeStyles((theme) => ({
       margin: 0,
     },
   },
+  description: {
+    display: "box",
+    boxOrient: "vertical",
+    overflow: "hidden",
+    lineClamp: 3,
+  },
 }));
 
-const HomeGroup = ({ events, timezone, ...props }) => {
+const HomeGroup = ({ group }) => {
   const classes = useStyles();
   const { user } = useUser();
+
+  const events = group.events;
+  const timezone = group.timezone;
+  const imageUrl = getUploadImageUrl(group.image);
+  const actionLinkProps = [
+    { href: getGroupMessagePath(group), label: "Join Group" },
+  ];
+
+  if (user && group.owner && parseInt(user.id) == parseInt(group.owner.id)) {
+    actionLinkProps.push({
+      href: getGroupEditPath(group),
+      label: "Edit Group",
+    });
+  }
 
   const localEvents = (events || []).map((event) => ({
     day: capitalize(event.day === "everyday" ? "Every day" : event.day),
@@ -88,49 +77,34 @@ const HomeGroup = ({ events, timezone, ...props }) => {
     : null;
 
   return (
-    <Box className={classes.root}>
-      <Box className={classes.image}>
-        <UploadImage image={props.image} />
-      </Box>
-      <Box className={classes.text}>
-        <Typography variant="h3">{props.title}</Typography>
-        {nextEventTime && (
-          <Typography variant="subtitle2">
-            <Upcoming time={nextEventTime} />
-          </Typography>
-        )}
-        <List dense className={classes.events}>
-          {localEvents.map((event, index) => (
-            <ListItem key={index} className={classes.event}>
-              <ListItemText>
-                · {event.day} · {event.time}
-                {event.duration && " · " + event.duration}
-              </ListItemText>
-            </ListItem>
-          ))}
-        </List>
-        <Typography variant="body2">{props.description}</Typography>
-      </Box>
-      <Box className={classes.links}>
-        <Typography variant="body2">
-          {props.owner && (
-            <ButtonLink href={getGroupMessagePath(props)} variant="contained">
-              Join Group
-            </ButtonLink>
-          )}
-          {user &&
-            props.owner &&
-            parseInt(user.id) == parseInt(props.owner.id) && (
-              <>
-                <br />
-                <ButtonLink href={getGroupEditPath(props)} variant="contained">
-                  Edit Group
-                </ButtonLink>
-              </>
-            )}
+    <RowCard
+      actionLinkProps={actionLinkProps}
+      imageLinkProps={actionLinkProps[0]}
+      imageUrl={imageUrl}
+      ratio={16 / 9}
+      title={group.title}
+    >
+      {nextEventTime && (
+        <Typography className={classes.meta} gutterBottom variant="body1">
+          <Upcoming time={nextEventTime} />
         </Typography>
-      </Box>
-    </Box>
+      )}
+
+      <List dense className={classes.events}>
+        {localEvents.map((event, index) => (
+          <ListItem key={index} className={classes.event}>
+            <ListItemText>
+              · {event.day} · {event.time}
+              {event.duration && " · " + event.duration}
+            </ListItemText>
+          </ListItem>
+        ))}
+      </List>
+
+      <Typography className={classes.description} variant="body1">
+        {group.description}
+      </Typography>
+    </RowCard>
   );
 };
 

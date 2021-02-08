@@ -5,7 +5,7 @@ import { useState } from "react";
 import HomeChannel from "@/components/HomeChannel";
 import Link from "@/components/Link";
 
-const MAX_INITIAL = 3;
+const MAX_INITIAL = 8;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +33,7 @@ function HomeChannelList({ channels }) {
     <Box className={classes.root}>
       <Box>
         {shownChannels.map((channel) => (
-          <HomeChannel key={channel.id} {...channel} />
+          <HomeChannel key={channel.id} channel={channel} />
         ))}
       </Box>
       {showMore && hasMore && (

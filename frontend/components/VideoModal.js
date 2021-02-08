@@ -7,21 +7,6 @@ import { useRouter } from "next/router";
 import Title from "@/components/Title";
 import VideoPlayer from "@/components/VideoPlayer";
 
-export const useVideoModalHref = () => {
-  const router = useRouter();
-  return ({ live, skip, title, url }) => ({
-    pathname: router.pathname,
-    query: {
-      ...router.query,
-      videoModalBackPath: router.asPath,
-      videoModalLive: live ? "1" : "0",
-      videoModalSkip: skip,
-      videoModalTitle: title,
-      videoModalUrl: url,
-    },
-  });
-};
-
 const useStyles = makeStyles((theme) => ({
   modal: {
     zIndex: "1301 !important",

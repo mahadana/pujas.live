@@ -1,6 +1,17 @@
 import { useRouter } from "next/router";
 
+import plausible from "@/lib/plausible";
+import {
+  getChannelRecordingsPath,
+  getRecordingPath,
+  getRecordingVideoUrl,
+} from "shared/path";
 import { dayjs } from "shared/time";
+
+export const apiUrl =
+  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:1337";
+
+export const defaultImageUrl = "/default-group-square.png";
 
 export const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "Pujas.live";
 
@@ -14,6 +25,59 @@ export const useRouteBack = (router) => {
       (router.asPath ? "?back=" + encodeURIComponent(router.asPath) : ""),
     push: (path = "/") => router.push(router.query?.back || path),
   };
+};
+
+export const getChannelRecordingsLinkProps = (router, channel) => ({
+  as: getChannelRecordingsPath(channel),
+  href: {
+    pathname: router.pathname,
+    query: {
+      ...router.query,
+      channelRecordingsModalBackPath: router.asPath,
+      channelRecordingsModalChannelId: channel.id,
+    },
+  },
+  scroll: false,
+  shallow: true,
+});
+
+export const getRecordingLinkProps = (
+  router,
+  recording,
+  { skip, title } = {}
+) => {
+  const options = { autoplay: true, skip };
+  const videoUrl = getRecordingVideoUrl(recording, options);
+  if (recording.embed) {
+    return {
+      as: getRecordingPath(recording, options),
+      href: {
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+          videoModalBackPath: router.asPath,
+          videoModalLive: recording.live ? "1" : "0",
+          videoModalSkip: skip,
+          videoModalTitle: title || recording.title,
+          videoModalUrl: videoUrl,
+        },
+      },
+      scroll: false,
+      shallow: true,
+    };
+  } else {
+    return {
+      href: videoUrl,
+      rel: "noopener noreferrer",
+      target: "_blank",
+      onClick: () => plausible("externalVideo", { props: { url: videoUrl } }),
+    };
+  }
+};
+
+export const getUploadImageUrl = (image, { size = "thumbnail" } = {}) => {
+  const imageUrl = image?.formats?.[size]?.url;
+  return imageUrl ? `${apiUrl}${imageUrl}` : defaultImageUrl;
 };
 
 export const getStrapiError = (error) => {

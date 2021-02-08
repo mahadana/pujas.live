@@ -5,7 +5,7 @@ import { forwardRef } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: ({ color = "inherit" }) => {
-    if (color === "inherit") {
+    if (color === "inherit" || color === "default") {
       const backgroundColor = theme.palette.background.default;
       return {
         backgroundColor: emphasize(backgroundColor, 0.15),
