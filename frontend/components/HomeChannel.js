@@ -1,4 +1,4 @@
-import { emphasize, makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import { useRouter } from "next/router";
 
@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     lineClamp: 1,
     fontWeight: "500",
-    color: emphasize(theme.palette.primary.main, 0.5),
   },
   description: {
     display: "box",
@@ -35,15 +34,17 @@ const HomeChannel = ({ channel }) => {
   const classes = useStyles();
 
   const recording = channel.activeStream;
+  const active = isActiveRecording(recording);
   const imageUrl = getUploadImageUrl(channel.image);
   const actionLinkProps = [];
 
   if (recording) {
     actionLinkProps.push({
       ...getRecordingLinkProps(router, recording),
-      color: isActiveRecording(recording) ? "primary" : undefined,
+      color: active ? "primary" : undefined,
       endIcon: recording.embed ? undefined : <ExternalLinkIcon />,
       label: "Livestream",
+      variant: active ? "contained" : "outlined",
     });
   } else if (channel.channelUrl) {
     actionLinkProps.push({
@@ -51,11 +52,13 @@ const HomeChannel = ({ channel }) => {
       target: "_blank",
       rel: "noreferrer",
       label: "Channel",
+      variant: "outlined",
     });
   }
   actionLinkProps.push({
     ...getChannelRecordingsLinkProps(router, channel),
     label: "Recordings",
+    variant: "outlined",
   });
 
   const imageLinkProps = Object.assign({}, actionLinkProps[0]);
@@ -84,6 +87,7 @@ const HomeChannel = ({ channel }) => {
       actionLinkProps={actionLinkProps}
       imageLinkProps={imageLinkProps}
       imageUrl={imageUrl}
+      menuLabel="Links"
       menuLinkProps={menuLinkProps}
       ratio={16 / 9}
       title={channel.title}

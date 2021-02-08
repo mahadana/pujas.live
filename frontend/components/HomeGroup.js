@@ -3,7 +3,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import capitalize from "lodash/capitalize";
 
-import { emphasize, makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
 import RowCard from "@/components/RowCard";
@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     lineClamp: 1,
     fontWeight: "500",
-    color: emphasize(theme.palette.primary.main, 0.5),
   },
   events: {
     margin: ".6em",

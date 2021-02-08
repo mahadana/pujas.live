@@ -1,12 +1,12 @@
+import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import { emphasize, fade, makeStyles } from "@material-ui/core/styles";
+import { darken, emphasize, fade, makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import isArray from "lodash/isArray";
 import { useState } from "react";
 
-import Button from "@/components/Button";
 import ButtonBaseLink from "@/components/ButtonBaseLink";
 import ButtonLink from "@/components/ButtonLink";
 import Link from "@/components/Link";
@@ -14,38 +14,36 @@ import Link from "@/components/Link";
 const useStyles = makeStyles((theme) => {
   const altBackgroundColor = fade(
     emphasize(theme.palette.background.default, 0.5),
-    0.15
+    0.1
   );
   const borderRadius = "0.25em";
+  const buttonBorderColor = fade(
+    darken(theme.palette.background.default, 0.5),
+    0.5
+  );
+
   return {
     root: {
       display: "flex",
       flexFlow: "row wrap",
       width: "100%",
       borderRadius,
+      "&:not(:last-child)": {
+        marginBottom: "1em",
+      },
+      "& > div > a > div": {
+        // The next two are hacks but they work...
+        borderTopLeftRadius: borderRadius,
+        borderBottomLeftRadius: borderRadius,
+      },
+      "&:nth-child(odd)": {
+        backgroundColor: altBackgroundColor,
+      },
       [theme.breakpoints.down("sm")]: {
         fontSize: "0.8rem",
       },
       [theme.breakpoints.up("md")]: {
         fontSize: "0.9rem",
-      },
-      [theme.breakpoints.only("xs")]: {
-        backgroundColor: altBackgroundColor,
-        "&:not(:last-child)": {
-          marginBottom: "1em",
-        },
-      },
-      [theme.breakpoints.up("sm")]: {
-        "&:nth-child(odd)": {
-          backgroundColor: altBackgroundColor,
-        },
-        // The next two are hacks but they work...
-        "&:first-child > div > a > div": {
-          borderTopLeftRadius: borderRadius,
-        },
-        "&:last-child > div > a > div": {
-          borderBottomLeftRadius: borderRadius,
-        },
       },
     },
     sideTitle: {
@@ -101,10 +99,13 @@ const useStyles = makeStyles((theme) => {
       },
     },
     mainActions: {
-      order: 1,
+      order: 4,
       flex: "0 1 auto",
-      marginBottom: "0.5em",
+      marginTop: "0.5em",
       textAlign: "right",
+      "& > div": {
+        flexDirection: "row-reverse",
+      },
       [theme.breakpoints.down(800)]: {
         flexBasis: "100%",
       },
@@ -113,21 +114,19 @@ const useStyles = makeStyles((theme) => {
       },
     },
     mainTitle: {
+      order: 2,
       marginBottom: ".25em",
       fontSize: "1.5em",
       lineHeight: "1.25em",
       [theme.breakpoints.only("sm")]: {
-        order: 2,
         flex: "1 1 0",
         marginRight: "0.5em",
-      },
-      [theme.breakpoints.down(800)]: {
-        marginRight: 0,
       },
     },
     mainContent: {
       order: 3,
       flex: "1 0 100%",
+      color: theme.palette.text.secondary,
       "&, & p": {
         fontSize: "1em",
         lineHeight: "1.5em",
@@ -173,13 +172,9 @@ const useStyles = makeStyles((theme) => {
       },
     },
     button: {
-      fontSize: "1em",
-      "& a, & a > span, & button": {
+      borderColor: `${buttonBorderColor} !important`,
+      "&, & a, & a > span, & button": {
         fontSize: "1em",
-      },
-      "&:not(:last-child)": {
-        borderBottomColor: theme.palette.background.default,
-        borderRightColor: theme.palette.background.default,
       },
     },
   };
@@ -190,6 +185,7 @@ const RowCard = ({
   children,
   imageLinkProps = { href: "#" },
   imageUrl,
+  menuLabel = "···",
   menuLinkProps = [],
   ratio = 16 / 9,
   title,
@@ -216,10 +212,10 @@ const RowCard = ({
       <ButtonGroup orientation={orientation} variant="contained">
         {actionLinkProps.map(({ label, ...props }, index) => (
           <ButtonLink
+            variant="outlined"
             {...props}
             className={classes.button}
             key={index}
-            variant="contained"
           >
             {label}
           </ButtonLink>
@@ -229,9 +225,9 @@ const RowCard = ({
             className={classes.button}
             aria-haspopup="true"
             onClick={onOpen}
-            variant="contained"
+            variant="outlined"
           >
-            ···
+            {menuLabel}
           </Button>
         )}
       </ButtonGroup>

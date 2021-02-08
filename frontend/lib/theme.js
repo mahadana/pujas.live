@@ -17,13 +17,17 @@ const theme = createMuiTheme({
     type: "dark",
     background: {
       default: "#3a1704",
-      paper: "#4a2006",
+      paper: "#3e1a08",
     },
     primary: {
       main: "#bf8432",
     },
     secondary: {
       main: "#6a611d",
+    },
+    text: {
+      primary: "#ffffff",
+      secondary: "#d8d0b0",
     },
     error: {
       main: "#ff7744",
