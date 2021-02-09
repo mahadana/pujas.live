@@ -52,20 +52,31 @@ const useStyles = makeStyles((theme) => ({
     marginTop: ".25em",
   },
   image: {
-    width: "auto",
-    display: "block",
-    boxShadow: "1px 1px 3px 2px rgba(0, 0, 0, .2)",
+    display: "inline-block",
+    position: "relative",
+    "& > img": {
+      position: "absolute",
+      top: 0,
+      display: "block",
+      width: "100%",
+      height: "100%",
+      boxShadow: "1px 1px 3px 2px rgba(0, 0, 0, .2)",
+    },
   },
   imageLeft: {
-    height: "100%",
+    width: "2.9em", // 4em * 145 / 200
+    height: "4em",
   },
   imageRight: {
-    height: "100%",
+    width: "2.9em", // 4em * 145 / 200
+    height: "4em",
   },
   imageTop: {
+    width: "5.075em", // 7em * 145 / 200
     height: "7em",
   },
   imageBottom: {
+    width: "5.075em", // 7em * 145 / 200
     height: "7em",
   },
 }));
@@ -101,13 +112,14 @@ const ChantingBookButton = ({
         {...props}
       >
         <span className={getClass("title")}>Chanting Book {book}</span>
-        <img
-          alt={`Chanting Book ${book}`}
-          className={getClass("image")}
-          src={`/chanting${book}.jpg`}
-          width="145"
-          height="200"
-        />
+        <span className={getClass("image")}>
+          <img
+            alt={`Chanting Book ${book}`}
+            src={`/chanting${book}.jpg`}
+            width="145"
+            height="200"
+          />
+        </span>
       </ButtonBase>
     </>
   );
