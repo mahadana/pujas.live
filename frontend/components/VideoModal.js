@@ -3,6 +3,7 @@ import Modal from "@material-ui/core/Modal";
 import NoSsr from "@material-ui/core/NoSsr";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 import Title from "@/components/Title";
 import VideoPlayer from "@/components/VideoPlayer";
@@ -36,10 +37,18 @@ const VideoModal = ({ children }) => {
     href: { pathname: router.pathname, query },
     scroll: false,
     shallow: true,
+    onClick: () => document?.exitFullscreen()?.catch(() => {}),
   };
   const open = !!url;
 
+  useEffect(() => {
+    if (open) {
+      document.documentElement?.requestFullscreen?.()?.catch(console.error);
+    }
+  }, [open]);
+
   const onClose = () => {
+    document.exitFullscreen().catch(() => {});
     router.push(closeProps.href, closeProps.as, closeProps);
   };
 

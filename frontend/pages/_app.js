@@ -20,6 +20,10 @@ import { plausibleUrl, plausibleDomainKey } from "@/lib/plausible";
 import theme from "@/lib/theme";
 import { siteName } from "@/lib/util";
 
+if (typeof window !== "undefined") {
+  import("fullscreen-polyfill");
+}
+
 const MyApp = ({ Component, pageProps }) => {
   useEffect(() => {
     // Remove the server-side injected CSS.
