@@ -5,7 +5,8 @@ const { addUrlToUploads } = require("../upload");
 const { IMAGE_COUNT } = require("./constants");
 const { truncateTable } = require("./util");
 
-const FAKE_IMAGE_URL = "https://picsum.photos/300";
+// const FAKE_IMAGE_URL = "https://picsum.photos/300";
+const FAKE_IMAGE_URL = "https://picsum.photos/1280/720";
 
 const addFakeAssociatedImage = async (tableName, field, id) => {
   const knex = strapi.connections.default;

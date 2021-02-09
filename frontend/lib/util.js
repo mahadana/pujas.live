@@ -85,8 +85,18 @@ export const getRecordingLinkProps = (
   }
 };
 
-export const getUploadImageUrl = (image, { size = "thumbnail" } = {}) => {
-  const imageUrl = image?.formats?.[size]?.url;
+const imageFormats = ["large", "medium", "small", "thumbnail"];
+
+export const getUploadImageUrl = (image, { format = "small" } = {}) => {
+  let imageUrl,
+    index = imageFormats.indexOf(format);
+  if (index >= 0) {
+    const formats = imageFormats.slice(index);
+    for (const format of formats) {
+      imageUrl = image?.formats?.[format]?.url;
+      if (imageUrl) break;
+    }
+  }
   return imageUrl ? `${apiUrl}${imageUrl}` : defaultImageUrl;
 };
 

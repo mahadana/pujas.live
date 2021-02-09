@@ -1,4 +1,43 @@
-import { useRouteBack, isActiveRecording } from "@/lib/util";
+import {
+  apiUrl,
+  getUploadImageUrl,
+  useRouteBack,
+  isActiveRecording,
+} from "@/lib/util";
+
+test("getUploadImageUrl", () => {
+  const defaultImageUrl = "/default-group-square.png";
+  const image1 = {
+    formats: {
+      thumbnail: {
+        url: "/foo.png",
+      },
+      small: {
+        url: "/bar.png",
+      },
+      medium: {
+        url: "/baz.png",
+      },
+    },
+  };
+  const image2 = {
+    formats: {
+      thumbnail: {
+        url: "/biff.jpg",
+      },
+    },
+  };
+  expect(getUploadImageUrl(null)).toBe(defaultImageUrl);
+  expect(getUploadImageUrl({})).toBe(defaultImageUrl);
+  expect(getUploadImageUrl(image1)).toBe(apiUrl + "/bar.png");
+  expect(getUploadImageUrl(image1, { format: "thumbnail" })).toBe(
+    apiUrl + "/foo.png"
+  );
+  expect(getUploadImageUrl(image1, { format: "large" })).toBe(
+    apiUrl + "/baz.png"
+  );
+  expect(getUploadImageUrl(image2)).toBe(apiUrl + "/biff.jpg");
+});
 
 describe("useRouteBack", () => {
   test("routeBack.get", () => {
