@@ -7,7 +7,6 @@ import {
   externalize,
   getRecordingImageUrl,
   getRecordingLinkProps,
-  getUploadImageUrl,
 } from "@/lib/util";
 
 const useStyles = makeStyles((theme) => ({

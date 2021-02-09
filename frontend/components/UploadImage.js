@@ -1,7 +1,7 @@
 import { getUploadImageUrl } from "@/lib/util";
 
-const UploadImage = ({ image, size, defaultImageUrl, ...props }) => {
-  const imageUrl = getUploadImageUrl(image, { size, defaultImageUrl });
+const UploadImage = ({ image, format, ...props }) => {
+  const imageUrl = getUploadImageUrl(image, { format });
   return <img src={imageUrl} {...props} />;
 };
 

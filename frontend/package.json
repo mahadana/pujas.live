@@ -11,6 +11,7 @@
     "fullscreen-polyfill": "^1.0.4",
     "graphql": "^15.5.0",
     "js-cookie": "^2.2.1",
+    "material-ui-popup-state": "^1.7.1",
     "next": "^10.0.6",
     "next-apollo": "^5.0.4",
     "notistack": "^1.0.3",
