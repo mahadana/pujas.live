@@ -3,7 +3,7 @@ import RegisterContent from "@/components/auth/RegisterContent";
 import { withApollo } from "@/lib/apollo";
 
 const RegisterPage = () => (
-  <PageLayout title="Register" userButton={false}>
+  <PageLayout title="Create Account" userButton={false}>
     <RegisterContent />
   </PageLayout>
 );

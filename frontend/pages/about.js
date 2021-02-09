@@ -6,6 +6,7 @@ import ReactPlayer from "react-player";
 
 import ExternalLinkIcon from "@/components/icon/ExternalLinkIcon";
 import Link from "@/components/Link";
+import PageHeading from "@/components/PageHeading";
 import PageLayout from "@/components/PageLayout";
 import SiteMessageContent from "@/components/SiteMessageContent";
 import Title from "@/components/Title";
@@ -41,7 +42,7 @@ const About = () => {
       <Title title="About" />
       <Container maxWidth="md">
         <>
-          <Typography variant="h2">How to Use</Typography>
+          <PageHeading>How to Use</PageHeading>
           <Box className={classes.player}>
             <ReactPlayer
               controls={true}
@@ -53,7 +54,7 @@ const About = () => {
         </>
 
         <>
-          <Typography variant="h2">About {siteName}</Typography>
+          <PageHeading>About {siteName}</PageHeading>
           <Typography className={classes.description} variant="body1">
             {siteName} was created as a way to gather the various livestream
             activities of Thai Forest monasteries that popped up during the
@@ -73,7 +74,7 @@ const About = () => {
         </>
 
         <>
-          <Typography variant="h2">Contact Us</Typography>
+          <PageHeading>Contact Us</PageHeading>
           <Typography className={classes.description} variant="body1">
             We can always use help making this site better. Any help you can
             offer with development, design, or with managing the streams and

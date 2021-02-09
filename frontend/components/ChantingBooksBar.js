@@ -6,9 +6,11 @@ import ChantingBookButton from "@/components/ChantingBookButton";
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    marginBottom: "1em",
     fontSize: "1.2em",
     [theme.breakpoints.up("sm")]: {
       height: "2.5em",
+      marginBottom: 0,
       fontSize: "1.25em",
     },
     [theme.breakpoints.up("md")]: {
@@ -17,17 +19,20 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   bookContainer: {
+    display: "flex",
+    justifyContent: "center",
     marginTop: "-2em",
     [theme.breakpoints.up("sm")]: {
+      justifyContent: "flex-end",
       marginTop: "-3em",
     },
-    display: "flex",
-    justifyContent: "flex-end",
   },
   book: {
-    "&:last-child": {
-      marginLeft: ".5em",
-      marginRight: "-.5em",
+    [theme.breakpoints.up("sm")]: {
+      "&:last-child": {
+        marginLeft: ".5em",
+        marginRight: "-.5em",
+      },
     },
   },
 }));

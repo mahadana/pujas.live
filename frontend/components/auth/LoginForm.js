@@ -13,7 +13,7 @@ import { loginSchema } from "@/lib/validation";
 const LoginForm = (props) => (
   <AuthForm
     disableCaptcha
-    lead="Login to your account to continue..."
+    lead="Please login to continue..."
     validateOnBlur={false}
     validateOnChange={false}
     validationSchema={loginSchema}

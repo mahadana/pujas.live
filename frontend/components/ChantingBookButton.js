@@ -52,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: ".25em",
   },
   image: {
+    width: "auto",
     display: "block",
     boxShadow: "1px 1px 3px 2px rgba(0, 0, 0, .2)",
   },
@@ -104,6 +105,8 @@ const ChantingBookButton = ({
           alt={`Chanting Book ${book}`}
           className={getClass("image")}
           src={`/chanting${book}.jpg`}
+          width="145"
+          height="200"
         />
       </ButtonBase>
     </>

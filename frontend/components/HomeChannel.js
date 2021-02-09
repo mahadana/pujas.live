@@ -42,16 +42,8 @@ const HomeChannel = ({ channel }) => {
     actionLinkProps.push({
       ...getRecordingLinkProps(router, recording),
       color: active ? "primary" : undefined,
-      label: externalize("Livestream", !recording.embed),
+      label: externalize(active ? "Livestream" : "Preview", !recording.embed),
       variant: active ? "contained" : "outlined",
-    });
-  } else if (channel.channelUrl) {
-    actionLinkProps.push({
-      href: channel.channelUrl,
-      target: "_blank",
-      rel: "noreferrer",
-      label: externalize("Channel"),
-      variant: "outlined",
     });
   }
   actionLinkProps.push({

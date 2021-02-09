@@ -4,18 +4,19 @@ import Typography from "@material-ui/core/Typography";
 import HomeGroupList from "@/components/HomeGroupList";
 import HomeChannelList from "@/components/HomeChannelList";
 import Link from "@/components/Link";
+import PageHeading from "@/components/PageHeading";
 
 const HomeContent = ({ channels, groups }) => (
   <Container maxWidth="lg">
     {channels.length > 0 && (
       <>
-        <Typography variant="h2">Livestreams</Typography>
+        <PageHeading>Livestreams</PageHeading>
         <HomeChannelList channels={channels} />
       </>
     )}
     {groups.length > 0 && (
       <>
-        <Typography variant="h2">Open Sitting Groups</Typography>
+        <PageHeading>Open Sitting Groups</PageHeading>
         <HomeGroupList groups={groups} />
       </>
     )}

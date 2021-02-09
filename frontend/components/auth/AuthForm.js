@@ -9,7 +9,6 @@ import { useFormikContext } from "formik";
 import CaptchaForm from "@/components/CaptchaForm";
 import Link from "@/components/Link";
 import { useUser } from "@/lib/user";
-import { siteName } from "@/lib/util";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,8 +26,10 @@ const useStyles = makeStyles((theme) => ({
   },
   lead: {
     margin: "1em",
+    fontSize: "1.5em",
   },
   alert: {
+    margin: "1em",
     justifyContent: "center",
   },
 }));
@@ -49,22 +50,20 @@ const AuthFormInner = ({ children, email, lead }) => {
 
   return (
     <Paper m={4} className={classes.paper}>
-      <Typography variant="h3">{siteName}</Typography>
-      <Typography variant="subtitle1" className={classes.lead}>
-        {user && !formik.isSubmitting ? (
-          <Alert severity="warning" className={classes.alert}>
-            You are already logged in as <strong>{user.email}</strong>.
-            <br />
-            <Link href="/">Go Home</Link> or{" "}
-            <Link onClick={onClickLogout} href="/auth/logout">
-              Logout
-            </Link>
-            .
-          </Alert>
-        ) : (
-          lead
-        )}
+      <Typography variant="h2" className={classes.lead}>
+        {lead}
       </Typography>
+      {user && !formik.isSubmitting && (
+        <Alert severity="warning" className={classes.alert}>
+          You are already logged in as <strong>{user.email}</strong>.
+          <br />
+          <Link href="/">Go Home</Link> or{" "}
+          <Link onClick={onClickLogout} href="/auth/logout">
+            Logout
+          </Link>
+          .
+        </Alert>
+      )}
       {children}
     </Paper>
   );
