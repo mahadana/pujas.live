@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import RowCard from "@/components/RowCard";
 import {
   externalize,
+  getRecordingImageUrl,
   getRecordingLinkProps,
   getUploadImageUrl,
 } from "@/lib/util";
@@ -22,7 +23,7 @@ const ChannelRecording = ({ recording }) => {
   const router = useRouter();
   const classes = useStyles();
 
-  const imageUrl = getUploadImageUrl(recording.image);
+  const imageUrl = getRecordingImageUrl(recording);
   const actionLinkProps = {
     ...getRecordingLinkProps(router, recording),
     label: externalize("Watch", !recording.embed),

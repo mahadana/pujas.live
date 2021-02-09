@@ -12,6 +12,9 @@ const theme = createMuiTheme({
     h4: {
       fontSize: "1.6rem",
     },
+    button: {
+      textTransform: "none",
+    },
   },
   palette: {
     type: "dark",

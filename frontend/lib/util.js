@@ -86,18 +86,60 @@ export const getRecordingLinkProps = (
 };
 
 const imageFormats = ["large", "medium", "small", "thumbnail"];
+const imageFormatToYoutubeSizing = {
+  thumbnail: "default",
+  small: "high",
+  medium: "standard",
+  large: "maxres",
+};
 
-export const getUploadImageUrl = (image, { format = "small" } = {}) => {
-  let imageUrl,
-    index = imageFormats.indexOf(format);
+const getMaxResImageUpTo = (format, sizes, mapping = null) => {
+  let imageUrl;
+  const index = imageFormats.indexOf(format);
   if (index >= 0) {
     const formats = imageFormats.slice(index);
-    for (const format of formats) {
-      imageUrl = image?.formats?.[format]?.url;
+    for (let format of formats) {
+      if (sizes) {
+        if (mapping) format = mapping[format];
+        imageUrl = sizes[format]?.url;
+      }
       if (imageUrl) break;
     }
   }
-  return imageUrl ? `${apiUrl}${imageUrl}` : defaultImageUrl;
+  return imageUrl;
+};
+
+export const getUploadImageUrl = (
+  image,
+  { format = "small", defaultUrl = defaultImageUrl } = {}
+) => {
+  const imageUrl = getMaxResImageUpTo(format, image?.formats);
+  return imageUrl ? `${apiUrl}${imageUrl}` : defaultUrl;
+};
+
+export const getRecordingImageUrl = (recording, { format = "small" } = {}) => {
+  let imageUrl;
+
+  //first, try getting the uploaded image in strapi. This would be the highest priority
+  imageUrl = getUploadImageUrl(recording.image, { defaultUrl: null });
+  if (imageUrl) return imageUrl;
+
+  //then, if that fails, get from youtube data
+  const image = recording.extra?.image;
+  if (image) {
+    switch (image.provider) {
+      case "youtube":
+        imageUrl = getMaxResImageUpTo(
+          format,
+          image?.thumbnails,
+          imageFormatToYoutubeSizing
+        );
+        break;
+      default:
+        break;
+    }
+  }
+  return imageUrl || defaultImageUrl;
 };
 
 export const getStrapiError = (error) => {
