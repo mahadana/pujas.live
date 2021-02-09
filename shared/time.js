@@ -38,6 +38,22 @@ dayjs.extend(weekday);
 
 const TIMEZONES = listTimeZones();
 
+const SHORT_TIME_FORMAT = "h:mma";
+const FULL_DATETIME_FORMAT = `dddd, MMMM D, YYYY, ${SHORT_TIME_FORMAT}`;
+const SHORT_DATETIME_FORMAT = `MMMM D, ${SHORT_TIME_FORMAT}`;
+
+const getHumanDateTime = (time, { full = true, zone = true, tz } = {}) => {
+  time = normalizeTime(time);
+  if (time) {
+    const tzTime = time.tz(tz || dayjs.tz.guess());
+    const format = full ? FULL_DATETIME_FORMAT : SHORT_DATETIME_FORMAT;
+    const zoneFormat = zone ? " z" : "";
+    return tzTime.format(format + zoneFormat);
+  } else {
+    return null;
+  }
+};
+
 const getLocalTimeZone = () => {
   try {
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -48,10 +64,7 @@ const getLocalTimeZone = () => {
 
 const getNextGroupEventTime = (args) => {
   // Normalize now
-  let now = dayjs(args.now).utc();
-  if (!now.isValid()) {
-    now = dayjs().utc();
-  }
+  const now = normalizeTime(args.now) || dayjs().utc();
 
   // Normalize duration
   const duration = Math.max(0, parseInt(args.duration)); // normalize
@@ -89,21 +102,59 @@ const getNextGroupEventTime = (args) => {
   return time;
 };
 
-const timeString = (option, dayjsClass) => {
-  dayjsClass.prototype.timeString = function (ts) {
-    if (ts === undefined) {
-      return this.format("HH:mm:ss.SSS");
-    }
-    const dts = this.format("YYYY-MM-DD") + "T" + ts;
-    const timezone = this.$x && this.$x.$timezone;
-    if (timezone) {
-      try {
-        return dayjs.tz(dts, timezone);
-      } catch {
-        return dayjs(null);
-      }
+const UPCOMING_LONG_DURATION = 60 * 60 * 8; // 8 hours
+
+const getUpcomingHumanTime = (time, { duration, endTime, now, tz } = {}) => {
+  time = normalizeTime(time);
+  if (!time) return null;
+
+  now = normalizeTime(now) || dayjs().utc();
+  endTime = normalizeTime(endTime);
+  if (!endTime && duration) {
+    endTime = time.add(duration, "minute");
+  }
+
+  if (endTime && !now.isBefore(endTime)) {
+    if (Math.abs(endTime.diff(now, "second")) < 60) {
+      return "Ended just now";
     } else {
-      return dayjs(dts);
+      return `Ended ${endTime.from(now)}`;
+    }
+  }
+
+  const diff = time.diff(now, "second");
+  if (Math.abs(diff) < 60) {
+    return "Starting now";
+  } else {
+    const preamble = diff > 0 ? "Starting " : "Started ";
+    if (Math.abs(diff) > UPCOMING_LONG_DURATION) {
+      return preamble + getHumanDateTime(time, { full: false, tz, zone: true });
+    } else {
+      return preamble + time.from(now);
+    }
+  }
+};
+
+const normalizeTime = (time) => {
+  time = dayjs(time || null);
+  if (time.isValid()) {
+    return time.utc();
+  } else {
+    return null;
+  }
+};
+
+const timeString = (option, dayjsClass) => {
+  dayjsClass.prototype.timeString = function (time) {
+    if (time === undefined) {
+      time = this.format("HH:mm:ss.SSS");
+    }
+    const dts = this.format("YYYY-MM-DD") + "T" + time;
+    const tz = this.$x && this.$x.$timezone;
+    try {
+      return tz ? dayjs.tz(dts, tz) : dayjs(dts).utc();
+    } catch {
+      return dayjs(null);
     }
   };
 };
@@ -112,7 +163,10 @@ dayjs.extend(timeString);
 
 module.exports = {
   dayjs,
+  getHumanDateTime,
   getLocalTimeZone,
   getNextGroupEventTime,
+  getUpcomingHumanTime,
+  normalizeTime,
   TIMEZONES,
 };

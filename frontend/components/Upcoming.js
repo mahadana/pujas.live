@@ -1,34 +1,19 @@
 import Tooltip from "@material-ui/core/Tooltip";
 
-import { dayjs } from "shared/time";
+import { getUpcomingHumanTime, getHumanDateTime } from "shared/time";
 
-const Upcoming = ({ time, duration }) => {
-  time = dayjs(time).utc();
-  const now = dayjs().utc();
-  const localTz = dayjs.tz.guess();
-  const tzTime = time.tz(localTz);
-
-  const diff = time.diff(now, "minute");
-  const from = time.from(now);
-  const fullTime = tzTime.format("LLLL z");
-  const shortTime = tzTime.format("h:mma z");
-  const endTime = duration ? time.add(duration, "minute") : null;
-  const ended = duration ? now.isAfter(endTime) : false;
-  const endedFrom = ended ? endTime.from(now) : null;
-
-  return (
-    <Tooltip title={fullTime}>
-      <span>
-        {ended
-          ? `Ended ${endedFrom}`
-          : diff > 1440
-          ? `Upcoming · ${fullTime}`
-          : diff > 0
-          ? `Starting ${from} · ${shortTime}`
-          : `Started ${from} · ${shortTime}`}
-      </span>
-    </Tooltip>
-  );
+const Upcoming = ({ duration, time }) => {
+  const fullTime = getHumanDateTime(time);
+  const upcomingTime = getUpcomingHumanTime(time, { duration });
+  if (upcomingTime) {
+    return (
+      <Tooltip title={fullTime}>
+        <span>{upcomingTime}</span>
+      </Tooltip>
+    );
+  } else {
+    return null;
+  }
 };
 
 export default Upcoming;
