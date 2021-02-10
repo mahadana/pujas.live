@@ -38,17 +38,29 @@ dayjs.extend(weekday);
 
 const TIMEZONES = listTimeZones();
 
-const SHORT_TIME_FORMAT = "h:mma";
-const FULL_DATETIME_FORMAT = `dddd, MMMM D, YYYY, ${SHORT_TIME_FORMAT}`;
-const SHORT_DATETIME_FORMAT = `MMMM D, ${SHORT_TIME_FORMAT}`;
+const TIME_FORMAT = "h:mma";
+const FULL_DATETIME_FORMAT = `dddd, MMMM D, YYYY`;
+const SHORT_DATETIME_FORMAT = `MMMM D`;
 
-const getHumanDateTime = (time, { full = true, zone = true, tz } = {}) => {
-  time = normalizeTime(time);
+const getHumanDateTime = (
+  dt,
+  { full = true, date = true, time = true, tz, zone = true } = {}
+) => {
+  dt = normalizeTime(dt);
+  if (!dt) return null;
+
+  let format = null;
+  if (date) {
+    format = full ? FULL_DATETIME_FORMAT : SHORT_DATETIME_FORMAT;
+  }
   if (time) {
-    const tzTime = time.tz(tz || dayjs.tz.guess());
-    const format = full ? FULL_DATETIME_FORMAT : SHORT_DATETIME_FORMAT;
-    const zoneFormat = zone ? " z" : "";
-    return tzTime.format(format + zoneFormat);
+    format = (format ? format + ", " : "") + TIME_FORMAT;
+  }
+  if (zone) {
+    format = (format ? format + " " : "") + "z";
+  }
+  if (format) {
+    return dt.tz(tz || dayjs.tz.guess()).format(format);
   } else {
     return null;
   }
@@ -128,7 +140,10 @@ const getUpcomingHumanTime = (time, { duration, endTime, now, tz } = {}) => {
   } else {
     const preamble = diff > 0 ? "Starting " : "Started ";
     if (Math.abs(diff) > UPCOMING_LONG_DURATION) {
-      return preamble + getHumanDateTime(time, { full: false, tz, zone: true });
+      return (
+        preamble +
+        getHumanDateTime(time, { full: false, time: false, tz, zone: false })
+      );
     } else {
       return preamble + time.from(now);
     }

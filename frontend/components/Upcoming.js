@@ -2,13 +2,16 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 import { getUpcomingHumanTime, getHumanDateTime } from "shared/time";
 
-const Upcoming = ({ duration, time }) => {
-  const fullTime = getHumanDateTime(time);
-  const upcomingTime = getUpcomingHumanTime(time, { duration });
-  if (upcomingTime) {
+const Upcoming = ({ duration, now, time, tz }) => {
+  const fullDateTime = getHumanDateTime(time, { now, tz });
+  if (fullDateTime) {
+    const shortTime = getHumanDateTime(time, { date: false, now, tz });
+    const upcomingTime = getUpcomingHumanTime(time, { duration, now, tz });
     return (
-      <Tooltip title={fullTime}>
-        <span>{upcomingTime}</span>
+      <Tooltip title={fullDateTime}>
+        <span>
+          {upcomingTime}, {shortTime}
+        </span>
       </Tooltip>
     );
   } else {

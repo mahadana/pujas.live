@@ -1,18 +1,22 @@
-import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Popover from "@material-ui/core/Popover";
 import { makeStyles } from "@material-ui/core/styles";
-import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
+import Typography from "@material-ui/core/Typography";
+import {
+  bindTrigger,
+  bindPopover,
+  usePopupState,
+} from "material-ui-popup-state/hooks";
 
+import Link from "@/components/Link";
 import UploadImage from "@/components/UploadImage";
+import { getRecordingPath } from "shared/path";
 
 const useStyles = makeStyles((theme) => ({
-  trigger: {
-    cursor: "pointer",
-  },
   paper: {
     maxWidth: "28rem",
     padding: "1.5rem",
+    cursor: "pointer",
   },
   image: {
     position: "relative",
@@ -47,46 +51,55 @@ const useStyles = makeStyles((theme) => ({
 import { getHumanDateTime } from "shared/time";
 
 const PreviewRecording = ({ recording }) => {
+  const popupState = usePopupState({
+    popupId: "preview-recording",
+    variant: "popover",
+  });
   const classes = useStyles();
   const fullTime = getHumanDateTime(recording.startAt);
+
+  const popupLinkProps = {
+    ...bindTrigger(popupState),
+    href: getRecordingPath(recording),
+  };
+  const originalOnClick = popupLinkProps.onClick;
+  popupLinkProps.onClick = (event) => {
+    event.preventDefault();
+    originalOnClick(event);
+  };
+
   return (
-    <PopupState variant="popover" popupId="demoPopover">
-      {(popupState) => (
-        <>
-          <span className={classes.trigger} {...bindTrigger(popupState)}>
+    <>
+      <Link {...popupLinkProps}>{recording.title}</Link>
+      <Popover
+        {...bindPopover(popupState)}
+        anchorOrigin={{
+          vertical: "center",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "center",
+          horizontal: "center",
+        }}
+      >
+        <Paper className={classes.paper} onClick={popupState.close}>
+          <div className={classes.image}>
+            <UploadImage image={recording.image} format="medium" />
+          </div>
+          <Typography className={classes.title} variant="h4">
             {recording.title}
-          </span>
-          <Popover
-            {...bindPopover(popupState)}
-            anchorOrigin={{
-              vertical: "center",
-              horizontal: "center",
-            }}
-            transformOrigin={{
-              vertical: "center",
-              horizontal: "center",
-            }}
-          >
-            <Paper className={classes.paper} onClick={popupState.close}>
-              <div className={classes.image}>
-                <UploadImage image={recording.image} format="medium" />
-              </div>
-              <Typography className={classes.title} variant="h4">
-                {recording.title}
-              </Typography>
-              {fullTime && (
-                <Typography className={classes.meta} variant="body1">
-                  {fullTime}
-                </Typography>
-              )}
-              <Typography className={classes.description} variant="body1">
-                {recording.description}
-              </Typography>
-            </Paper>
-          </Popover>
-        </>
-      )}
-    </PopupState>
+          </Typography>
+          {fullTime && (
+            <Typography className={classes.meta} variant="body1">
+              {fullTime}
+            </Typography>
+          )}
+          <Typography className={classes.description} variant="body1">
+            {recording.description}
+          </Typography>
+        </Paper>
+      </Popover>
+    </>
   );
 };
 

@@ -14,6 +14,8 @@ test("getHumanDateTime", () => {
   expect(
     getHumanDateTime("2020-02-12T18:00:00Z", {
       full: true,
+      date: true,
+      time: true,
       tz: "America/Los_Angeles",
       zone: true,
     })
@@ -21,6 +23,8 @@ test("getHumanDateTime", () => {
   expect(
     getHumanDateTime("2020-02-12T18:00:00Z", {
       full: true,
+      date: true,
+      time: true,
       tz: "America/Los_Angeles",
       zone: false,
     })
@@ -28,6 +32,8 @@ test("getHumanDateTime", () => {
   expect(
     getHumanDateTime("2020-02-12T18:00:00Z", {
       full: false,
+      date: true,
+      time: true,
       tz: "America/Los_Angeles",
       zone: true,
     })
@@ -35,10 +41,39 @@ test("getHumanDateTime", () => {
   expect(
     getHumanDateTime("2020-02-12T18:00:00Z", {
       full: false,
+      date: true,
+      time: true,
       tz: "America/Los_Angeles",
       zone: false,
     })
   ).toBe("February 12, 10:00am");
+  expect(
+    getHumanDateTime("2020-02-12T18:00:00Z", {
+      full: false,
+      date: true,
+      time: false,
+      tz: "America/Los_Angeles",
+      zone: false,
+    })
+  ).toBe("February 12");
+  expect(
+    getHumanDateTime("2020-02-12T18:00:00Z", {
+      full: true,
+      date: false,
+      time: true,
+      tz: "America/Los_Angeles",
+      zone: true,
+    })
+  ).toBe("10:00am PST");
+  expect(
+    getHumanDateTime("2020-02-12T18:00:00Z", {
+      full: false,
+      date: false,
+      time: false,
+      tz: "America/Los_Angeles",
+      zone: false,
+    })
+  ).toBeNull();
 });
 
 describe("getNextGroupEventTime", () => {
@@ -208,8 +243,8 @@ describe("getUpcomingHumanTime", () => {
           tz: "America/Chicago",
         })
       );
-    e("2020-02-09T18:00:00Z").toBe("Starting February 10, 12:00pm CST");
-    e("2020-02-10T09:59:59Z").toBe("Starting February 10, 12:00pm CST");
+    e("2020-02-09T18:00:00Z").toBe("Starting February 10");
+    e("2020-02-10T09:59:59Z").toBe("Starting February 10");
     e("2020-02-10T10:00:00Z").toBe("Starting in 8 hours");
     e("2020-02-10T15:00:00Z").toBe("Starting in 3 hours");
     e("2020-02-10T15:40:00Z").toBe("Starting in 2 hours");
@@ -232,8 +267,8 @@ describe("getUpcomingHumanTime", () => {
     e("2020-02-10T20:20:00Z").toBe("Started 2 hours ago");
     e("2020-02-10T20:40:00Z").toBe("Started 3 hours ago");
     e("2020-02-11T02:00:00Z").toBe("Started 8 hours ago");
-    e("2020-02-11T02:00:01Z").toBe("Started February 10, 1:00pm EST");
-    e("2020-02-11T19:00:00Z").toBe("Started February 10, 1:00pm EST");
+    e("2020-02-11T02:00:01Z").toBe("Started February 10");
+    e("2020-02-11T19:00:00Z").toBe("Started February 10");
   });
 
   test("ended", () => {
