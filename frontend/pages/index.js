@@ -31,4 +31,4 @@ const HomePage = () => {
   );
 };
 
-export default withApollo()(HomePage);
+export default withApollo({ ssr: true })(HomePage);
