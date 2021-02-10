@@ -50,9 +50,9 @@ const VideoPlayer = ({
   const onStart = () => {
     if (!live) {
       setTimeout(() => {
-        console.log("onStart skip", skip);
+        console.log("onStart skipping", skip);
         ref.current?.seekTo(skip || 0);
-        setMuted(false);
+        setTimeout(() => setMuted(false), 1000);
       }, 1);
     }
   };

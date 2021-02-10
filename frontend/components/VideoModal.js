@@ -19,6 +19,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const requestFullscreen = () =>
+  (async () => {
+    try {
+      document.documentElement?.requestFullscreen?.();
+    } catch (error) {
+      //
+    }
+  })();
+
+const exitFullscreen = () =>
+  setTimeout(async () => {
+    try {
+      await document?.exitFullscreen?.();
+    } catch {
+      //
+    }
+  }, 100);
+
 const VideoModal = ({ children }) => {
   const router = useRouter();
   const classes = useStyles();
@@ -37,19 +55,20 @@ const VideoModal = ({ children }) => {
     href: { pathname: router.pathname, query },
     scroll: false,
     shallow: true,
-    onClick: () => document?.exitFullscreen()?.catch(() => {}),
+    onClick: exitFullscreen,
   };
   const open = !!url;
 
   useEffect(() => {
-    if (open) {
-      document.documentElement?.requestFullscreen?.()?.catch(console.error);
-    }
+    if (open) requestFullscreen();
   }, [open]);
 
   const onClose = () => {
-    document.exitFullscreen().catch(() => {});
-    router.push(closeProps.href, closeProps.as, closeProps);
+    router.push(closeProps.href, closeProps.as, {
+      scroll: closeProps.scroll,
+      shallow: closeProps.shallow,
+    });
+    exitFullscreen();
   };
 
   return (
