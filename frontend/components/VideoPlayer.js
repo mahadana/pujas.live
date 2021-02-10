@@ -37,7 +37,7 @@ const VideoPlayer = ({
   closeProps = {},
   live = false,
   onEnded,
-  skip,
+  skip = 0,
   url,
 }) => {
   const ref = useRef();
@@ -50,9 +50,8 @@ const VideoPlayer = ({
   const onStart = () => {
     if (!live) {
       setTimeout(() => {
-        console.log("onStart skipping", skip);
-        ref.current?.seekTo(skip || 0);
-        setTimeout(() => setMuted(false), 1000);
+        ref.current?.seekTo(skip);
+        setTimeout(() => setMuted(false), 1);
       }, 1);
     }
   };

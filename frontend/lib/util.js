@@ -51,24 +51,19 @@ export const getChannelRecordingsLinkProps = (router, channel) => ({
   shallow: true,
 });
 
-export const getRecordingLinkProps = (
-  router,
-  recording,
-  { skip, title } = {}
-) => {
-  const options = { autoplay: true, skip };
-  const videoUrl = getRecordingVideoUrl(recording, options);
+export const getRecordingLinkProps = (router, recording) => {
+  const videoUrl = getRecordingVideoUrl(recording);
   if (recording.embed) {
     return {
-      as: getRecordingPath(recording, options),
+      as: getRecordingPath(recording),
       href: {
         pathname: router.pathname,
         query: {
           ...router.query,
           videoModalBackPath: router.asPath,
           videoModalLive: recording.live ? "1" : "0",
-          videoModalSkip: skip,
-          videoModalTitle: title || recording.title,
+          videoModalSkip: recording.skip,
+          videoModalTitle: recording.title,
           videoModalUrl: videoUrl,
         },
       },

@@ -44,12 +44,13 @@ const VideoModal = ({ children }) => {
   const {
     videoModalBackPath: backPath,
     videoModalLive,
-    videoModalSkip: skip,
+    videoModalSkip,
     videoModalTitle: title,
     videoModalUrl: url,
     ...query
   } = router.query;
   const live = videoModalLive === "1";
+  const skip = videoModalSkip ? parseInt(videoModalSkip) : undefined;
   const closeProps = {
     as: backPath,
     href: { pathname: router.pathname, query },

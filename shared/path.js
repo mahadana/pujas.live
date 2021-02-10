@@ -24,7 +24,7 @@ const getGroupMessagePath = (group) =>
 const getRecordingPath = (recording) =>
   `/recording/${recording.id}/${makeSlug(recording.title)}`;
 
-const getRecordingVideoUrl = (recording, { autoplay, skip } = {}) => {
+const getRecordingVideoUrl = (recording, { autoplay } = {}) => {
   let videoUrl = recording.recordingUrl;
   const youTubeVideoId = getYouTubeVideoIdFromUrl(videoUrl);
   if (youTubeVideoId) {
@@ -32,7 +32,7 @@ const getRecordingVideoUrl = (recording, { autoplay, skip } = {}) => {
       ? getYouTubeEmbedVideoUrlFromVideoId
       : getYouTubeVideoUrlFromVideoId)(youTubeVideoId, {
       autoplay,
-      skip,
+      skip: recording.skip,
     });
   }
   return videoUrl;

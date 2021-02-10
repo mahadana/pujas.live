@@ -1,4 +1,3 @@
-import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -20,11 +19,7 @@ const RecordingContent = ({ recording }) => {
   const router = useRouter();
   const classes = useStyles();
 
-  const skip = router.query.skip;
-  const videoUrl = getRecordingVideoUrl(recording, {
-    autoplay: false,
-    skip,
-  });
+  const videoUrl = getRecordingVideoUrl(recording);
   const closeProps = { href: "/" };
 
   useEffect(() => {
@@ -35,8 +30,8 @@ const RecordingContent = ({ recording }) => {
 
   const onEnded = () => router.push("/");
 
-  return recording.embed ? (
-    <Box className={classes.root}>
+  return (
+    <div className={classes.root}>
       <style jsx global>
         {`
           body {
@@ -45,16 +40,18 @@ const RecordingContent = ({ recording }) => {
         `}
       </style>
       {!!recording.title && <Title title={recording.title} />}
-      <VideoPlayer
-        autoplay={false}
-        closeProps={closeProps}
-        live={recording.live}
-        onEnded={onEnded}
-        skip={skip}
-        url={videoUrl}
-      />
-    </Box>
-  ) : null;
+      {recording.embed && (
+        <VideoPlayer
+          autoplay={false}
+          closeProps={closeProps}
+          live={recording.live}
+          onEnded={onEnded}
+          skip={recording.skip}
+          url={videoUrl}
+        />
+      )}
+    </div>
+  );
 };
 
 export default RecordingContent;

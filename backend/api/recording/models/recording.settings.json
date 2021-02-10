@@ -58,6 +58,10 @@
       "type": "integer",
       "min": 1
     },
+    "skip": {
+      "type": "integer",
+      "min": 1
+    },
     "extra": {
       "type": "json"
     },

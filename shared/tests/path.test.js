@@ -55,4 +55,10 @@ test("getRecordingVideoUrl", () => {
       { autoplay: true }
     )
   ).toBe("https://www.youtube.com/embed/BgsbBWcKch?autoplay=1");
+  expect(
+    getRecordingVideoUrl({
+      recordingUrl: "https://www.youtube.com/watch?v=BgsbBWcKch",
+      skip: 300,
+    })
+  ).toBe("https://youtu.be/BgsbBWcKch?t=300");
 });

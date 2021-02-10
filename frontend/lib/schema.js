@@ -37,6 +37,7 @@ const RECORDING_FIELDS = `
   startAt
   endAt
   duration
+  skip
   extra
 `;
 
@@ -76,12 +77,10 @@ export const CHANNEL_QUERY = gql`
     channel(id: $id) {
       ${CHANNEL_FIELDS}
       curatedRecordings {
-        title
-        description
+        id
         recording {
           ${RECORDING_FIELDS}
         }
-        skip
       }
       recordings(
         sort: "startAt:DESC"

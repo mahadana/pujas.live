@@ -24,9 +24,9 @@ const applyFakeChannels = async () => {
     const [cid] = await knex("channels")
       .insert({
         title: faker.lorem.words(3),
-        description: faker.lorem.paragraph(),
-        automate: faker.random.number(4) ? "youtube" : "manual",
-        channelUrl: faker.random.number(4)
+        description: faker.random.number(2) ? faker.lorem.paragraph() : null,
+        automate: faker.random.number(2) ? "youtube" : "manual",
+        channelUrl: faker.random.number(3)
           ? faker.random.arrayElement(YOUTUBE_CHANNELS) + `?${id}`
           : null,
         monastery: faker.random.number({ min: 1, max: MONASTERY_COUNT }),
@@ -43,12 +43,7 @@ const applyFakeChannels = async () => {
     for (let n = 1; n <= curatedRecordingCount; n++) {
       const [rid] = await knex("components_curated_recordings")
         .insert({
-          title: faker.random.boolean() ? faker.lorem.words(3) : null,
-          description: faker.random.boolean() ? faker.lorem.paragraph() : null,
           recording: faker.random.number({ min: 1, max: RECORDING_COUNT }),
-          skip: faker.random.boolean()
-            ? faker.random.number({ min: 1, max: 1000 })
-            : null,
         })
         .returning("id");
       await knex("channels_components").insert({

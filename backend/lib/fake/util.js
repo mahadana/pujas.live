@@ -3,13 +3,13 @@ const faker = require("faker");
 const { ADMIN_USER_COUNT } = require("./constants");
 
 const makeTimestamps = () => {
-  let createdAt = faker.date.past();
-  let updatedAt = faker.date.past();
+  let createdAt = faker.date.recent(100);
+  let updatedAt = faker.date.recent(20);
   if (createdAt.getTime() > updatedAt.getTime()) {
-    createdAt = updatedAt;
+    updatedAt = createdAt;
   }
   return {
-    published_at: faker.random.number(10) ? faker.date.recent() : null,
+    published_at: faker.random.number(4) ? faker.date.recent(20) : null,
     updated_by: faker.random.number({ min: 1, max: ADMIN_USER_COUNT }),
     updated_at: updatedAt,
     created_by: faker.random.number({ min: 1, max: ADMIN_USER_COUNT }),

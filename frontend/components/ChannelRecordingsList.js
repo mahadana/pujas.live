@@ -9,19 +9,7 @@ const ChannelRecordingsList = ({ channel, state = "curated" }) => {
       // TODO Remove curated recordings where recording is null; this would
       // better be done in the query.
       .filter((curatedRecording) => curatedRecording.recording)
-      .map((curatedRecording) => {
-        const recording = Object.assign(
-          { skip: curatedRecording.skip },
-          curatedRecording.recording
-        );
-        if (curatedRecording.title) {
-          recording.title = curatedRecording.title;
-        }
-        if (curatedRecording.description) {
-          recording.description = curatedRecording.description;
-        }
-        return recording;
-      });
+      .map((curatedRecording) => curatedRecording.recording);
   } else {
     recordings = channel?.recordings || [];
   }
