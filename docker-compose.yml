@@ -6,7 +6,7 @@ services:
     command: /app/docker/start backend
     env_file: .env
     ports:
-      - "127.0.0.1:${BACKEND_PORT:-1337}:1337"
+      - "${BACKEND_BIND:-127.0.0.1}:${BACKEND_PORT:-1337}:1337"
     restart: unless-stopped
     volumes:
       - .:/app:delegated
@@ -27,7 +27,7 @@ services:
       NEXT_PUBLIC_PLAUSIBLE_URL: ${PLAUSIBLE_URL:-}
       NEXT_PUBLIC_SITE_NAME: ${SITE_NAME:-}
     ports:
-      - "127.0.0.1:${FRONTEND_PORT:-3000}:3000"
+      - "${FRONTEND_BIND:-127.0.0.1}:${FRONTEND_PORT:-3000}:3000"
     restart: unless-stopped
     volumes:
       - .:/app:delegated
