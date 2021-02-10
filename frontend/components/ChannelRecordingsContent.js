@@ -1,17 +1,15 @@
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 import Title from "@/components/Title";
-import Typography from "@material-ui/core/Typography";
 import { useState } from "react";
 
 import ChannelRecordingsToggle from "@/components/ChannelRecordingsToggle";
 import ChannelRecordingsList from "@/components/ChannelRecordingsList";
+import PageHeading from "@/components/PageHeading";
 
 const useStyles = makeStyles((theme) => ({
-  heading: {
-    fontSize: "2rem",
-    fontWeight: 400,
-    margin: "0.5em 0",
+  toggle: {
+    float: "right",
   },
 }));
 
@@ -24,15 +22,13 @@ const ChannelRecordingsContent = ({ channel }) => {
 
   return (
     <Container maxWidth="lg">
-      {!!channel.title && <Title title={channel.title} />}
+      {!!channel.title && <Title title={`${channel.title} Recordings`} />}
       <ChannelRecordingsToggle
         className={classes.toggle}
         onChange={toggleState}
         state={state}
       />
-      <Typography className={classes.heading} variant="h2">
-        Recordings - {channel.title}
-      </Typography>
+      <PageHeading>{channel.title} Recordings</PageHeading>
       <ChannelRecordingsList channel={channel} state={state} />
     </Container>
   );

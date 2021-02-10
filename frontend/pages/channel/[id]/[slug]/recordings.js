@@ -22,7 +22,7 @@ const ChannelRecordingsPage = () => {
   }, [router.isReady]);
 
   return (
-    <PageLayout chantingBooks queryResult={queryResult} title="Recordings">
+    <PageLayout queryResult={queryResult} title="Recordings">
       {({ data }) => <ChannelRecordingsContent channel={data.channel} />}
     </PageLayout>
   );

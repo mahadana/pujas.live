@@ -6,15 +6,15 @@ import ChantingBookButton from "@/components/ChantingBookButton";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginBottom: "1em",
+    marginBottom: "0.5em",
     fontSize: "1.2em",
     [theme.breakpoints.up("sm")]: {
       height: "2.5em",
-      marginBottom: 0,
       fontSize: "1.25em",
     },
     [theme.breakpoints.up("md")]: {
       height: "3em",
+      marginBottom: 0,
       fontSize: "1.5em",
     },
   },

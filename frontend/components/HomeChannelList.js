@@ -1,4 +1,3 @@
-import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
 
@@ -8,9 +7,6 @@ import Link from "@/components/Link";
 const MAX_INITIAL = 8;
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    margin: "1em 0",
-  },
   showMore: {
     margin: "1em 0",
     textAlign: "center",
@@ -30,20 +26,18 @@ function HomeChannelList({ channels }) {
     showMore && hasMore ? channels.slice(0, MAX_INITIAL) : channels;
 
   return (
-    <Box className={classes.root}>
-      <Box>
-        {shownChannels.map((channel) => (
-          <HomeChannel key={channel.id} channel={channel} />
-        ))}
-      </Box>
+    <>
+      {shownChannels.map((channel) => (
+        <HomeChannel key={channel.id} channel={channel} />
+      ))}
       {showMore && hasMore && (
-        <Box className={classes.showMore}>
+        <div className={classes.showMore}>
           <Link href="#" onClick={handleShowMore}>
             Show more streams
           </Link>
-        </Box>
+        </div>
       )}
-    </Box>
+    </>
   );
 }
 

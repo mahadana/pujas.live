@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useRouter } from "next/router";
 
 import PreviewRecording from "@/components/PreviewRecording";
@@ -12,6 +13,7 @@ import {
   getUploadImageUrl,
   isActiveRecording,
 } from "@/lib/util";
+import { getChannelRecordingsPath } from "shared/path";
 
 const useStyles = makeStyles((theme) => ({
   meta: {
@@ -30,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const HomeChannel = ({ channel }) => {
+  const matches = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const router = useRouter();
   const classes = useStyles();
 
@@ -46,8 +49,13 @@ const HomeChannel = ({ channel }) => {
       variant: active ? "contained" : "outlined",
     });
   }
+
   actionLinkProps.push({
-    ...getChannelRecordingsLinkProps(router, channel),
+    ...(matches
+      ? {
+          href: getChannelRecordingsPath(channel),
+        }
+      : getChannelRecordingsLinkProps(router, channel)),
     label: "Recordings",
     variant: "outlined",
   });

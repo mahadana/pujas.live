@@ -18,8 +18,10 @@ import { useEffect } from "react";
 const useStyles = makeStyles((theme) => ({
   dialog: {
     minHeight: "calc(100vh - 64px)",
+    minWidth: "calc(100vw - 80px)",
     [theme.breakpoints.up(1164)]: {
-      maxWidth: "1100px !important",
+      minWidth: "auto",
+      width: "1100px",
     },
   },
   closeButton: {
