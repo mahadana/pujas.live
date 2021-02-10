@@ -33,7 +33,11 @@
       }
       footer {
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between;
+        align-items: center;
+      }
+      footer > a {
+        margin-top: 3px;
       }
       h1,
       h2,
@@ -81,17 +85,14 @@
         constructor(url, logId, checkboxId) {
           this.url = url;
           this.logEl = document.getElementById(logId);
-          this.logEl.addEventListener("scroll", this.onLogScroll);
+          this.logEl.addEventListener("click", this.onLogCheck);
           this.checkboxEl = document.getElementById(checkboxId);
           this.checkboxEl.addEventListener("change", this.onCheckboxChange);
           this.checkboxEl.checked = this.follow = true;
-          this.ignoreScroll = false;
         }
 
-        onLogScroll = () => {
-          if (!this.ignoreScroll) {
-            this.checkboxEl.checked = this.follow = false;
-          }
+        onLogCheck = () => {
+          this.checkboxEl.checked = this.follow = false;
         };
 
         onCheckboxChange = (event) => {
@@ -101,10 +102,6 @@
         async update() {
           if (this.follow) {
             this.logEl.textContent = await this.getText();
-            this.ignoreScroll = true;
-            setTimeout(() => {
-              this.ignoreScroll = false;
-            }, 100);
             this.logEl.scrollTop = this.logEl.scrollHeight;
           }
         }
