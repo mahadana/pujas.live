@@ -9,7 +9,7 @@ import {
 } from "material-ui-popup-state/hooks";
 
 import Link from "@/components/Link";
-import UploadImage from "@/components/UploadImage";
+import RecordingImage from "@/components/RecordingImage";
 import { getRecordingPath } from "shared/path";
 
 const useStyles = makeStyles((theme) => ({
@@ -84,7 +84,7 @@ const PreviewRecording = ({ recording }) => {
       >
         <Paper className={classes.paper} onClick={popupState.close}>
           <div className={classes.image}>
-            <UploadImage image={recording.image} format="medium" />
+            <RecordingImage format="medium" recording={recording} />
           </div>
           <Typography className={classes.title} variant="h4">
             {recording.title}
