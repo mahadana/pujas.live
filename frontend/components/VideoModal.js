@@ -10,7 +10,7 @@ import VideoPlayer from "@/components/VideoPlayer";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
-    zIndex: "1301 !important",
+    zIndex: `${theme.zIndex.modal + 1} !important`,
   },
   container: {
     position: "relative",
