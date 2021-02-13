@@ -27,6 +27,13 @@ test("getUploadImageUrl", () => {
       },
     },
   };
+  const image3 = {
+    formats: {
+      thumbnail: {
+        url: "https://test.com/abc.jpg",
+      },
+    },
+  };
   expect(getUploadImageUrl(null)).toBe(defaultImageUrl);
   expect(getUploadImageUrl({})).toBe(defaultImageUrl);
   expect(getUploadImageUrl(image1)).toBe(apiUrl + "/bar.png");
@@ -37,6 +44,7 @@ test("getUploadImageUrl", () => {
     apiUrl + "/baz.png"
   );
   expect(getUploadImageUrl(image2)).toBe(apiUrl + "/biff.jpg");
+  expect(getUploadImageUrl(image3)).toBe("https://test.com/abc.jpg");
 });
 
 describe("useRouteBack", () => {

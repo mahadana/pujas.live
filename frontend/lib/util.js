@@ -109,7 +109,15 @@ export const getUploadImageUrl = (
   { format = "small", defaultUrl = defaultImageUrl } = {}
 ) => {
   const imageUrl = getMaxResImageUpTo(format, image?.formats);
-  return imageUrl ? `${apiUrl}${imageUrl}` : defaultUrl;
+  if (imageUrl) {
+    if (imageUrl.startsWith("/")) {
+      return `${apiUrl}${imageUrl}`;
+    } else {
+      return imageUrl;
+    }
+  } else {
+    return defaultUrl;
+  }
 };
 
 export const getRecordingImageUrl = (recording, { format = "small" } = {}) => {
