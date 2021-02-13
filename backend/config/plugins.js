@@ -14,9 +14,6 @@ module.exports = ({ env }) => {
       },
     },
   };
-  // Disabled due to not working with large files on Linode.
-  // https://github.com/strapi/strapi/issues/8449
-  /*
   if (env("S3_ACCESS_KEY_ID") && env("S3_SECRET_ACCESS_KEY")) {
     config.upload = {
       provider: "s3",
@@ -31,6 +28,5 @@ module.exports = ({ env }) => {
       },
     };
   }
-  */
   return config;
 };

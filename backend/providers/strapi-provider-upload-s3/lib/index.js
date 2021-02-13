@@ -30,7 +30,6 @@ function bufferToStream(binary) {
 
 module.exports = {
   init({ pathPrefix = "", ...config }) {
-    console.log(pathPrefix, config);
     const S3 = new AWS.S3({
       apiVersion: "2006-03-01",
       ...config,
