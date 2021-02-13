@@ -2,11 +2,6 @@
 
 set -Eeuo pipefail
 
-if [ $# != "0" ]; then
-  exec "$@"
-  exit 0
-fi
-
 BACKUP_USER="runner"
 RCLONE_CONFIG_PATH="/home/$BACKUP_USER/.config/rclone/rclone.conf"
 BUCKET_CONFIG_PATH="/home/$BACKUP_USER/s3-bucket"
@@ -41,6 +36,11 @@ cat > /etc/cron.d/backup << EOF
 0 11 * * * $BACKUP_USER /backup.sh >> $CRON_LOG 2>&1
 
 EOF
+
+if [ $# != "0" ]; then
+  exec "$@"
+  exit 0
+fi
 
 echo "Starting cron..."
 cron && tail -f "$CRON_LOG"
