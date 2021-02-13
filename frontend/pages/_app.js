@@ -18,7 +18,7 @@ import UserProvider from "@/components/UserProvider";
 import VideoModal from "@/components/VideoModal";
 import { plausibleUrl, plausibleDomainKey } from "@/lib/plausible";
 import theme from "@/lib/theme";
-import { siteName } from "@/lib/util";
+import { apiUrl, cdnDomain, s3Domain, siteName } from "@/lib/util";
 
 if (typeof window !== "undefined") {
   import("fullscreen-polyfill");
@@ -45,6 +45,9 @@ const MyApp = ({ Component, pageProps }) => {
           name="description"
           content="Livestreams and meditation groups in the Thai Forest tradition"
         />
+        <link rel="dns-prefetch" href={`${apiUrl}/`} />
+        {cdnDomain && <link rel="dns-prefetch" href={`//${cdnDomain}/`} />}
+        {s3Domain && <link rel="dns-prefetch" href={`//${s3Domain}/`} />}
         <script
           async
           defer

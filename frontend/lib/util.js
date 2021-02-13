@@ -6,15 +6,26 @@ import {
   getChannelRecordingsPath,
   getRecordingPath,
   getRecordingVideoUrl,
+  toDigitalOceansCdnUrl,
 } from "shared/path";
 import { dayjs } from "shared/time";
 
-export const apiUrl =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:1337";
+export const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+export const siteName = process.env.NEXT_PUBLIC_SITE_NAME;
 
+if (!apiUrl) {
+  throw new Error(`NEXT_PUBLIC_BACKEND_URL is not defined`);
+} else if (!siteName) {
+  throw new Error(`NEXT_PUBLIC_SITE_NAME is not defined`);
+}
+
+export const s3Domain = (() => {
+  const bucket = process.env.NEXT_PUBLIC_S3_BUCKET;
+  const endpoint = process.env.NEXT_PUBLIC_S3_ENDPOINT;
+  return bucket && endpoint ? `${bucket}.${endpoint}` : null;
+})();
+export const cdnDomain = s3Domain ? toDigitalOceansCdnUrl(s3Domain) : null;
 export const defaultImageUrl = "/default-group-square.png";
-
-export const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "Pujas.live";
 
 export const useRouteBack = (router) => {
   if (!router) {
@@ -113,7 +124,7 @@ export const getUploadImageUrl = (
     if (imageUrl.startsWith("/")) {
       return `${apiUrl}${imageUrl}`;
     } else {
-      return imageUrl;
+      return toDigitalOceansCdnUrl(imageUrl);
     }
   } else {
     return defaultUrl;

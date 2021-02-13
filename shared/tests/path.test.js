@@ -4,6 +4,7 @@ const {
   getGroupMessagePath,
   getRecordingPath,
   getRecordingVideoUrl,
+  toDigitalOceansCdnUrl,
 } = require("shared/path");
 
 test("getChannelRecordingsPath", () => {
@@ -61,4 +62,21 @@ test("getRecordingVideoUrl", () => {
       skip: 300,
     })
   ).toBe("https://youtu.be/BgsbBWcKch?t=300");
+});
+
+test("toDigitalOceansCdnUrl", () => {
+  expect(toDigitalOceansCdnUrl(null)).toBeNull();
+  expect(toDigitalOceansCdnUrl("")).toBe("");
+  expect(toDigitalOceansCdnUrl("/foo/bar")).toBe("/foo/bar");
+  expect(toDigitalOceansCdnUrl("pujas-live.sfo3.digitaloceanspaces.com")).toBe(
+    "pujas-live.sfo3.cdn.digitaloceanspaces.com"
+  );
+  expect(
+    toDigitalOceansCdnUrl(
+      "https://pujas-live.sfo3.digitaloceanspaces.com/a/b/c"
+    )
+  ).toBe("https://pujas-live.sfo3.cdn.digitaloceanspaces.com/a/b/c");
+  expect(toDigitalOceansCdnUrl("https://storage.googleapis.com/xyz")).toBe(
+    "https://storage.googleapis.com/xyz"
+  );
 });

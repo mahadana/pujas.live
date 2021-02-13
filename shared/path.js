@@ -38,10 +38,22 @@ const getRecordingVideoUrl = (recording, { autoplay } = {}) => {
   return videoUrl;
 };
 
+const toDigitalOceansCdnUrl = (url) => {
+  const match = String(url).match(
+    /^((?:https?:\/\/)?[^.]+\.[^.]+)(\.digitaloceanspaces\.com.*)$/
+  );
+  if (match) {
+    return `${match[1]}.cdn${match[2]}`;
+  } else {
+    return url;
+  }
+};
+
 module.exports = {
   getChannelRecordingsPath,
   getGroupEditPath,
   getGroupMessagePath,
   getRecordingPath,
   getRecordingVideoUrl,
+  toDigitalOceansCdnUrl,
 };

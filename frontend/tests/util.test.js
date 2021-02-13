@@ -1,50 +1,79 @@
 import {
   apiUrl,
   getUploadImageUrl,
-  useRouteBack,
   isActiveRecording,
+  useRouteBack,
 } from "@/lib/util";
 
-test("getUploadImageUrl", () => {
+describe("getUploadImageUrl", () => {
   const defaultImageUrl = "/default-group-square.png";
-  const image1 = {
-    formats: {
-      thumbnail: {
-        url: "/foo.png",
+
+  test("null", () => {
+    expect(getUploadImageUrl(null)).toBe(defaultImageUrl);
+    expect(getUploadImageUrl({})).toBe(defaultImageUrl);
+  });
+
+  test("fallback", () => {
+    const image = {
+      formats: {
+        thumbnail: {
+          url: "/foo.png",
+        },
+        small: {
+          url: "/bar.png",
+        },
+        medium: {
+          url: "/baz.png",
+        },
       },
-      small: {
-        url: "/bar.png",
+    };
+    expect(getUploadImageUrl(image)).toBe(apiUrl + "/bar.png");
+    expect(getUploadImageUrl(image, { format: "thumbnail" })).toBe(
+      apiUrl + "/foo.png"
+    );
+    expect(getUploadImageUrl(image, { format: "large" })).toBe(
+      apiUrl + "/baz.png"
+    );
+  });
+
+  test("missing", () => {
+    const image = {
+      formats: {
+        thumbnail: {
+          url: "/biff.jpg",
+        },
       },
-      medium: {
-        url: "/baz.png",
+    };
+    expect(getUploadImageUrl(image)).toBe(apiUrl + "/biff.jpg");
+    expect(getUploadImageUrl(image, { format: "large" })).toBe(
+      apiUrl + "/biff.jpg"
+    );
+  });
+
+  test("full url", () => {
+    const image = {
+      formats: {
+        thumbnail: {
+          url: "https://test.com/abc.jpg",
+        },
       },
-    },
-  };
-  const image2 = {
-    formats: {
-      thumbnail: {
-        url: "/biff.jpg",
+    };
+    expect(getUploadImageUrl(image)).toBe("https://test.com/abc.jpg");
+  });
+
+  test("digitaloceans cdn", () => {
+    const image = {
+      formats: {
+        thumbnail: {
+          url:
+            "https://pujas-live.sfo3.digitaloceanspaces.com/uploads/thumbnail_1054116213_ae9908a7bc.jpg",
+        },
       },
-    },
-  };
-  const image3 = {
-    formats: {
-      thumbnail: {
-        url: "https://test.com/abc.jpg",
-      },
-    },
-  };
-  expect(getUploadImageUrl(null)).toBe(defaultImageUrl);
-  expect(getUploadImageUrl({})).toBe(defaultImageUrl);
-  expect(getUploadImageUrl(image1)).toBe(apiUrl + "/bar.png");
-  expect(getUploadImageUrl(image1, { format: "thumbnail" })).toBe(
-    apiUrl + "/foo.png"
-  );
-  expect(getUploadImageUrl(image1, { format: "large" })).toBe(
-    apiUrl + "/baz.png"
-  );
-  expect(getUploadImageUrl(image2)).toBe(apiUrl + "/biff.jpg");
-  expect(getUploadImageUrl(image3)).toBe("https://test.com/abc.jpg");
+    };
+    expect(getUploadImageUrl(image)).toBe(
+      "https://pujas-live.sfo3.cdn.digitaloceanspaces.com/uploads/thumbnail_1054116213_ae9908a7bc.jpg"
+    );
+  });
 });
 
 describe("useRouteBack", () => {
