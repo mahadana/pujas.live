@@ -55,6 +55,9 @@ jobs:
           restore-keys: |
             npm-${{ matrix.service }}-
 
+      - name: Setup environment
+        run: bash .github/workflows/setup-env.sh
+
       - name: Install node modules
         run: npm clean-install
         working-directory: ${{ matrix.service }}
