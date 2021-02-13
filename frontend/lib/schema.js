@@ -85,7 +85,6 @@ export const CHANNEL_QUERY = gql`
       recordings(
         sort: "startAt:DESC"
         where: {
-          automate_ne: "manual",
           startAt_null: false,
           startAt_lt: $time
         }
