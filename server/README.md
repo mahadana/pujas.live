@@ -11,7 +11,7 @@ As of February 2021, [Pujas.live] consists of the following components:
 - DNS is handled by [Namecheap].
 - Email delivery is handled by [Mailjet].
 - Captchas is handled by [hCaptcha].
-- YouTube data is via the [YouTube API v3][Google Cloud Platform].
+- YouTube data is via the [YouTube API v3][google cloud platform].
 - [Pujas.live Analytics] (by [Plausible]) lives on the same [Digital Ocean]
   droplet as [Pujas.live].
 - The GeoIP database for analytics is from
@@ -23,7 +23,7 @@ Logs for deploys and worker tasks can be found at https://pujas.live/logs/.
 
 ## Common Tasks
 
-On `pujas.live` as `root`:
+On `do.pujas.live` as `root`:
 
 ```sh
 # Re-run deployment
@@ -42,6 +42,27 @@ cd /opt/plausible
 docker-compose ps
 ```
 
+## Backup / Restore
+
+Once per day, the database and the uploads directory are automatically copied to
+the `/backups` directory in the `pujas-live` [Digital Ocean Spaces]. See the
+[backup.sh](backup/backup.sh) script for details. To manually run a backup:
+
+```sh
+cd /opt/pujas.live/server
+docker-compose exec backup /backup.sh
+```
+
+There is a [restore.sh](backup/restore.sh) script that does the reverse. If you
+need to use it, you would do something like:
+
+```sh
+cd /opt/pujas.live/server
+docker-compose stop backend worker
+docker-compose exec backup /restore.sh
+docker-compose up -d
+```
+
 ## Server Setup Notes
 
 1.  Create a 2GB Debian 10 [Digital Ocean] droplet labeled `do.pujas.live`. Note
@@ -49,12 +70,12 @@ docker-compose ps
 
 2.  Create the following DNS records at [Namecheap](https://www.namecheap.com/):
 
-    | Type  |                      Host |           Value |
-    |:-----:|--------------------------:|:---------------:|
-    | A     |              `pujas.live` |     (see above) |
-    | AAAA  |              `pujas.live` |     (see above) |
-    | A     |           `do.pujas.live` |     (see above) |
-    | AAAA  |           `do.pujas.live` |     (see above) |
+    | Type  |                      Host |      Value      |
+    | :---: | ------------------------: | :-------------: |
+    |   A   |              `pujas.live` |   (see above)   |
+    | AAAA  |              `pujas.live` |   (see above)   |
+    |   A   |           `do.pujas.live` |   (see above)   |
+    | AAAA  |           `do.pujas.live` |   (see above)   |
     | CNAME |       `api.do.pujas.live` | `do.pujas.live` |
     | CNAME |       `www.do.pujas.live` | `do.pujas.live` |
     | CNAME | `plausible.do.pujas.live` | `do.pujas.live` |
@@ -148,18 +169,17 @@ docker-compose ps
 
     The secret for each can be found in `/etc/webhook.secret` on `do.pujas.live`.
 
-
-[Digital Ocean]: https://cloud.digitalocean.com/
-[Digital Ocean Spaces]: https://cloud.digitalocean.com/spaces
-[Digital Ocean Firewall]: https://cloud.digitalocean.com/networking/firewalls
-[Docker]: https://www.docker.com/
-[GitHub]: https://github.com/mahadana/pujas.live
-[hCaptcha]: https://www.hcaptcha.com/
-[LastPass]: https://www.lastpass.com/
-[Mailjet]: https://www.mailjet.com/
-[MaxMind]: https://www.maxmind.com/en/home
-[Namecheap]: https://www.namecheap.com/
-[Plausible]: https://plausible.io/
-[Pujas.live]: https://pujas.live/
-[Pujas.live Analytics]: https://plausible.pujas.live/
-[Google Cloud Platform]: https://console.cloud.google.com/
+[digital ocean]: https://cloud.digitalocean.com/
+[digital ocean firewall]: https://cloud.digitalocean.com/networking/firewalls
+[digital ocean spaces]: https://cloud.digitalocean.com/spaces
+[docker]: https://www.docker.com/
+[github]: https://github.com/mahadana/pujas.live
+[google cloud platform]: https://console.cloud.google.com/
+[hcaptcha]: https://www.hcaptcha.com/
+[lastpass]: https://www.lastpass.com/
+[mailjet]: https://www.mailjet.com/
+[maxmind]: https://www.maxmind.com/en/home
+[namecheap]: https://www.namecheap.com/
+[plausible]: https://plausible.io/
+[pujas.live]: https://pujas.live/
+[pujas.live analytics]: https://plausible.pujas.live/

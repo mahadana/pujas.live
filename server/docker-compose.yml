@@ -20,8 +20,6 @@ services:
       S3_BUCKET: ${S3_BUCKET?}
       SITE_NAME: ${SITE_NAME?}
     restart: unless-stopped
-    volumes:
-      - uploads:/app/backend/public/uploads
 
   backup:
     build:
@@ -35,7 +33,7 @@ services:
       S3_BUCKET: ${S3_BUCKET?}
     restart: unless-stopped
     volumes:
-      - uploads:/uploads
+      - ../logs:/logs
 
   caddy:
     build:
@@ -121,4 +119,3 @@ volumes:
   caddy_data:
   postgres:
   redis:
-  uploads:

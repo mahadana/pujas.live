@@ -2,15 +2,18 @@
 
 set -Eeuo pipefail
 
-BACKUP_USER="runner"
-RCLONE_CONFIG_PATH="/home/$BACKUP_USER/.config/rclone/rclone.conf"
-BUCKET_CONFIG_PATH="/home/$BACKUP_USER/s3-bucket"
-CRON_LOG="/home/$BACKUP_USER/backup.log"
-
-if ! getent passwd "$BACKUP_USER" > /dev/null; then
-  useradd -m "$BACKUP_USER"
+if [ $# != "0" ]; then
+  exec "$@"
+  exit 0
 fi
 
+if ! getent passwd backy > /dev/null; then
+  useradd -u 1000 -m backy
+fi
+
+echo "$S3_BUCKET" > /home/backy/s3-bucket
+
+RCLONE_CONFIG_PATH="/home/backy/.config/rclone/rclone.conf"
 mkdir -p "$(dirname "$RCLONE_CONFIG_PATH")"
 touch "$RCLONE_CONFIG_PATH"
 chmod 600 "$RCLONE_CONFIG_PATH"
@@ -25,22 +28,19 @@ secret_access_key = $S3_SECRET_ACCESS_KEY
 endpoint = $S3_ENDPOINT
 EOF
 
-echo "$S3_BUCKET" > "$BUCKET_CONFIG_PATH"
+chown -R backy:backy /home/backy
 
-touch "$CRON_LOG"
-chown -R "$BACKUP_USER:$BACKUP_USER" \
-  "/home/$BACKUP_USER" "$CRON_LOG"
+mkdir -p /logs/backups
+chown backy:backy /logs/backups
 
 cat > /etc/cron.d/backup << EOF
 # 3am PST
-0 11 * * * $BACKUP_USER /backup.sh >> $CRON_LOG 2>&1
+0 11 * * * backy /backup.sh > /dev/null 2>&1
 
 EOF
 
-if [ $# != "0" ]; then
-  exec "$@"
-  exit 0
-fi
+rm -f /run/rsyslogd.pid
+ln -sf /proc/$$/fd/1 /var/log/all.log
 
-echo "Starting cron..."
-cron && tail -f "$CRON_LOG"
+cron
+rsyslogd -n
