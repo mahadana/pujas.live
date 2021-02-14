@@ -77,8 +77,7 @@ services:
     restart: unless-stopped
 
   mail:
-    build:
-      context: ../mail
+    image: mahadana/mail:latest
     environment:
       MAIL_RELAY_HOST: ${MAIL_RELAY_HOST?}
       MAIL_RELAY_PORT: ${MAIL_RELAY_PORT?}
