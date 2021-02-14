@@ -2,6 +2,7 @@ import Queue from "bull";
 
 import { processAutomations } from "@/automate";
 import { redisHost, redisPort } from "@/cache";
+import db from "@/db";
 import { processErrorCheck } from "@/errorcheck";
 import logger from "@/logger";
 
@@ -45,7 +46,24 @@ const checkEnvironment = (name, keys, callback) => {
   callback();
 };
 
+const isDatabaseReady = async () => {
+  const knex = db.init();
+  try {
+    const result = await knex("pg_catalog.pg_tables")
+      .count()
+      .where("tablename", "recordings");
+    return Boolean(parseInt(result?.[0]?.count));
+  } finally {
+    knex.destroy();
+  }
+};
+
 const setupQueues = async () => {
+  while (!(await isDatabaseReady())) {
+    console.warn("Database not ready. Waiting...");
+    await new Promise((resolve) => setTimeout(resolve, 20000));
+  }
+
   const automateQueue = await createQueue("automateQueue");
   const errorCheckQueue = await createQueue("errorCheckQueue");
 

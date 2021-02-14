@@ -17,6 +17,7 @@ Usage: $0 <service> [command...]
   Watch <service> tests             $0 <service> watch
 
   Run npm install in node services  $0 install
+  Check for outdated node modules   $0 outdated
   Apply auto-formatting (prettier)  $0 pretty
   Run linter (eslint)               $0 lint
   Add fake data                     $0 fake
@@ -34,6 +35,8 @@ case "$SERVICE" in
   frontend|shared|worker)
     if [ "$*" == "install" ]; then
       set npm install
+    elif [ "$*" == "outdated" ]; then
+      set bash -c 'npm outdated || true'
     elif [ "$*" == "test" ]; then
       set npm run test
     elif [ "$*" == "watch" ]; then
@@ -44,6 +47,8 @@ case "$SERVICE" in
     SERVICE="backend"
     if [ "$*" == "install" ]; then
       set npm install
+    elif [ "$*" == "outdated" ]; then
+      set bash -c 'npm outdated || true'
     elif [ "$*" == "test" ]; then
       set npm run test
     elif [ "$*" == "watch" ]; then
@@ -87,6 +92,13 @@ case "$SERVICE" in
     "$0" worker install
     exit 0
     ;;
+  outdated)
+    "$0" shared outdated
+    "$0" backend outdated
+    "$0" frontend outdated
+    "$0" worker outdated
+    exit 0
+    ;;
   pretty|prettier)
     test -d node_modules || npm install --silent
     npm run prettier
@@ -117,6 +129,7 @@ case "$SERVICE" in
   clean)
     cd "$(dirname "$0")"
     docker-compose down
+    docker container prune -f
     if docker image ls | grep -q pujaslive; then
       docker image rm $(docker image ls | grep pujaslive | tr -s ' ' | cut -d ' ' -f 3)
     fi
@@ -129,8 +142,8 @@ case "$SERVICE" in
           backend/exports backend/node_modules \
           backend/public/uploads/* \
           frontend/.next frontend/node_modules \
-          logs/deploy logs/worker \
-	  shared/node_modules \
+          logs/backup logs/deploy logs/worker \
+	        shared/node_modules \
           worker/build worker/node_modules
     exit 0
     ;;
