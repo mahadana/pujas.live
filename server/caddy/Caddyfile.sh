@@ -35,6 +35,6 @@ $BACKEND_DOMAIN {
 }
 
 $PLAUSIBLE_DOMAIN {
-  reverse_proxy $FRONTEND_DOMAIN:8000
+  reverse_proxy plausible:8000
 }
 EOF

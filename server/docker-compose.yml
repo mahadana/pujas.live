@@ -1,6 +1,10 @@
 version: "3.7"
 
 services:
+  #
+  # Application containers
+  #
+
   backend:
     build:
       context: ..
@@ -19,38 +23,10 @@ services:
       S3_ENDPOINT: ${S3_ENDPOINT?}
       S3_BUCKET: ${S3_BUCKET?}
       SITE_NAME: ${SITE_NAME?}
+    # Port mapping only needed for testing
+    # ports:
+    #   - "${BACKEND_BIND:-127.0.0.1}:${BACKEND_PORT:-1337}:1337"
     restart: unless-stopped
-
-  backup:
-    build:
-      context: backup
-    depends_on:
-      - postgres
-    environment:
-      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID?}
-      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY?}
-      S3_ENDPOINT: ${S3_ENDPOINT?}
-      S3_BUCKET: ${S3_BUCKET?}
-    restart: unless-stopped
-    volumes:
-      - ../logs:/logs
-
-  caddy:
-    build:
-      context: caddy
-    environment:
-      FRONTEND_URL: ${FRONTEND_URL?}
-      BACKEND_URL: ${BACKEND_URL?}
-      PLAUSIBLE_URL: ${PLAUSIBLE_URL?}
-    ports:
-      - "80:80"
-      - "443:443"
-    restart: unless-stopped
-    volumes:
-      - ../logs:/logs:ro
-      - /opt/chanting:/opt/chanting:ro
-      - caddy_data:/data
-      - caddy_config:/config
 
   frontend:
     build:
@@ -72,32 +48,10 @@ services:
       NEXT_PUBLIC_S3_BUCKET: ${S3_BUCKET?}
       NEXT_PUBLIC_S3_ENDPOINT: ${S3_ENDPOINT?}
       NEXT_PUBLIC_SITE_NAME: ${SITE_NAME?}
+    # Port mapping only needed for testing
+    # ports:
+    #   - "${FRONTEND_BIND:-127.0.0.1}:${FRONTEND_PORT:-3000}:3000"
     restart: unless-stopped
-
-  mail:
-    image: mahadana/mail:latest
-    environment:
-      MAIL_RELAY_HOST: ${MAIL_RELAY_HOST?}
-      MAIL_RELAY_PORT: ${MAIL_RELAY_PORT?}
-      MAIL_RELAY_USER: ${MAIL_RELAY_USER?}
-      MAIL_RELAY_PASSWORD: ${MAIL_RELAY_PASSWORD?}
-    restart: unless-stopped
-
-  postgres:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: strapi
-      POSTGRES_PASSWORD: strapi
-      POSTGRES_USER: strapi
-    restart: unless-stopped
-    volumes:
-      - postgres:/var/lib/postgresql/data
-
-  redis:
-    image: redis:latest
-    restart: unless-stopped
-    volumes:
-      - redis:/var/lib/redis
 
   worker:
     build:
@@ -114,8 +68,137 @@ services:
     volumes:
       - ../logs:/app/logs
 
+  #
+  # Database containers
+  #
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: strapi
+      POSTGRES_PASSWORD: strapi
+      POSTGRES_USER: strapi
+    restart: unless-stopped
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+    volumes:
+      - redis:/var/lib/redis
+
+  #
+  # Service containers
+  #
+
+  backup:
+    build:
+      context: backup
+    environment:
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID?}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY?}
+      S3_ENDPOINT: ${S3_ENDPOINT?}
+      S3_BUCKET: ${S3_BUCKET?}
+    restart: unless-stopped
+    volumes:
+      # Controlling docker might be useful in the future
+      # - /var/run/docker.sock:/var/run/docker.sock
+      - ../logs:/logs
+
+  caddy:
+    build:
+      context: caddy
+    environment:
+      FRONTEND_URL: ${FRONTEND_URL?}
+      BACKEND_URL: ${BACKEND_URL?}
+      PLAUSIBLE_URL: ${PLAUSIBLE_URL?}
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped
+    volumes:
+      - ../logs:/logs:ro
+      - /opt/chanting:/opt/chanting:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+  mail:
+    image: mahadana/mail:latest
+    environment:
+      MAIL_RELAY_HOST: ${MAIL_RELAY_HOST?}
+      MAIL_RELAY_PORT: ${MAIL_RELAY_PORT?}
+      MAIL_RELAY_USER: ${MAIL_RELAY_USER?}
+      MAIL_RELAY_PASSWORD: ${MAIL_RELAY_PASSWORD?}
+    restart: unless-stopped
+
+  #
+  # Analytics containers
+  #
+
+  plausible:
+    image: plausible/analytics:latest
+    command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh db init-admin && /entrypoint.sh run"
+    depends_on:
+      - plausible_clickhouse
+      - plausible_geoip
+      - plausible_postgres
+    environment:
+      ADMIN_USER_EMAIL: ${ADMIN_EMAIL?}
+      ADMIN_USER_NAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_USER_PWD: ${ADMIN_PASSWORD?}
+      BASE_URL: ${PLAUSIBLE_URL?}
+      CLICKHOUSE_DATABASE_URL: http://plausible_clickhouse:8123/plausible
+      DATABASE_URL: postgres://plausible:plausible@plausible_postgres:5432/plausible
+      DISABLE_REGISTRATION: "true"
+      MAILER_EMAIL: ${MAIL_FROM_ADDRESS?}
+      GEOLITE2_COUNTRY_DB: /geoip/GeoLite2-Country.mmdb
+      SECRET_KEY_BASE: ${PLAUSIBLE_SECRET?}
+    # Port mapping only needed for testing
+    # ports:
+    #   - "${PLAUSIBLE_BIND:-127.0.0.1}:${PLAUSIBLE_PORT:-8000}:8000"
+    restart: unless-stopped
+    volumes:
+      - plausible_geoip:/geoip:ro
+
+  plausible_clickhouse:
+    image: yandex/clickhouse-server:latest
+    restart: unless-stopped
+    ulimits:
+      nofile:
+        hard: 262144
+        soft: 262144
+    volumes:
+      - plausible_clickhouse:/var/lib/clickhouse
+      - ./clickhouse/clickhouse-config.xml:/etc/clickhouse-server/config.d/logging.xml:ro
+      - ./clickhouse/clickhouse-user-config.xml:/etc/clickhouse-server/users.d/logging.xml:ro
+
+  plausible_geoip:
+    image: maxmindinc/geoipupdate:latest
+    environment:
+      GEOIPUPDATE_ACCOUNT_ID: ${GEOIPUPDATE_ACCOUNT_ID?}
+      GEOIPUPDATE_EDITION_IDS: GeoLite2-Country
+      GEOIPUPDATE_FREQUENCY: 168 # update every 7 days
+      GEOIPUPDATE_LICENSE_KEY: ${GEOIPUPDATE_LICENSE_KEY?}
+    restart: unless-stopped
+    volumes:
+      - plausible_geoip:/usr/share/GeoIP
+
+  plausible_postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: plausible
+      POSTGRES_PASSWORD: plausible
+      POSTGRES_USER: plausible
+    restart: unless-stopped
+    volumes:
+      - plausible_postgres:/var/lib/postgresql/data
+
 volumes:
   caddy_config:
   caddy_data:
+  plausible_clickhouse:
+  plausible_geoip:
+  plausible_postgres:
   postgres:
   redis:

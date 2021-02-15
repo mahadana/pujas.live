@@ -6,14 +6,14 @@ As of February 2021, [Pujas.live] consists of the following components:
 
 - The site runs via [Docker] containers hosted on a 2GB "droplet" at [Digital
   Ocean].
+- [Pujas.live Analytics] by [Plausible] runs in [Docker] containers along side
+  the rest of the site.
 - Image and backup storage is handled by [Digital Ocean] via the S3-compatible
   [Digital Ocean Spaces].
 - DNS is handled by [Namecheap].
 - Email delivery is handled by [Mailjet].
-- Captchas is handled by [hCaptcha].
-- YouTube data is via the [YouTube API v3][google cloud platform].
-- [Pujas.live Analytics] (by [Plausible]) lives on the same [Digital Ocean]
-  droplet as [Pujas.live].
+- Captchas are handled by [hCaptcha].
+- YouTube data is acquired via the [YouTube API v3][google cloud platform].
 - The GeoIP database for analytics is from
   [MaxMind].
 
@@ -53,14 +53,32 @@ cd /opt/pujas.live/server
 docker-compose exec backup /backup.sh
 ```
 
-There is a [restore.sh](backup/restore.sh) script that does the reverse. If you
-need to use it, you would do something like:
+There is a [restore.sh](backup/restore.sh) script to restore things when needed.
 
 ```sh
 cd /opt/pujas.live/server
-docker-compose stop backend worker
+
+# Show help
 docker-compose exec backup /restore.sh
-docker-compose up -d
+
+# List backup files on S3
+docker-compose exec backup /restore.sh list
+
+# Restore site postgres database
+docker-compose stop backend worker
+docker-compose exec backup /restore.sh site-postgres REMOTE
+docker-compose up -d backend worker
+
+# Restore plausible postgres database
+docker-compose stop plausible
+docker-compose exec backup /restore.sh plausible-postgres REMOTE
+docker-compose up -d plausible
+
+# Restore plausible clickhouse database
+docker-compose exec backup /restore.sh plausible-clickhouse REMOTE
+
+# Restore uploads
+docker-compose exec backup /restore.sh uploads REMOTE
 ```
 
 ## Server Setup Notes
@@ -163,9 +181,6 @@ docker-compose up -d
 
     - [chanting](https://github.com/mahadana/chanting/settings/hooks):
       `https://pujas.live/hooks/chanting-github-deploy`
-
-    - [plausible](https://github.com/mahadana/pujas.live/settings/hooks):
-      `https://pujas.live/hooks/plausible-github-deploy`
 
     The secret for each can be found in `/etc/webhook.secret` on `do.pujas.live`.
 

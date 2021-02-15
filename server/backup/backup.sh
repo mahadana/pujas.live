@@ -16,26 +16,39 @@ mkdir -p "$LOG_DIR"
   S3_BUCKET="$(cat "$HOME/s3-bucket")"
   S3_BACKUP_DIR="s3:$S3_BUCKET/backups"
   S3_UPLOADS_DIR="s3:$S3_BUCKET/uploads"
+  S3_BACKUP_MONTH_DIR="$S3_BACKUP_DIR/$(date +%Y/%m)"
+  DATE_SUFFIX="$(date +%Y-%m-%d)"
 
-  S3_BACKUP_DB_PATH="$S3_BACKUP_DIR/db/$(date +%Y/%m)/pujas.live-db-$(date +%Y-%m-%d).sql.gz"
-  S3_BACKUP_LATEST_DB_PATH="$S3_BACKUP_DIR/db/pujas.live-db-latest.sql.gz"
-  S3_BACKUP_UPLOADS_DIR="$S3_BACKUP_DIR/uploads/$(date +%Y/%m)"
+  S3_BACKUP_SITE_POSTGRES_PATH="$S3_BACKUP_MONTH_DIR/site-postgres-$DATE_SUFFIX.gz"
+  S3_BACKUP_PLAUSIBLE_POSTGRES_PATH="$S3_BACKUP_MONTH_DIR/plausible-postgres-$DATE_SUFFIX.gz"
+  S3_BACKUP_PLAUSIBLE_CLICKHOUSE_PATH="$S3_BACKUP_MONTH_DIR/plausible-clickhouse-$DATE_SUFFIX.gz"
+  S3_BACKUP_UPLOADS_DIR="$S3_BACKUP_MONTH_DIR/uploads"
 
   echo "Backup start..."
 
+  TEMP_BACKUP_PATH="$(mktemp)"
   trap '{ set +eu; rm -f "$TEMP_BACKUP_PATH"; }' EXIT
 
-  TEMP_BACKUP_PATH="$(mktemp)"
-
-  echo "Creating database dump"
+  echo "Creating site postgres dump"
   PGPASSWORD=strapi pg_dump -h postgres -U strapi -d strapi | \
     gzip > "$TEMP_BACKUP_PATH"
 
-  echo "Copying database dump to $S3_BACKUP_DB_PATH"
-  rclone copyto --s3-acl="private" "$TEMP_BACKUP_PATH" "$S3_BACKUP_DB_PATH"
+  echo "Copying site postgres dump to $S3_BACKUP_SITE_POSTGRES_PATH"
+  rclone copyto --s3-acl="private" "$TEMP_BACKUP_PATH" "$S3_BACKUP_SITE_POSTGRES_PATH"
 
-  echo "Copying database dump to $S3_BACKUP_LATEST_DB_PATH"
-  rclone copyto --s3-acl="private" "$TEMP_BACKUP_PATH" "$S3_BACKUP_LATEST_DB_PATH"
+  echo "Creating plausible postgres dump"
+  PGPASSWORD=plausible pg_dump -h plausible_postgres -U plausible -d plausible | \
+    gzip > "$TEMP_BACKUP_PATH"
+
+  echo "Copying plausible postgres dump to $S3_BACKUP_PLAUSIBLE_POSTGRES_PATH"
+    rclone copyto --s3-acl="private" "$TEMP_BACKUP_PATH" "$S3_BACKUP_PLAUSIBLE_POSTGRES_PATH"
+
+  echo "Creating plausible clickhouse dump"
+  clickhouse-backup.sh -h plausible_clickhouse -d plausible backup | \
+    gzip > "$TEMP_BACKUP_PATH"
+
+  echo "Copying plausible clickhouse dump to $S3_BACKUP_PLAUSIBLE_CLICKHOUSE_PATH"
+    rclone copyto --s3-acl="private" "$TEMP_BACKUP_PATH" "$S3_BACKUP_PLAUSIBLE_CLICKHOUSE_PATH"
 
   rm -f "$TEMP_BACKUP_PATH"
 
@@ -45,6 +58,6 @@ mkdir -p "$LOG_DIR"
 
   echo "Backup complete!"
 
-) 2>&1 | ts "[%Y-%m-%d %H:%M:%S]" | tee -a "$LOG_PATH"
+) 2>&1 | tee >(ts "[%Y-%m-%d %H:%M:%S]" >> "$LOG_PATH")
 
 ls -rt1 "$LOG_DIR/"*.log | head -n -10 | xargs --no-run-if-empty rm

@@ -27,7 +27,7 @@ services:
       NEXT_PUBLIC_PLAUSIBLE_URL: ${PLAUSIBLE_URL:-https://plausible.pujas.live}
       NEXT_PUBLIC_S3_BUCKET: ${S3_BUCKET:-}
       NEXT_PUBLIC_S3_ENDPOINT: ${S3_ENDPOINT:-}
-      NEXT_PUBLIC_SITE_NAME: ${SITE_NAME:-Pujas.live}
+      NEXT_PUBLIC_SITE_NAME: ${SITE_NAME:-Pujas.test}
     ports:
       - "${FRONTEND_BIND:-127.0.0.1}:${FRONTEND_PORT:-3000}:3000"
     restart: unless-stopped
@@ -45,7 +45,7 @@ services:
     restart: unless-stopped
 
   postgres:
-    image: postgres:latest
+    image: postgres:13
     environment:
       POSTGRES_DB: strapi
       POSTGRES_PASSWORD: strapi
