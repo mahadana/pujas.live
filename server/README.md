@@ -136,18 +136,15 @@ docker-compose exec backup /restore.sh uploads REMOTE
     wget -qO - https://raw.githubusercontent.com/mahadana/pujas.live/main/server/setup.sh | bash
     ```
 
-6.  When prompted, create and edit `/opt/pujas.live/.env` and
-    `/opt/plausible/.env`. See [LastPass] as needed.
+6.  When prompted, create and edit `/opt/pujas.live/.env`. See [LastPass] as
+    needed.
 
-    You can create `ADMIN_JWT_SECRET`, `JWT_SECRET` and `SECRET_KEY_BASE` and
+    You can create `ADMIN_JWT_SECRET`, `JWT_SECRET` and `PLAUSIBLE_SECRET` and
     with:
 
     ```sh
     openssl rand -hex 32
     ```
-
-    `ADMIN_PASSWORD` should be set to the Strapi administrative password for the
-    `admin@pujas.live` account.
 
 7.  After editing the `.env` files, continue the setup:
 

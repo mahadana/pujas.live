@@ -10,10 +10,6 @@ CHANTING_PROJECT="chanting"
 CHANTING_GIT_URL="https://github.com/mahadana/$CHANTING_PROJECT.git"
 CHANTING_BASE_DIR="/opt/$CHANTING_PROJECT"
 
-PLAUSIBLE_PROJECT="plausible"
-PLAUSIBLE_GIT_URL="https://github.com/mahadana/$PLAUSIBLE_PROJECT.git"
-PLAUSIBLE_BASE_DIR="/opt/$PLAUSIBLE_PROJECT"
-
 WEBHOOK_CONF="/etc/webhook.conf"
 WEBHOOK_SECRET="/etc/webhook.secret"
 
@@ -48,25 +44,13 @@ test -d "$BASE_DIR" || git clone "$GIT_URL" "$BASE_DIR"
 test -d "$CHANTING_BASE_DIR" || \
   git clone "$CHANTING_GIT_URL" "$CHANTING_BASE_DIR"
 
-test -d "$PLAUSIBLE_BASE_DIR" || \
-  git clone "$PLAUSIBLE_GIT_URL" "$PLAUSIBLE_BASE_DIR"
-
-missing=
-
-for env in "$BASE_DIR/.env" "$PLAUSIBLE_BASE_DIR/.env"; do
-  if ! test -f "$env"; then
-    echo "Missing: $env"
-    missing=1
-  fi
-done
-
-if test -n "$missing"; then
+if ! test -f "$BASE_DIR/.env"; then
+  echo "Missing: $env"
   echo "Please create and edit the missing .env files"
   exit 1
 fi
 
 chmod 600 "$BASE_DIR/.env"
-chmod 600 "$PLAUSIBLE_BASE_DIR/.env"
 
 if ! test -f "$WEBHOOK_SECRET"; then
   touch "$WEBHOOK_SECRET"
@@ -83,8 +67,6 @@ systemctl restart webhook.service
 
 mkdir -p "$BASE_DIR/logs/worker"
 chown 1000:1000 "$BASE_DIR/logs/worker"
-
-"$PLAUSIBLE_BASE_DIR/server/deploy.sh"
 
 "$BASE_DIR/server/deploy.sh"
 
