@@ -36,6 +36,15 @@ const theme = createMuiTheme({
       main: "#ff7744",
     },
   },
+  lineClamp: (lines) => ({
+    // display: "box",
+    display: "-webkit-box",
+    "-webkit-line-clamp": lines,
+    lineClamp: lines,
+    "-webkit-box-orient": "vertical",
+    boxOrient: "vertical",
+    overflow: "hidden",
+  }),
 });
 
 export default theme;

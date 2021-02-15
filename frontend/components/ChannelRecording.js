@@ -10,12 +10,7 @@ import {
 } from "@/lib/util";
 
 const useStyles = makeStyles((theme) => ({
-  description: {
-    display: "box",
-    boxOrient: "vertical",
-    overflow: "hidden",
-    lineClamp: 3,
-  },
+  description: theme.lineClamp(3),
 }));
 
 const ChannelRecording = ({ recording }) => {

@@ -17,18 +17,10 @@ import { getChannelRecordingsPath } from "shared/path";
 
 const useStyles = makeStyles((theme) => ({
   meta: {
-    display: "box",
-    boxOrient: "vertical",
-    overflow: "hidden",
-    lineClamp: 1,
+    ...theme.lineClamp(1),
     fontWeight: "500",
   },
-  description: {
-    display: "box",
-    boxOrient: "vertical",
-    overflow: "hidden",
-    lineClamp: 3,
-  },
+  description: theme.lineClamp(3),
 }));
 
 const HomeChannel = ({ channel }) => {
