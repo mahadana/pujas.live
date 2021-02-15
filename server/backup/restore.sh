@@ -66,7 +66,7 @@ function restore-postgres {
       -h "$DB_HOST" -U "$DB_USER" -d postgres > /dev/null
 
   echo "Restoring $TYPE database"
-  gunzip -c "$TEMP_BACKUP_PATH" | \
+  cat "$TEMP_BACKUP_PATH" | gzip -d | \
     PGPASSWORD="$DB_PASSWORD" psql -v ON_ERROR_STOP=1 \
       -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" > /dev/null
 
@@ -85,7 +85,7 @@ function restore-clickhouse {
   echo "Downloading $TYPE database from $REMOTE_PATH"
   rclone copyto "$REMOTE_PATH" "$TEMP_BACKUP_PATH"
 
-  gunzip -c "$TEMP_BACKUP_PATH" |
+  cat "$TEMP_BACKUP_PATH" | gzip -d | \
     clickhouse-backup.sh -v -h "$DB_HOST" -d "$DB_NAME" restore
 
   rm -f "$TEMP_BACKUP_PATH"
