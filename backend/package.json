@@ -29,6 +29,7 @@
     "build": "strapi build",
     "start": "node lib/init && npx strapi start",
     "strapi": "strapi",
-    "test": "jest --forceExit --detectOpenHandles"
+    "test": "jest --forceExit --detectOpenHandles",
+    "watch": "jest --watchAll --forceExit --detectOpenHandles"
   }
 }
