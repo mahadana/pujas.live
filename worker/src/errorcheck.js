@@ -24,10 +24,10 @@ const run = async (cmd) => {
 };
 
 export const processErrorCheck = async () => {
-  const result = await run("cd /app/logs && grep -lr error: worker");
-  const files = result.split("\n");
+  const result = await run("cd /app && grep -lr error: logs/worker || true");
+  const files = result.split("\n").filter((l) => l.trim());
   if (files.length) {
-    const urls = files.map((file) => `${frontendUrl}/logs/${file}`);
+    const urls = files.map((file) => `${frontendUrl}/${file}`);
     const text = `Detected one or more errors in the worker logs:
 
 ${urls.join("\n")}
