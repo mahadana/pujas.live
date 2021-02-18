@@ -1,62 +1,71 @@
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
-import { createElement } from "react";
+import { createElement, forwardRef } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    maxWidth: "29.2em",
+    margin: "0 auto",
     color: theme.palette.text.primary,
     fontFamily: '"Helvetica", sans-serif',
     "& h1, & h2": {
-      borderBottom: `1px solid ${theme.palette.text.secondary}`,
       margin: "0.5em 0",
     },
     "& h2, & h3": {
+      borderBottom: `1px solid ${theme.palette.text.secondary}`,
       color: theme.palette.text.secondary,
     },
     "& h2:not(:first-child), & h3:not(:first-child)": {
       marginTop: "1em",
     },
-    "& .chanting-group": {
+    "& .chant-group": {
       margin: "1em 0",
     },
-    "& .chanting-verse": {
+    "& .chant-verse": {
       lineHeight: "1.8em",
       fontFamily: "Gentium Incantation",
       transition: "background-color 1s cubic-bezier(0,1,.7,1)",
     },
-    "& .chanting-verse-active": {
+    "& .chant-verse-active": {
       backgroundColor: "rgba(200, 200, 0, 0.3)",
     },
-    "&.chanting-mixed": {
-      ["& .chanting-group.chanting-en, & .chanting-verse.chanting-en"]: {
-        marginLeft: "2em",
+    "&.chant-lang-mixed": {
+      ["& .chant-group.chant-lang-en, & .chant-verse.chant-lang-en"]: {
+        marginLeft: "1.8em",
         fontStyle: "italic",
       },
-      ["& .chanting-verse.chanting-en"]: {
+      ["& .chant-verse.chant-lang-en"]: {
         fontStyle: "italic",
       },
     },
-    "& .chanting-grid": {
+    "& .chant-group .chant-verse.chant-leader": {
+      marginLeft: "1.8em",
+    },
+    "& .chant-grid": {
       display: "table",
       margin: "1em auto",
-      "& .chanting-row": {
+      "& .chant-row": {
         display: "table-row",
-        "& .chanting-verse": {
+        "& .chant-verse": {
           display: "table-cell",
         },
       },
-      "& .chanting-row:not(:last-child) .chanting-verse": {
+      "& .chant-row:not(:last-child) .chant-verse": {
         paddingBottom: "0.5em",
       },
-      "& .chanting-row .chanting-verse:not(:last-child)": {
+      "& .chant-row .chant-verse:not(:last-child)": {
         paddingRight: "1em",
       },
     },
     "& aside": {
-      textAlign: "center",
-      fontSize: "0.9em",
+      marginTop: "1.5em",
+      marginLeft: "2.9em",
+      fontSize: "0.8em",
+      lineHeight: "1.5em",
       fontWeight: "bold",
       color: theme.palette.text.secondary,
+      textTransform: "uppercase",
+      textIndent: "-0.6em",
       "&:before": {
         content: '"[ "',
       },
@@ -71,57 +80,63 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const classWithLang = (node, className) =>
-  clsx(className, node?.lang && `chanting-${node.lang}`);
+  clsx(
+    className,
+    node?.lang && `chant-lang-${node.lang}`,
+    node?.leader && "chant-leader"
+  );
 
-const ChantingVerse = ({ verse }) => (
+const ChantVerse = ({ verse }) => (
   <div
     className={clsx(
-      classWithLang(verse, "chanting-verse"),
-      verse.active && "chanting-verse-active"
+      classWithLang(verse, "chant-verse"),
+      verse.active && "chant-verse-active"
     )}
     dangerouslySetInnerHTML={{ __html: verse?.html }}
   />
 );
 
-const ChantingRow = ({ row }) => (
-  <div className={classWithLang(row, "chanting-row")}>
+const ChantRow = ({ row }) => (
+  <div className={classWithLang(row, "chant-row")}>
     {row?.children?.map?.((verse, index) => (
-      <ChantingVerse key={index} verse={verse} />
+      <ChantVerse key={index} verse={verse} />
     ))}
   </div>
 );
 
-const ChantingGrid = ({ grid }) => (
-  <div className={classWithLang(grid, "chanting-grid")}>
+const ChantGrid = ({ grid }) => (
+  <div className={classWithLang(grid, "chant-grid")}>
     {grid?.children?.map?.((row, index) => (
-      <ChantingRow key={index} row={row} />
+      <ChantRow key={index} row={row} />
     ))}
   </div>
 );
 
-const ChantingGroup = ({ group }) => (
-  <div className={classWithLang(group, "chanting-group")}>
+const ChantGroup = ({ group }) => (
+  <div className={classWithLang(group, "chant-group")}>
     {group?.children?.map?.((verse, index) => (
-      <ChantingVerse key={index} verse={verse} />
+      <ChantVerse key={index} verse={verse} />
     ))}
   </div>
 );
 
-const Chanting = ({ chanting }) => {
+const Chant = forwardRef(({ chant }, ref) => {
   const classes = useStyles();
   const className = clsx(
     classes.root,
-    chanting?.lang && `chanting-${chanting.lang}`
+    chant?.lang && `chant-lang-${chant.lang}`
   );
   return (
-    <div className={className}>
-      {chanting?.children?.map?.((node, index) => {
+    <div className={className} ref={ref}>
+      <h1>{chant.title}</h1>
+      {chant?.children?.map?.((node, index) => {
         if (node?.type === "group") {
-          return <ChantingGroup key={index} group={node} />;
+          return <ChantGroup key={index} group={node} />;
         } else if (node?.type === "grid") {
-          return <ChantingGrid key={index} grid={node} />;
+          return <ChantGrid key={index} grid={node} />;
         } else {
           return createElement(node?.type || "div", {
+            className: node.start ? "chant-start" : undefined,
             key: index,
             dangerouslySetInnerHTML: { __html: node?.html },
           });
@@ -129,6 +144,8 @@ const Chanting = ({ chanting }) => {
       })}
     </div>
   );
-};
+});
 
-export default Chanting;
+Chant.displayName = "Chant";
+
+export default Chant;

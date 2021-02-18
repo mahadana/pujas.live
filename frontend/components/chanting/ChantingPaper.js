@@ -11,11 +11,6 @@ const useStyles = makeStyles((theme) => ({
     padding: "1rem 2rem",
     overflow: "hidden",
     overflowY: "scroll",
-    scrollbarWidth: "none",
-    "-ms-overflow-style": "none",
-    "&::-webkit-scrollbar": {
-      display: "none",
-    },
   },
 }));
 
