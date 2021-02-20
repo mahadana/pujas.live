@@ -156,6 +156,7 @@ const addChantMeta = (chant) => {
 };
 
 const getChantFromToc = ({ chants, chantSet = [], link, title }) => {
+  console.log(title);
   const chant = chantSet
     .map((chantId) => chants.chantMap[chantId])
     .filter((chant) => chant)

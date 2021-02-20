@@ -2,13 +2,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
-import Collapse from "@material-ui/core/Collapse";
-import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,10 +13,13 @@ const useStyles = makeStyles((theme) => ({
     overflowY: "auto",
   },
   chant: {
-    paddingLeft: "2.64rem",
+    paddingLeft: "1rem",
   },
   part: {
-    paddingLeft: "0.333rem",
+    paddingLeft: "1rem",
+    "& > div > span": {
+      fontWeight: "bold",
+    },
   },
   icon: {
     color: theme.palette.text.hint,
@@ -82,13 +80,7 @@ const ChantingTocVolume = ({ children, tocVolume, ...props }) => {
 };
 
 const ChantingTocPart = ({ children, onOpen, tocPart, ...props }) => {
-  const [open, setOpen] = useState(false);
   const classes = useStyles();
-  const onArrowClick = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setOpen((open) => !open);
-  };
   const onItemClick = () =>
     onOpen({
       chantSet: tocPart.chantSet,
@@ -99,16 +91,11 @@ const ChantingTocPart = ({ children, onOpen, tocPart, ...props }) => {
   return (
     <div {...props}>
       <ListItem button className={classes.part} onClick={onItemClick}>
-        <ListItemIcon className={classes.icon} onClick={onArrowClick}>
-          {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
-        </ListItemIcon>
         <ChantingTocListItemText page={tocPart.page} title={tocPart.title} />
       </ListItem>
-      <Collapse in={open}>
-        <List component="nav" dense disablePadding>
-          {children}
-        </List>
-      </Collapse>
+      <List component="nav" dense disablePadding>
+        {children}
+      </List>
     </div>
   );
 };
@@ -119,7 +106,7 @@ const ChantingTocChant = ({ onOpen, tocChant, tocPart, ...props }) => {
     onOpen({
       chantSet: tocChant.chantSet || tocPart.chantSet,
       link: tocChant.link,
-      title: tocChant.chantSet ? tocChant.title : tocPart.title,
+      title: tocPart.title,
     });
   return (
     <ListItem button className={classes.chant} onClick={onClick} {...props}>

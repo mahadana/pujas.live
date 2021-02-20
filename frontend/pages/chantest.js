@@ -29,6 +29,22 @@ const fetchData = async () => {
     chants: rawChants,
   };
 
+  toc.forEach((volume) => {
+    volume.parts.forEach((part) => {
+      if (volume.volume == 1 && (part.part == 1 || part.part == 2)) {
+        part.chantSet.pop();
+        part.chants = part.chants.slice(-1);
+      } else if (volume.volume == 2 && part.part == 3) {
+        part.chants = [];
+      }
+      part.chants.forEach((chant) => {
+        if (!chant.chantSet && !(volume.volume == 2 && part.part == 2)) {
+          chant.chantSet = [chant.link];
+        }
+      });
+    });
+  });
+
   return { chants, toc };
 };
 
