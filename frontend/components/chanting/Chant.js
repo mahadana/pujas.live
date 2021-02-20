@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
-import { createElement, forwardRef } from "react";
+import { createElement } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
       fontFamily: "Gentium Incantation",
       transition: "background-color 1s cubic-bezier(0,1,.7,1)",
     },
-    "& .chant-verse-active": {
+    "& .chant-active": {
       backgroundColor: "rgba(200, 200, 0, 0.3)",
     },
     "&.chant-lang-mixed": {
@@ -79,72 +79,56 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const classWithLang = (node, className) =>
+const classNameWithLang = (node, className) =>
   clsx(
     className,
     node?.lang && `chant-lang-${node.lang}`,
     node?.leader && "chant-leader"
   );
 
-const ChantVerse = ({ verse }) => (
-  <div
-    className={clsx(
-      classWithLang(verse, "chant-verse"),
-      verse.active && "chant-verse-active"
-    )}
-    dangerouslySetInnerHTML={{ __html: verse?.html }}
-  />
-);
+const groupTypeMap = {
+  group: "chant-group",
+  grid: "chant-grid",
+  row: "chant-row",
+};
 
-const ChantRow = ({ row }) => (
-  <div className={classWithLang(row, "chant-row")}>
-    {row?.children?.map?.((verse, index) => (
-      <ChantVerse key={index} verse={verse} />
-    ))}
-  </div>
-);
-
-const ChantGrid = ({ grid }) => (
-  <div className={classWithLang(grid, "chant-grid")}>
-    {grid?.children?.map?.((row, index) => (
-      <ChantRow key={index} row={row} />
-    ))}
-  </div>
-);
-
-const ChantGroup = ({ group }) => (
-  <div className={classWithLang(group, "chant-group")}>
-    {group?.children?.map?.((verse, index) => (
-      <ChantVerse key={index} verse={verse} />
-    ))}
-  </div>
-);
-
-const Chant = forwardRef(({ chant }, ref) => {
+const Chant = ({ chant, activeIndex }) => {
   const classes = useStyles();
-  const className = clsx(
-    classes.root,
-    chant?.lang && `chant-lang-${chant.lang}`
-  );
-  return (
-    <div className={className} ref={ref}>
-      <h1>{chant.title}</h1>
-      {chant?.children?.map?.((node, index) => {
-        if (node?.type === "group") {
-          return <ChantGroup key={index} group={node} />;
-        } else if (node?.type === "grid") {
-          return <ChantGrid key={index} grid={node} />;
-        } else {
-          return createElement(node?.type || "div", {
-            className: node.start ? "chant-start" : undefined,
-            key: index,
-            dangerouslySetInnerHTML: { __html: node?.html },
-          });
-        }
-      })}
-    </div>
-  );
-});
+
+  const className = classNameWithLang(chant, classes.root);
+  let walkIndex = 0;
+
+  const walkNode = (node, key) => {
+    if (node?.html) {
+      const tag = node.type !== "verse" ? node.type : "div";
+      const className = clsx(
+        node.type === "verse" && classNameWithLang(node, "chant-verse"),
+        node.start && "chant-start",
+        walkIndex === activeIndex && "chant-active"
+      );
+      walkIndex += 1;
+      return createElement(tag, {
+        className,
+        id: `chant-text-index-${node.textIndex}`,
+        key,
+        dangerouslySetInnerHTML: { __html: node.html },
+      });
+    } else if (node?.children) {
+      return (
+        <div
+          key={key}
+          className={classNameWithLang(node, groupTypeMap[node.type])}
+        >
+          {node.children.map?.((node, index) => walkNode(node, index))}
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  return <div className={className}>{walkNode(chant)}</div>;
+};
 
 Chant.displayName = "Chant";
 

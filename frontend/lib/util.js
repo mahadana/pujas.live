@@ -197,3 +197,21 @@ export const translateStrapiError = (error) => {
 
 export const sleep = (time) =>
   new Promise((resolve) => setTimeout(resolve, time));
+
+export const exitFullscreen = () =>
+  setTimeout(async () => {
+    try {
+      await document?.exitFullscreen?.();
+    } catch {
+      //
+    }
+  }, 100);
+
+export const requestFullscreen = () =>
+  (async () => {
+    try {
+      await document.documentElement?.requestFullscreen?.();
+    } catch (error) {
+      //
+    }
+  })();

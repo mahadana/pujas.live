@@ -8,8 +8,8 @@ import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import ZoomInIcon from "@material-ui/icons/ZoomIn";
 import ZoomOutIcon from "@material-ui/icons/ZoomOut";
 
-import ChantingSpeedSlider from "@/components/chanting/ChantingSpeedSlider";
-import ChantingVerseSlider from "@/components/chanting/ChantingVerseSlider";
+import ChantActiveSlider from "@/components/chanting/ChantActiveSlider";
+import ChantSpeedSlider from "@/components/chanting/ChantSpeedSlider";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,60 +41,50 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ChantingControls = ({
-  goBack,
-  maximize,
-  playing,
-  setMaximize,
-  setPlaying,
-  setSpeed,
-  setThemeType,
-  setVerseIndex,
-  speed,
-  themeType,
-  verseCount,
-  verseIndex,
-}) => {
+const ChantControls = ({ dispatch, state, ...props }) => {
   const classes = useStyles();
-  const onClickMaximize = () => setMaximize(!maximize);
-  const onClickPlaying = () => {
-    if (verseIndex > verseCount && !playing) {
-      setVerseIndex(0);
-    }
-    setPlaying(!playing);
-  };
-  const onClickThemeType = () =>
-    setThemeType(themeType === "light" ? "dark" : "light");
+  const onClickBack = () => dispatch({ type: "VIEW_TOC" });
+  const onClickMaximize = () => dispatch({ type: "TOGGLE_MAXIMIZE" });
+  const onClickPlaying = () => dispatch({ type: "TOGGLE_PLAYING" });
+  const onClickThemeType = () => dispatch({ type: "TOGGLE_THEME_TYPE" });
+  const setActiveIndex = (activeIndex) =>
+    dispatch({ type: "SET_ACTIVE_INDEX", activeIndex });
+  const setSpeed = (speed) => dispatch({ type: "SET_SPEED", speed });
+
   return (
-    <div className={classes.root}>
-      <IconButton color="primary" onClick={goBack} size="small">
+    <div {...props} className={classes.root}>
+      <IconButton color="primary" onClick={onClickBack} size="small">
         <ArrowBackIcon />
       </IconButton>
       <IconButton color="primary" onClick={onClickPlaying} size="small">
-        {playing ? (
+        {state.playing ? (
           <PauseCircleOutlineIcon color="secondary" />
         ) : (
           <PlayCircleOutlineIcon />
         )}
       </IconButton>
       <IconButton color="primary" onClick={onClickMaximize} size="small">
-        {maximize ? <ZoomOutIcon /> : <ZoomInIcon />}
+        {state.maximize ? <ZoomOutIcon /> : <ZoomInIcon />}
       </IconButton>
       <IconButton color="primary" onClick={onClickThemeType} size="small">
-        {themeType === "light" ? <Brightness4Icon /> : <Brightness5Icon />}
+        {state.themeType === "light" ? (
+          <Brightness4Icon />
+        ) : (
+          <Brightness5Icon />
+        )}
       </IconButton>
       <div className={classes.verseSlider}>
-        <ChantingVerseSlider
-          setVerseIndex={setVerseIndex}
-          verseCount={verseCount}
-          verseIndex={verseIndex}
+        <ChantActiveSlider
+          textCount={state.chant?.textCount}
+          activeIndex={state.activeIndex}
+          setActiveIndex={setActiveIndex}
         />
       </div>
       <div className={classes.speedSlider}>
-        <ChantingSpeedSlider setSpeed={setSpeed} speed={speed} />
+        <ChantSpeedSlider setSpeed={setSpeed} speed={state.speed} />
       </div>
     </div>
   );
 };
 
-export default ChantingControls;
+export default ChantControls;

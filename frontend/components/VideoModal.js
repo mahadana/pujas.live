@@ -7,6 +7,7 @@ import { useEffect } from "react";
 
 import Title from "@/components/Title";
 import VideoPlayer from "@/components/VideoPlayer";
+import { exitFullscreen, requestFullscreen } from "@/lib/util";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -18,24 +19,6 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
 }));
-
-const requestFullscreen = () =>
-  (async () => {
-    try {
-      document.documentElement?.requestFullscreen?.();
-    } catch (error) {
-      //
-    }
-  })();
-
-const exitFullscreen = () =>
-  setTimeout(async () => {
-    try {
-      await document?.exitFullscreen?.();
-    } catch {
-      //
-    }
-  }, 100);
 
 const VideoModal = ({ children }) => {
   const router = useRouter();
