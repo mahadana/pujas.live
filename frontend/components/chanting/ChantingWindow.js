@@ -5,13 +5,13 @@ import {
   ThemeProvider,
 } from "@material-ui/core/styles";
 import escape from "lodash/escape";
-import { useEffect, useReducer, useRef } from "react";
+import { useEffect, useReducer } from "react";
 import { useIdleTimer } from "react-idle-timer";
 
 import Chant from "@/components/chanting/Chant";
 import ChantControls from "@/components/chanting/ChantControls";
 import ChantingToc from "@/components/chanting/ChantingToc";
-import ChantScroll from "@/components/chanting/ChantScroller";
+import ChantScroller from "@/components/chanting/ChantScroller";
 import darkTheme from "@/lib/theme";
 import { exitFullscreen, requestFullscreen } from "@/lib/util";
 
@@ -53,10 +53,12 @@ const initialize = ({ mobile }) => ({
   activeIndex: "START",
   chant: null,
   controls: false,
+  highlight: false,
   maximize: false,
   mobile,
   playing: false,
   speed: 1.0,
+  textZoom: false,
   themeType: "light",
   view: "TOC",
 });
@@ -96,19 +98,38 @@ const reducer = (state, action) => {
       return { ...state, controls: true };
     case "STOP_PLAYING":
       return { ...state, playing: false };
+    case "TOGGLE_HIGHLIGHT":
+      return { ...state, highlight: !state.highlight };
     case "TOGGLE_MAXIMIZE":
       return { ...state, maximize: !state.maximize };
-    case "TOGGLE_PLAYING":
-      return { ...state, playing: !state.playing };
+    case "TOGGLE_PLAYING": {
+      if (!state.playing && state.activeIndex === "END") {
+        return { ...state, activeIndex: "START", playing: true };
+      } else {
+        return { ...state, playing: !state.playing };
+      }
+    }
+    case "TOGGLE_TEXT_ZOOM":
+      return { ...state, textZoom: !state.textZoom };
     case "TOGGLE_THEME_TYPE":
       return {
         ...state,
         themeType: state.themeType === "light" ? "dark" : "light",
       };
     case "VIEW_CHANT":
-      return { ...state, view: "CHANT", playing: false, controls: true };
+      return {
+        ...state,
+        playing: true,
+        controls: true,
+        view: "CHANT",
+      };
     case "VIEW_TOC":
-      return { ...state, view: "TOC", playing: false, controls: false };
+      return {
+        ...state,
+        playing: false,
+        controls: false,
+        view: "TOC",
+      };
     default:
       throw new Error(`Unknown action type ${action.type}`);
   }
@@ -136,11 +157,18 @@ const addChantMeta = (chant) => {
       if (node.start) startIndex = textIndex;
       node.textIndex = textIndex++;
       [node.wordCount, node.charCount] = getWordCharCount(node.html);
-      if (node?.type === "verse") {
-        // Guess seconds per char: 0.1, seconds per word: 1.0
-        node.duration = (0.1 * node.charCount + 1.0 * node.wordCount) / 2;
+      if (node.type === "verse") {
+        if (node.lang == "pi" || String(node.html).match(/[āīūḷṇṃḍṭṅñ]/)) {
+          node.duration = 0.7 + 0.14 * node.charCount;
+        } else {
+          node.duration = 1.2 + 0.07 * node.charCount;
+        }
       } else {
-        node.duration = 1;
+        if (node.html.match(/^bow$/i)) {
+          node.duration = 2;
+        } else {
+          node.duration = 1;
+        }
       }
       textNodeMap.push(node);
     } else if (node?.children) {
@@ -156,7 +184,6 @@ const addChantMeta = (chant) => {
 };
 
 const getChantFromToc = ({ chants, chantSet = [], link, title }) => {
-  console.log(title);
   const chant = chantSet
     .map((chantId) => chants.chantMap[chantId])
     .filter((chant) => chant)
@@ -198,13 +225,17 @@ const ChantingWindowInner = ({ chants, dispatch, state, toc }) => {
 
   return (
     <div className={classes.root}>
-      <Fade in={state.controls}>
+      <Fade in={state.controls} unmountOnExit>
         <ChantControls dispatch={dispatch} state={state} />
       </Fade>
       {state.view === "CHANT" && (
-        <ChantScroll activeIndex={state.activeIndex}>
-          <Chant activeIndex={state.activeIndex} chant={state.chant} />
-        </ChantScroll>
+        <ChantScroller dispatch={dispatch} state={state}>
+          <Chant
+            chant={state.chant}
+            highlight={state.highlight}
+            textZoom={state.textZoom}
+          />
+        </ChantScroller>
       )}
       {state.view === "TOC" && (
         <ChantingToc chant={state.chant} toc={toc} onOpen={onTocOpen} />
@@ -219,7 +250,6 @@ const ChantingWindow = ({
   ...props
 }) => {
   const [state, dispatch] = useReducer(reducer, { mobile }, initialize);
-  const timeRef = useRef();
 
   const { reset: resetIdleTimer } = useIdleTimer({
     debounce: 500,
@@ -247,35 +277,6 @@ const ChantingWindow = ({
       }
     }
   }, [allowFullscreen, state.maximize, state.mobile]);
-
-  const clearTimeRef = () => {
-    if (timeRef.current) {
-      clearInterval(timeRef.current);
-      timeRef.current = null;
-    }
-  };
-
-  useEffect(() => clearTimeRef, []);
-
-  useEffect(() => {
-    const { activeIndex, chant, playing, speed } = state;
-    if (playing) {
-      if (activeIndex === "END") {
-        clearTimeRef();
-        dispatch({ type: "STOP_PLAYING" });
-      } else if (!timeRef.current) {
-        // Use 1 second if we don't know...
-        const duration = chant.textNodeMap?.[activeIndex]?.duration || 1;
-        console.log(`${activeIndex} waiting ${duration.toFixed(1)}s`);
-        timeRef.current = setTimeout(() => {
-          timeRef.current = null;
-          dispatch({ type: "INCREMENT_ACTIVE_INDEX" });
-        }, (1000 * duration) / speed);
-      }
-    } else {
-      clearTimeRef();
-    }
-  }, [state.activeIndex, state.chant, state.playing, state.speed]);
 
   return (
     <ThemeProvider theme={state.themeType === "dark" ? darkTheme : lightTheme}>

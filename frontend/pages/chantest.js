@@ -1,3 +1,6 @@
+import Backdrop from "@material-ui/core/Backdrop";
+import Fade from "@material-ui/core/Fade";
+import Modal from "@material-ui/core/Modal";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Head from "next/head";
 import { useEffect, useState } from "react";
@@ -51,6 +54,7 @@ const fetchData = async () => {
 const ChanTestPage = () => {
   const mobile = !useMediaQuery((theme) => theme.breakpoints.up("sm"));
   const [data, setData] = useState(null);
+  const [open, setOpen] = useState(true);
 
   useEffect(() => {
     if (!data) {
@@ -60,6 +64,10 @@ const ChanTestPage = () => {
     }
   }, [data]);
 
+  const onClose = () => {
+    setOpen(false);
+  };
+
   return (
     <>
       <Head>
@@ -67,7 +75,21 @@ const ChanTestPage = () => {
       </Head>
       <PageLayout queryResult={{ data, loading: !data }}>
         {({ data: { chants, toc } }) => (
-          <ChantingWindow chants={chants} mobile={mobile} toc={toc} />
+          <Modal
+            open={open}
+            onClose={onClose}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+            <Fade in={open}>
+              <div>
+                <ChantingWindow chants={chants} mobile={mobile} toc={toc} />
+              </div>
+            </Fade>
+          </Modal>
         )}
       </PageLayout>
     </>
