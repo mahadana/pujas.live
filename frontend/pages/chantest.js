@@ -11,28 +11,17 @@ import PageLayout from "@/components/PageLayout";
 const fetchData = async () => {
   // Remote site needs header "Access-Control-Allow-Origin *"" if serving
   // from another domain;
-  const [rawChants, toc] = await Promise.all(
-    (
-      await Promise.all([
-        fetch(
-          "https://vjagaro.github.io/community-chanting-book/dist/chanting.json"
-        ),
-        fetch(
-          "https://vjagaro.github.io/community-chanting-book/dist/toc.json"
-        ),
-      ])
-    ).map((response) => response.json())
-  );
+  const data = await (await fetch("https://vjagaro.github.io/ccb.json")).json();
 
-  const chants = {
-    chantMap: rawChants.reduce((map, chant) => {
+  data.chants = {
+    chantMap: data.chants.reduce((map, chant) => {
       map[chant.id] = chant;
       return map;
     }, {}),
-    chants: rawChants,
+    chants: data.chants,
   };
 
-  toc.forEach((volume) => {
+  data.toc.forEach((volume) => {
     volume.parts.forEach((part) => {
       if (volume.volume == 1 && (part.part == 1 || part.part == 2)) {
         part.chantSet.pop();
@@ -48,7 +37,7 @@ const fetchData = async () => {
     });
   });
 
-  return { chants, toc };
+  return data;
 };
 
 const ChanTestPage = () => {
