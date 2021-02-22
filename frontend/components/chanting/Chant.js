@@ -4,35 +4,53 @@ import { createElement, useMemo } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: ({ highlight, textZoom }) => ({
-    maxWidth: "29.2em",
+    maxWidth: "32.5em",
     margin: "0 auto",
     color: theme.palette.text.primary,
     fontSize: textZoom ? "1.8rem" : "1.25rem",
     fontFamily: '"Helvetica", sans-serif',
-    "& h1, & h2": {
-      margin: "0.5em 0",
+    [theme.breakpoints.up("sm")]: {
+      marginTop: "4em",
+      marginBottom: "10em",
+    },
+    "& h1": {
+      margin: "0 0",
+      padding: "0.25em 0.625em",
+      fontSize: "1.6em",
+    },
+    "& h2": {
+      margin: "0.25em 0",
+      padding: "0.25em 0.7143em",
+      fontSize: "1.4em",
+    },
+    "& h3": {
+      margin: "0.25em 0",
+      padding: "0.25em 0.7692em",
+      fontSize: "1.3em",
     },
     "& h2, & h3": {
+      paddingBottom: 0,
       borderBottom: `1px solid ${theme.palette.text.secondary}`,
-      color: theme.palette.text.secondary,
+      marginBottom: "1em",
     },
     "& h2:not(:first-child), & h3:not(:first-child)": {
       marginTop: "1em",
     },
     "& .chant-group": {
-      margin: "1em 0",
+      margin: "0.8em 0",
     },
     "& .chant-verse": {
-      lineHeight: "1.8em",
+      padding: "0.1em 1em 0.2em",
+      lineHeight: "1.6em",
       fontFamily: "Gentium Incantation",
-      transition: "background-color 1s cubic-bezier(0,1,.7,1)",
+      transition: "background-color 1s ease-out",
       "&.chant-active": {
         backgroundColor: highlight ? "rgba(255, 255, 0, 0.4)" : "inherit",
       },
     },
     "&.chant-lang-mixed": {
-      ["& .chant-group.chant-lang-en, & .chant-verse.chant-lang-en"]: {
-        paddingLeft: "1.8em",
+      ["& .chant-group.chant-lang-en .chant-verse, & .chant-verse.chant-lang-en"]: {
+        paddingLeft: "2.95em",
         fontStyle: "italic",
       },
       ["& .chant-verse.chant-lang-en"]: {
@@ -40,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
       },
     },
     "& .chant-group .chant-verse.chant-leader": {
-      paddingLeft: "1.8em",
+      paddingLeft: "2.95em",
     },
     "& .chant-grid": {
       display: "table",
@@ -49,18 +67,14 @@ const useStyles = makeStyles((theme) => ({
         display: "table-row",
         "& .chant-verse": {
           display: "table-cell",
-          padding: "0.25em 0.5em",
-          // paddingTop: "0.25em",
-          // paddingBottom: "0.25em",
+          paddingLeft: "0.5em",
+          paddingRight: "0.5em",
         },
-      },
-      "& .chant-row .chant-verse:not(:last-child)": {
-        // paddingRight: "1em",
       },
     },
     "& aside": {
-      marginTop: "1.5em",
-      paddingLeft: "2.9em",
+      marginTop: "0.25em",
+      paddingLeft: "4.3em",
       fontSize: "0.8em",
       lineHeight: "1.5em",
       fontWeight: "bold",
