@@ -225,7 +225,7 @@ const ChantingWindowInner = ({ chants, dispatch, state, toc }) => {
 
   return (
     <div className={classes.root}>
-      <Fade in={state.controls} unmountOnExit>
+      <Fade in={state.controls}>
         <ChantControls dispatch={dispatch} state={state} />
       </Fade>
       {state.view === "CHANT" && (

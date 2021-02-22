@@ -1,20 +1,19 @@
 import { makeStyles } from "@material-ui/core/styles";
 import clamp from "lodash/clamp";
+import isNil from "lodash/isNil";
 import _isFinite from "lodash/isFinite";
 import sum from "lodash/sum";
 import throttle from "lodash/throttle";
 import { useEffect, useRef } from "react";
 
 const BREAK_FACTOR = 15;
-const HUMAN_SCROLL_TIMEOUT = 6; // 0.1 seconds
-const HUMAN_SCROLL_THRESHOLD = 10;
+const HUMAN_SCROLL_TIMEOUT = 12; // 0.2 seconds
 const MIN_ACCELERATION = -0.1;
 const MAX_ACCELERATION = 0.1;
 const OUTSIDE_HEIGHT = 200;
-const START_VELOCITY = 0.1;
 const MIN_VELOCITY = -6; // 6*60 = -360 px/s
 const MAX_VELOCITY = 6; // 6*60 = 360 px/s
-const MID_VIEW_RATIO = 0.4; // Middl'ish
+const MID_VIEW_RATIO = 0.5; // Middl'ish
 
 const DEFAULT_SCROLL_DATA = {
   active: null,
@@ -23,9 +22,10 @@ const DEFAULT_SCROLL_DATA = {
   animationRequest: null,
   delta: 0,
   dispatch: null,
+  ignoreNextScroll: false,
   skipTop: null,
   next: null,
-  humanTimeout: 0,
+  humanScrollTimeout: 0,
   scroll: null,
   state: null,
   velocity: 0,
@@ -38,14 +38,46 @@ const useStyles = makeStyles((theme) => ({
     right: 0,
     width: "100%",
     height: "100%",
-    padding: "1rem 2rem",
     overflow: "hidden",
     overflowY: "scroll",
+    "&:focus": {
+      outline: "none",
+    },
+    [theme.breakpoints.up("sm")]: {
+      padding: "1rem",
+    },
   },
 }));
 
-// const scrollLog = throttle(console.log, 500);
 const scrollError = throttle(console.error, 5000);
+// const scrollLog = throttle(console.log, 500);
+
+// let timeMax, timeMin, timeSum, timeCount;
+
+// const resetPerformanceTest = () => {
+//   timeMax = 0;
+//   timeMin = 100000;
+//   timeSum = 0;
+//   timeCount = 0;
+// };
+
+// resetPerformanceTest();
+
+// const reportAndResetPerformance = throttle(() => {
+//   scrollLog({ timeAvg: timeSum / timeCount, timeMax, timeMin });
+//   resetPerformanceTest();
+// }, 1000);
+
+// const performanceTest = (callback) => {
+//   const start = performance.now();
+//   callback();
+//   const time = performance.now() - start;
+//   timeSum += time;
+//   timeCount += 1;
+//   timeMax = Math.max(time, timeMax);
+//   timeMin = Math.min(time, timeMin);
+//   reportAndResetPerformance();
+// };
 
 const getTextIndexInView = (el, textCount) => {
   let left = 0;
@@ -83,9 +115,44 @@ const getNodeData = (chant, index) => {
   }
 };
 
+const scrollReset = (data) => {
+  const { active, activeComplete, activeIndex } = data;
+  if (active) active.el.classList.remove("chant-active");
+  data.active = null;
+  data.activeComplete = null;
+  data.activeIndex = null;
+  data.next = null;
+  updateActive(data);
+  if (
+    !isNil(data.activeIndex) &&
+    !isNil(activeComplete) &&
+    data.activeIndex === activeIndex
+  ) {
+    data.activeComplete = activeComplete;
+  }
+  data.scroll.scrollTop = null;
+};
+
+const handleHumanScroll = (data) => {
+  const { dispatch, scroll, state } = data;
+  data.humanScrollTimeout -= 1;
+  if (data.humanScrollTimeout <= 0) {
+    const activeIndex = getTextIndexInView(scroll.el, state.chant.textCount);
+    if (activeIndex) dispatch?.({ type: "SET_ACTIVE_INDEX", activeIndex });
+    scroll.scrollTop = null;
+    data.velocity = 0;
+    data.delta = 0;
+    data.humanScrollTimeout = 0;
+  }
+};
+
 const updateScroll = (data) => {
   const { scroll } = data;
-  scroll.scrollTop = scroll.el.scrollTop;
+  if (!_isFinite(scroll.scrollTop)) {
+    // Only call scrollTop when needed because it forces a reflow. For a large
+    // element, this will cause hiccups during scrolling.
+    scroll.scrollTop = scroll.el.scrollTop;
+  }
   scroll.clientHeight = scroll.el.clientHeight;
 };
 
@@ -125,36 +192,11 @@ const updateNext = (data) => {
   data.next = next;
 };
 
-const checkHumanScroll = (data) => {
-  const { dispatch, scroll, state } = data;
-  const lastScrollTop = scroll.lastScrollTop;
-  const scrollTop = scroll.scrollTop;
-  if (
-    _isFinite(lastScrollTop) &&
-    Math.abs(scrollTop - lastScrollTop) > HUMAN_SCROLL_THRESHOLD
-  ) {
-    console.log("human scroll detected");
-    data.humanTimeout = HUMAN_SCROLL_TIMEOUT;
-    data.velocity = state?.playing ? START_VELOCITY : 0;
-    data.acceleration = 0;
-  } else if (data.humanTimeout > 0) {
-    // Triggered from previous cycle
-    if (state?.chant && data.humanTimeout == HUMAN_SCROLL_TIMEOUT) {
-      // TODO: Set the durationTimeout dependent on the percentage up or down
-      // the particular node.
-      const activeIndex = getTextIndexInView(scroll.el, state.chant.textCount);
-      if (activeIndex) dispatch?.({ type: "SET_ACTIVE_INDEX", activeIndex });
-    }
-    data.humanTimeout -= 1;
-  }
-  scroll.lastScrollTop = scrollTop;
-};
-
 const updateVelocity = (data) => {
-  const { active, activeComplete, next, humanTimeout, scroll, state } = data;
+  const { active, activeComplete, next, scroll, state } = data;
 
   if (!active || !state?.chant || !state?.playing) {
-    data.velocity = data.velocity / 2;
+    data.velocity = data.velocity * 0.99;
     return;
   }
 
@@ -181,9 +223,9 @@ const updateVelocity = (data) => {
   const minDiffTop = -(midHeight + OUTSIDE_HEIGHT);
   const maxDiffTop = scroll.clientHeight - (midHeight - OUTSIDE_HEIGHT);
 
-  if (!humanTimeout && (diffTop < minDiffTop || maxDiffTop < diffTop)) {
+  if (diffTop < minDiffTop || maxDiffTop < diffTop) {
     data.delta = 0;
-    data.velocity = START_VELOCITY;
+    data.velocity = 0;
     data.skipTop = idealTop;
     return;
   }
@@ -213,48 +255,93 @@ const executeScroll = (data) => {
   if (_isFinite(skipTop)) {
     const top = skipTop;
     data.skipTop = null;
-    scroll.lastScrollTop = null;
+    data.ignoreNextScroll = true;
     scroll.el.scrollTo({ top, left: 0 });
+    scroll.scrollTop = top;
   } else {
     const delta = data.delta + velocity;
     const jump = parseInt(delta);
     const top = scroll.scrollTop + jump;
-    scroll.lastScrollTop = top;
     data.delta = delta - jump;
     if (Math.abs(jump) > 0) {
+      data.ignoreNextScroll = true;
       scroll.el.scrollTo({ top, left: 0 });
+      scroll.scrollTop = top;
     }
   }
 };
 
 const incrementActive = (data) => {
-  const { active, activeComplete, dispatch, state } = data;
+  const { active, activeComplete, activeIndex, dispatch, state } = data;
   if (!state?.playing) return;
-  if (activeComplete >= 1) {
-    dispatch?.({ type: "INCREMENT_ACTIVE_INDEX" });
-    data.activeComplete = null;
-  } else if (active && _isFinite(activeComplete)) {
-    data.activeComplete += 1 / (60 * active.duration);
-  } else {
-    // START, END
-    data.activeComplete = 1;
+
+  // Instead of using dispatch, we can explicitly set state.activeIndex. This
+  // will prevent React from firing and occasionally causing scrolling stutters.
+  //
+  // This will not fire any dependencies on updating the state, but this is okay
+  // for our purposes.
+  //
+  // In the next loop, data.activeIndex will get updated based on
+  // state.activeIndex.
+
+  if (activeIndex === "START") {
+    if (!isNil(activeComplete)) {
+      state.activeIndex = 0;
+      data.activeComplete = null;
+    }
+  } else if (activeIndex === "END") {
+    if (!isNil(activeComplete)) {
+      dispatch({ type: "SET_ACTIVE_INDEX", activeIndex: "END" });
+      dispatch({ type: "STOP_PLAYING" });
+      data.activeComplete = null;
+    }
+  } else if (_isFinite(activeIndex) && _isFinite(activeComplete) && active) {
+    if (activeComplete >= 1) {
+      if (activeIndex >= state.chant.textCount - 1) {
+        dispatch({ type: "SET_ACTIVE_INDEX", activeIndex: "END" });
+        dispatch({ type: "STOP_PLAYING" });
+      } else {
+        state.activeIndex += 1;
+      }
+      data.activeComplete = null;
+    } else {
+      const speed = state?.speed || 1;
+      data.activeComplete += speed / (60 * active.duration);
+    }
   }
 };
 
 const scrollLoop = (data) => {
   data.animationRequest = null;
   try {
-    updateScroll(data);
-    updateActive(data);
-    updateNext(data);
-    checkHumanScroll(data);
-    updateVelocity(data);
-    executeScroll(data);
-    incrementActive(data);
+    // performanceTest(() => {
+    if (data.humanScrollTimeout > 0) {
+      handleHumanScroll(data);
+    } else {
+      updateScroll(data);
+      updateActive(data);
+      updateNext(data);
+      updateVelocity(data);
+      executeScroll(data);
+      incrementActive(data);
+    }
+    // });
   } catch (error) {
     scrollError(error);
   }
   data.animationRequest = window.requestAnimationFrame(() => scrollLoop(data));
+};
+
+const onScrollEvent = (data) => {
+  if (data.ignoreNextScroll) {
+    data.ignoreNextScroll = false;
+  } else {
+    data.humanScrollTimeout = HUMAN_SCROLL_TIMEOUT;
+  }
+};
+
+const onKeyDownEvent = (data) => {
+  data.humanScrollTimeout = HUMAN_SCROLL_TIMEOUT;
 };
 
 const ChantScroller = ({ children, dispatch, state }) => {
@@ -270,25 +357,33 @@ const ChantScroller = ({ children, dispatch, state }) => {
     } else {
       data = scrollRef.current = { ...DEFAULT_SCROLL_DATA, scroll };
     }
+    const localOnScrollEvent = () => onScrollEvent(data);
+    const localOnKeyDownEvent = () => onKeyDownEvent(data);
+    scroll.el.addEventListener("scroll", localOnScrollEvent);
+    scroll.el.addEventListener("keydown", localOnKeyDownEvent);
     scrollLoop(data);
     return () => {
       if (data.animationRequest) {
         window.cancelAnimationFrame(data.animationRequest);
       }
+      scroll.el.removeEventListener("scroll", localOnScrollEvent);
+      scroll.el.removeEventListener("keydown", localOnKeyDownEvent);
     };
   }, []);
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.dispatch = dispatch;
-      scrollRef.current.state = state;
+    const { current: data } = scrollRef;
+    if (data) {
+      data.dispatch = dispatch;
+      data.state = state;
+      scrollReset(data);
     } else {
       scrollRef.current = { ...DEFAULT_SCROLL_DATA, dispatch, state };
     }
   }, [dispatch, state]);
 
   return (
-    <div className={classes.root} ref={domRef}>
+    <div className={classes.root} ref={domRef} tabIndex="0">
       {children}
     </div>
   );
