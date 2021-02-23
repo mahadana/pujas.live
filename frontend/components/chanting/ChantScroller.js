@@ -14,6 +14,7 @@ const OUTSIDE_HEIGHT = 200;
 const MIN_VELOCITY = -6; // 6*60 = -360 px/s
 const MAX_VELOCITY = 6; // 6*60 = 360 px/s
 const MID_VIEW_RATIO = 0.5; // Middl'ish
+const END_DISTANCE_THRESHOLD = 100; // px
 
 const DEFAULT_SCROLL_DATA = {
   active: null,
@@ -131,6 +132,7 @@ const scrollReset = (data) => {
     data.activeComplete = activeComplete;
   }
   data.scroll.scrollTop = null;
+  data.scroll.scrollHeight = null;
 };
 
 const handleHumanScroll = (data) => {
@@ -140,6 +142,7 @@ const handleHumanScroll = (data) => {
     const activeIndex = getTextIndexInView(scroll.el, state.chant.textCount);
     if (activeIndex) dispatch?.({ type: "SET_ACTIVE_INDEX", activeIndex });
     scroll.scrollTop = null;
+    scroll.scrollHeight = null;
     data.velocity = 0;
     data.delta = 0;
     data.humanScrollTimeout = 0;
@@ -152,6 +155,7 @@ const updateScroll = (data) => {
     // Only call scrollTop when needed because it forces a reflow. For a large
     // element, this will cause hiccups during scrolling.
     scroll.scrollTop = scroll.el.scrollTop;
+    scroll.scrollHeight = scroll.el.scrollHeight;
   }
   scroll.clientHeight = scroll.el.clientHeight;
 };
@@ -212,7 +216,15 @@ const updateVelocity = (data) => {
   }
 
   const speed = state?.speed || 1;
-  const idealVelocity = (speed * targetHeight) / (targetDuration * 60);
+  let idealVelocity = (speed * targetHeight) / (targetDuration * 60);
+
+  const endDistance =
+    scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight;
+  if (endDistance < END_DISTANCE_THRESHOLD) {
+    idealVelocity =
+      idealVelocity *
+      Math.atan((Math.PI / 2) * (endDistance / END_DISTANCE_THRESHOLD)) ** 2;
+  }
 
   const midHeight = parseInt(scroll.clientHeight * MID_VIEW_RATIO);
   const activeCompleteHeight = parseInt(
