@@ -8,10 +8,13 @@ import { useEffect, useState } from "react";
 import ChantingWindow from "@/components/chanting/ChantingWindow";
 import PageLayout from "@/components/PageLayout";
 
+const CCB_URL =
+  "https://pujas-live.sfo3.digitaloceanspaces.com/chantest/ccb.json";
+
 const fetchData = async () => {
   // Remote site needs header "Access-Control-Allow-Origin *"" if serving
   // from another domain;
-  const data = await (await fetch("https://vjagaro.github.io/ccb.json")).json();
+  const data = await (await fetch(CCB_URL)).json();
 
   data.chants = {
     chantMap: data.chants.reduce((map, chant) => {
@@ -28,6 +31,8 @@ const fetchData = async () => {
         part.chants = part.chants.slice(-1);
       } else if (volume.volume == 2 && part.part == 3) {
         part.chants = [];
+      } else if (volume.volume == 1 && part.part == 4) {
+        part.chants.shift(); // Remove Añjali
       }
       part.chants.forEach((chant) => {
         if (!chant.chantSet && !(volume.volume == 2 && part.part == 2)) {
