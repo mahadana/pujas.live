@@ -117,7 +117,6 @@ const reducer = (state, action) => {
         themeType: state.themeType === "light" ? "dark" : "light",
       };
     case "VIEW_CHANT":
-      console.log(state.chant);
       return {
         ...state,
         // TODO handle raw chants explicitly by not showing chant window
