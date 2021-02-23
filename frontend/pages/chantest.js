@@ -2,9 +2,9 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Modal from "@material-ui/core/Modal";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import Head from "next/head";
 import { useEffect, useState } from "react";
 
+import ChantFontStyle from "@/components/chanting/ChantFontStyle";
 import ChantingWindow from "@/components/chanting/ChantingWindow";
 import PageLayout from "@/components/PageLayout";
 
@@ -64,9 +64,7 @@ const ChanTestPage = () => {
 
   return (
     <>
-      <Head>
-        <link href="/fonts/style.css" rel="stylesheet" />
-      </Head>
+      <ChantFontStyle />
       <PageLayout queryResult={{ data, loading: !data }}>
         {({ data: { chants, toc } }) => (
           <Modal

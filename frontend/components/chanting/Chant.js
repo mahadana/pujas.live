@@ -13,25 +13,28 @@ const useStyles = makeStyles((theme) => ({
       marginTop: "4em",
       marginBottom: "10em",
     },
+    "& h1, & h2, & h3, & h4, & h5, & h6": {
+      fontFamily: "Ubuntu",
+      letterSpacing: "0.01em",
+    },
     "& h1": {
       margin: "0 0",
-      padding: "0.25em 0.625em",
+      padding: "0.25em 0.55em",
       fontSize: "1.6em",
+      fontWeight: 300,
     },
     "& h2": {
-      margin: "0.25em 0",
-      padding: "0.25em 0.7143em",
+      margin: "0.25em 0 1em",
+      padding: "0.25em 0.65em 0",
+      borderBottom: `1px solid ${theme.palette.text.secondary}`,
       fontSize: "1.4em",
+      fontWeight: 500,
     },
     "& h3": {
       margin: "0.25em 0",
-      padding: "0.25em 0.7692em",
-      fontSize: "1.3em",
-    },
-    "& h2, & h3": {
-      paddingBottom: 0,
-      borderBottom: `1px solid ${theme.palette.text.secondary}`,
-      marginBottom: "1em",
+      padding: "0.25em 0.92em",
+      fontSize: "1.1em",
+      fontWeight: 500,
     },
     "& h2:not(:first-child), & h3:not(:first-child)": {
       marginTop: "1em",
@@ -57,12 +60,16 @@ const useStyles = makeStyles((theme) => ({
         fontStyle: "italic",
       },
     },
-    "& .chant-group .chant-verse.chant-leader": {
+    "& .chant-group.chant-leader, & .chant-group .chant-verse.chant-leader": {
       paddingLeft: "2.95em",
+      paddingRight: "2.95em",
     },
     "& .chant-grid": {
+      padding: "0 0.5em",
       display: "table",
-      margin: "1em auto",
+      "&.chant-center": {
+        margin: "1em auto",
+      },
       "& .chant-row": {
         display: "table-row",
         "& .chant-verse": {
@@ -75,12 +82,23 @@ const useStyles = makeStyles((theme) => ({
     "& aside": {
       marginTop: "0.25em",
       paddingLeft: "4.3em",
-      fontSize: "0.8em",
-      lineHeight: "1.5em",
+      paddingRight: "2em",
+      fontFamily: "Alegreya X Sans SC",
       fontWeight: "bold",
+      fontSize: "0.9em",
+      letterSpacing: "0.03em",
+      lineHeight: "1.5em",
       color: theme.palette.text.secondary,
-      textTransform: "uppercase",
       textIndent: "-0.6em",
+      "&.chant-center": {
+        paddingLeft: "2em",
+        textAlign: "center",
+      },
+      "&.chant-right": {
+        paddingLeft: "2em",
+        paddingRight: "1em",
+        textAlign: "right",
+      },
       "&:before": {
         content: '"[ "',
       },
@@ -98,6 +116,8 @@ const classNameWithLang = (node, className) =>
   clsx(
     className,
     node?.lang && `chant-lang-${node.lang}`,
+    node?.center && "chant-center",
+    node?.right && "chant-right",
     node?.leader && "chant-leader"
   );
 
@@ -111,7 +131,7 @@ const walkNode = (node, key) => {
   if (node?.html) {
     const tag = node.type !== "verse" ? node.type : "div";
     const className = clsx(
-      node.type === "verse" && classNameWithLang(node, "chant-verse"),
+      classNameWithLang(node, node.type === "verse" && "chant-verse"),
       node.start && "chant-start"
     );
     return createElement(tag, {
