@@ -117,9 +117,13 @@ const reducer = (state, action) => {
         themeType: state.themeType === "light" ? "dark" : "light",
       };
     case "VIEW_CHANT":
+      console.log(state.chant);
       return {
         ...state,
-        playing: true,
+        // TODO handle raw chants explicitly by not showing chant window
+        playing: !String(state.chant?.title).match(
+          /^(Appendix|Pāli Phonetics|Glossary)/
+        ),
         controls: true,
         view: "CHANT",
       };
@@ -154,6 +158,7 @@ const addChantMeta = (chant) => {
 
   const walkNode = (node) => {
     if (node?.html) {
+      if (node.type === "raw") return;
       if (node.start) startIndex = textIndex;
       node.textIndex = textIndex++;
       [node.wordCount, node.charCount] = getWordCharCount(node.html);
@@ -194,12 +199,19 @@ const getChantFromToc = ({ chants, chantSet = [], link, title }) => {
           start: chant.id === link,
           html: escape(chant.title),
         });
-        chant.children.forEach((node) => {
-          if (String(node?.type).match(/^h\d$/)) {
-            node = { ...node, type: "h3" };
-          }
-          combined.children.push(node);
-        });
+        if (chant.type === "raw") {
+          combined.children.push({
+            type: "raw",
+            html: chant.html,
+          });
+        } else {
+          chant.children.forEach((node) => {
+            if (String(node?.type).match(/^h\d$/)) {
+              node = { ...node, type: "h3" };
+            }
+            combined.children.push(node);
+          });
+        }
         combined.lang = combined.lang
           ? combined.lang === chant.lang
             ? chant.lang
@@ -209,7 +221,7 @@ const getChantFromToc = ({ chants, chantSet = [], link, title }) => {
       },
       { title, id: "combined", children: [{ type: "h1", html: escape(title) }] }
     );
-  return chant.children.length > 0 ? addChantMeta(chant) : null;
+  return chant.children?.length > 0 ? addChantMeta(chant) : null;
 };
 
 const ChantingWindowInner = ({ chants, dispatch, state, toc }) => {

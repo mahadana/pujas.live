@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "0 auto",
     color: theme.palette.text.primary,
     fontSize: textZoom ? "1.8rem" : "1.25rem",
-    fontFamily: '"Helvetica", sans-serif',
+    fontFamily: "Gentium Incantation",
     [theme.breakpoints.up("sm")]: {
       marginTop: "4em",
       marginBottom: "10em",
@@ -24,20 +24,23 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: 300,
     },
     "& h2": {
-      margin: "0.25em 0 1em",
+      margin: "1em 0",
       padding: "0.25em 0.65em 0",
       borderBottom: `1px solid ${theme.palette.text.secondary}`,
       fontSize: "1.4em",
       fontWeight: 500,
     },
     "& h3": {
-      margin: "0.25em 0",
+      margin: "1em 0 0.25em",
       padding: "0.25em 0.92em",
       fontSize: "1.1em",
       fontWeight: 500,
     },
-    "& h2:not(:first-child), & h3:not(:first-child)": {
-      marginTop: "1em",
+    "& h4": {
+      margin: "1em 0 0.25em",
+      padding: "0.25em 1em",
+      fontSize: "1em",
+      fontWeight: 500,
     },
     "& .chant-group": {
       margin: "0.8em 0",
@@ -45,7 +48,6 @@ const useStyles = makeStyles((theme) => ({
     "& .chant-verse": {
       padding: "0.1em 1em 0.2em",
       lineHeight: "1.6em",
-      fontFamily: "Gentium Incantation",
       transition: "background-color 1s ease-out",
       "&.chant-active": {
         backgroundColor: highlight ? "rgba(255, 255, 0, 0.4)" : "inherit",
@@ -109,6 +111,21 @@ const useStyles = makeStyles((theme) => ({
     "& u": {
       display: "inline-block",
     },
+    "& .chant-raw": {
+      "& p, & dl": {
+        padding: "0.1em 1em 0.2em",
+        margin: ".5em 0",
+      },
+      "& table": {
+        margin: ".5em auto",
+        "& td:not(:last-child)": {
+          paddingRight: "0.1em",
+        },
+      },
+      "& dt": {
+        fontWeight: "bold",
+      },
+    },
   }),
 }));
 
@@ -129,9 +146,11 @@ const groupTypeMap = {
 
 const walkNode = (node, key) => {
   if (node?.html) {
-    const tag = node.type !== "verse" ? node.type : "div";
+    const tag = ["verse", "raw"].indexOf(node.type) < 0 ? node.type : "div";
     const className = clsx(
-      classNameWithLang(node, node.type === "verse" && "chant-verse"),
+      classNameWithLang(node),
+      node.type === "verse" && "chant-verse",
+      node.type === "raw" && "chant-raw",
       node.start && "chant-start"
     );
     return createElement(tag, {
