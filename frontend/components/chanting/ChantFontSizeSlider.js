@@ -14,13 +14,11 @@ const sizedLabel = (label, fontSize) => (
 );
 
 const marks = [
-  { value: 14, label: sizedLabel("Small", 12) },
   { value: DEFAULT_FONT_SIZE, label: "Normal" },
   {
-    value: 28,
+    value: 34,
     label: sizedLabel("Large", 18),
   },
-  { value: 36, label: sizedLabel("Huge", 20) },
 ];
 
 const ChantingFontSizeSlider = ({ dispatch, state }) => {
@@ -35,9 +33,7 @@ const ChantingFontSizeSlider = ({ dispatch, state }) => {
 
   return (
     <>
-      <Typography gutterBottom id="chant-font-size-slider">
-        Text Size
-      </Typography>
+      <Typography id="chant-font-size-slider">Text Size</Typography>
       <Slider
         aria-labelledby="chant-font-size-slider"
         getAriaValueText={valueLabelFormat}

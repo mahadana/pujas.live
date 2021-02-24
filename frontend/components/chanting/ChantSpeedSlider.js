@@ -6,11 +6,9 @@ const MIN_SPEED = 0.3;
 const MAX_SPEED = 3.0;
 
 const marks = [
-  { value: -1.0, label: "🐢" },
-  { value: -0.65, label: "Slow" },
+  { value: -0.8, label: "Slow" },
   { value: 0.0, label: "Normal" },
-  { value: 0.65, label: "Fast" },
-  { value: 1.0, label: "🐇" },
+  { value: 0.8, label: "Fast" },
 ];
 
 const valueToSpeed = (value) => {
@@ -41,9 +39,7 @@ const ChantingSpeedSlider = ({ dispatch, state }) => {
 
   return (
     <>
-      <Typography gutterBottom id="chant-speed-slider">
-        Speed
-      </Typography>
+      <Typography id="chant-speed-slider">Speed</Typography>
       <Slider
         aria-labelledby="chant-speed-slider"
         getAriaValueText={valueLabelFormat}

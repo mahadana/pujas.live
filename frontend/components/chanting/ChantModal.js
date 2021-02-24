@@ -46,7 +46,7 @@ const fetchData = async () => {
 };
 
 const ChantModal = ({ onClose, open }) => {
-  const mobile = !useMediaQuery((theme) => theme.breakpoints.up("sm"));
+  const mobile = useMediaQuery("(max-width: 600px), (max-height: 600px)");
   const [data, setData] = useState(null);
 
   useEffect(() => {

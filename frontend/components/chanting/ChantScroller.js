@@ -33,8 +33,9 @@ const DEFAULT_SCROLL_DATA = {
 };
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  root: ({ state }) => ({
     position: "absolute",
+    cursor: state.idle && state.fullscreen ? "none" : "inherit",
     top: 0,
     right: 0,
     width: "100%",
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("sm")]: {
       padding: "1rem",
     },
-  },
+  }),
 }));
 
 const scrollError = throttle(console.error, 5000);
@@ -364,7 +365,7 @@ const onKeyDownEvent = (data) => {
 const ChantScroller = ({ children, dispatch, state }) => {
   const domRef = useRef();
   const scrollRef = useRef();
-  const classes = useStyles({ highlight: state.highlight });
+  const classes = useStyles({ state });
 
   useEffect(() => {
     let data = scrollRef.current;

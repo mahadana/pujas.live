@@ -9,7 +9,9 @@ import { useEffect, useReducer } from "react";
 import { useIdleTimer } from "react-idle-timer";
 
 import Chant from "@/components/chanting/Chant";
+import ChantCloseButton from "@/components/chanting/ChantCloseButton";
 import ChantControls from "@/components/chanting/ChantControls";
+import ChantDebugButton from "@/components/chanting/ChantDebugButton";
 import ChantToc from "@/components/chanting/ChantToc";
 import ChantScroller from "@/components/chanting/ChantScroller";
 import ChantSettings from "@/components/chanting/ChantSettings";
@@ -29,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     color: theme.palette.text.primary,
     fontSize: "1.25rem",
-    ...(state.maximize || state.mobile
+    ...(state.fullscreen || state.mobile
       ? {
           width: "100%",
           height: "100%",
@@ -57,9 +59,9 @@ const initialize = ({ chants, mobile, toc }) => ({
   close: false,
   debug: false,
   fontSize: 24,
+  fullscreen: false,
   highlight: false,
   idle: false,
-  maximize: false,
   mobile,
   playing: false,
   settings: false,
@@ -71,8 +73,15 @@ const initialize = ({ chants, mobile, toc }) => ({
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "CLOSE":
-      return { ...state, close: true, maximize: false, playing: false };
+    case "CLOSE": {
+      if (state.settings) {
+        return { ...state, settings: false };
+      } else if (state.view === "CHANT") {
+        return { ...state, fullscreen: false, playing: false, view: "TOC" };
+      } else {
+        return { ...state, close: true, fullscreen: false, playing: false };
+      }
+    }
     case "INCREMENT_ACTIVE_INDEX": {
       let { activeIndex, chant, playing } = state;
       if (!chant) {
@@ -115,10 +124,12 @@ const reducer = (state, action) => {
     }
     case "SET_ACTIVE_INDEX":
       return { ...state, activeIndex: action.activeIndex };
-    case "SET_DEBUG":
-      return { ...state, debug: action.debug, highlight: action.debug };
+    case "TOGGLE_DEBUG":
+      return { ...state, debug: !state.debug, highlight: !state.debug };
     case "SET_FONT_SIZE":
       return { ...state, fontSize: action.fontSize };
+    case "SET_FULLSCREEN":
+      return { ...state, fullscreen: action.fullscreen };
     case "SET_IDLE":
       return { ...state, idle: action.idle };
     case "SET_SPEED":
@@ -127,8 +138,6 @@ const reducer = (state, action) => {
       return { ...state, themeType: action.themeType };
     case "STOP_PLAYING":
       return { ...state, playing: false };
-    case "TOGGLE_MAXIMIZE":
-      return { ...state, maximize: !state.maximize };
     case "TOGGLE_PLAYING": {
       if (!state.playing && state.activeIndex === "END") {
         return { ...state, activeIndex: "START", playing: true };
@@ -253,6 +262,12 @@ const ChantWindowInner = ({ dispatch, state }) => {
   const classes = useStyles({ state });
   return (
     <div className={classes.root}>
+      <Fade in={state.settings || !state.idle}>
+        <ChantCloseButton dispatch={dispatch} state={state} />
+      </Fade>
+      <Fade in={state.settings || !state.idle}>
+        <ChantDebugButton dispatch={dispatch} state={state} />
+      </Fade>
       <Fade in={state.view === "CHANT" && (state.settings || !state.idle)}>
         <ChantControls dispatch={dispatch} state={state} />
       </Fade>
@@ -294,18 +309,18 @@ const ChantWindow = ({
     onIdle: () => {
       dispatch({ type: "SET_IDLE", idle: true });
     },
-    timeout: 1000 * 2,
+    timeout: 1000 * 1, // 1 second
   });
 
   useEffect(() => {
     if (allowFullscreen) {
-      if (state.maximize) {
+      if (state.fullscreen) {
         requestFullscreen();
       } else {
         exitFullscreen();
       }
     }
-  }, [allowFullscreen, state.maximize, state.mobile]);
+  }, [allowFullscreen, state.fullscreen, state.mobile]);
 
   useEffect(() => {
     if (state.close) onClose();
