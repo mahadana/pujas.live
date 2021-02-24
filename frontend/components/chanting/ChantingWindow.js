@@ -12,6 +12,7 @@ import Chant from "@/components/chanting/Chant";
 import ChantControls from "@/components/chanting/ChantControls";
 import ChantingToc from "@/components/chanting/ChantingToc";
 import ChantScroller from "@/components/chanting/ChantScroller";
+import ChantSettings from "@/components/chanting/ChantSettings";
 import darkTheme from "@/lib/theme";
 import { exitFullscreen, requestFullscreen } from "@/lib/util";
 
@@ -23,12 +24,12 @@ const lightTheme = createMuiTheme({
 });
 
 const useStyles = makeStyles((theme) => ({
-  root: ({ maximize }) => ({
+  root: ({ state }) => ({
     position: "fixed",
     backgroundColor: theme.palette.background.paper,
     color: theme.palette.text.primary,
     fontSize: "1.25rem",
-    ...(maximize
+    ...(state.maximize || state.mobile
       ? {
           width: "100%",
           height: "100%",
@@ -49,24 +50,29 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-const initialize = ({ mobile }) => ({
+const initialize = ({ chants, mobile, toc }) => ({
   activeIndex: "START",
   chant: null,
-  controls: false,
+  chants,
+  close: false,
+  debug: false,
+  fontSize: 24,
   highlight: false,
+  idle: false,
   maximize: false,
   mobile,
   playing: false,
+  settings: false,
   speed: 1.0,
-  textZoom: false,
   themeType: "light",
+  toc,
   view: "TOC",
 });
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "HIDE_CONTROLS":
-      return { ...state, controls: false };
+    case "CLOSE":
+      return { ...state, close: true, maximize: false, playing: false };
     case "INCREMENT_ACTIVE_INDEX": {
       let { activeIndex, chant, playing } = state;
       if (!chant) {
@@ -84,22 +90,43 @@ const reducer = (state, action) => {
       }
       return { ...state, activeIndex, playing };
     }
-    case "SET_CHANT":
-      return {
-        ...state,
-        chant: action.chant,
-        activeIndex: action.chant.startIndex ?? "START",
-      };
+    case "OPEN_CHANT_FROM_TOC": {
+      const chant = getChantFromToc({
+        chants: state.chants,
+        chantIndex: action.chantIndex,
+        partIndex: action.partIndex,
+        toc: state.toc,
+        volumeIndex: action.volumeIndex,
+      });
+      if (chant) {
+        return {
+          ...state,
+          activeIndex: chant.startIndex ?? "START",
+          chant,
+          // TODO handle raw chants explicitly by not showing chant window
+          playing: !String(chant.title).match(
+            /^(Appendix|Pāli Phonetics|Glossary)/
+          ),
+          view: "CHANT",
+        };
+      } else {
+        return state;
+      }
+    }
     case "SET_ACTIVE_INDEX":
       return { ...state, activeIndex: action.activeIndex };
+    case "SET_DEBUG":
+      return { ...state, debug: action.debug, highlight: action.debug };
+    case "SET_FONT_SIZE":
+      return { ...state, fontSize: action.fontSize };
+    case "SET_IDLE":
+      return { ...state, idle: action.idle };
     case "SET_SPEED":
       return { ...state, speed: action.speed };
-    case "SHOW_CONTROLS":
-      return { ...state, controls: true };
+    case "SET_THEME_TYPE":
+      return { ...state, themeType: action.themeType };
     case "STOP_PLAYING":
       return { ...state, playing: false };
-    case "TOGGLE_HIGHLIGHT":
-      return { ...state, highlight: !state.highlight };
     case "TOGGLE_MAXIMIZE":
       return { ...state, maximize: !state.maximize };
     case "TOGGLE_PLAYING": {
@@ -109,30 +136,8 @@ const reducer = (state, action) => {
         return { ...state, playing: !state.playing };
       }
     }
-    case "TOGGLE_TEXT_ZOOM":
-      return { ...state, textZoom: !state.textZoom };
-    case "TOGGLE_THEME_TYPE":
-      return {
-        ...state,
-        themeType: state.themeType === "light" ? "dark" : "light",
-      };
-    case "VIEW_CHANT":
-      return {
-        ...state,
-        // TODO handle raw chants explicitly by not showing chant window
-        playing: !String(state.chant?.title).match(
-          /^(Appendix|Pāli Phonetics|Glossary)/
-        ),
-        controls: true,
-        view: "CHANT",
-      };
-    case "VIEW_TOC":
-      return {
-        ...state,
-        playing: false,
-        controls: false,
-        view: "TOC",
-      };
+    case "TOGGLE_SETTINGS":
+      return { ...state, controls: !state.settings, settings: !state.settings };
     default:
       throw new Error(`Unknown action type ${action.type}`);
   }
@@ -187,7 +192,26 @@ const addChantMeta = (chant) => {
   return chant;
 };
 
-const getChantFromToc = ({ chants, chantSet = [], link, title }) => {
+const getChantFromToc = ({
+  chants,
+  chantIndex,
+  partIndex,
+  toc,
+  volumeIndex,
+}) => {
+  const tocPart = toc[volumeIndex]?.parts?.[partIndex];
+  const tocChant = tocPart?.chants?.[chantIndex];
+  let chantSet, link, title;
+  if (tocChant) {
+    chantSet = tocChant.chantSet || tocPart.chantSet;
+    link = tocChant.link;
+    title = tocPart.title;
+  } else {
+    chantSet = tocPart.chantSet;
+    link = tocPart.link;
+    title = tocPart.title;
+  }
+
   const chant = chantSet
     .map((chantId) => chants.chantMap[chantId])
     .filter((chant) => chant)
@@ -220,36 +244,32 @@ const getChantFromToc = ({ chants, chantSet = [], link, title }) => {
       },
       { title, id: "combined", children: [{ type: "h1", html: escape(title) }] }
     );
+
   return chant.children?.length > 0 ? addChantMeta(chant) : null;
 };
 
-const ChantingWindowInner = ({ chants, dispatch, state, toc }) => {
-  const classes = useStyles({ maximize: state.maximize || state.mobile });
-
-  const onTocOpen = (props) => {
-    const chant = getChantFromToc({ ...props, chants });
-    if (chant) {
-      dispatch({ type: "SET_CHANT", chant });
-      dispatch({ type: "VIEW_CHANT" });
-    }
-  };
-
+// This inner component is needed for the theme to apply.
+const ChantingWindowInner = ({ dispatch, state }) => {
+  const classes = useStyles({ state });
   return (
     <div className={classes.root}>
-      <Fade in={state.controls}>
+      <Fade in={state.view === "CHANT" && (state.settings || !state.idle)}>
         <ChantControls dispatch={dispatch} state={state} />
+      </Fade>
+      <Fade in={state.view === "CHANT" && state.settings}>
+        <ChantSettings dispatch={dispatch} state={state} />
       </Fade>
       {state.view === "CHANT" && (
         <ChantScroller dispatch={dispatch} state={state}>
           <Chant
             chant={state.chant}
+            fontSize={state.fontSize}
             highlight={state.highlight}
-            textZoom={state.textZoom}
           />
         </ChantScroller>
       )}
       {state.view === "TOC" && (
-        <ChantingToc chant={state.chant} toc={toc} onOpen={onTocOpen} />
+        <ChantingToc dispatch={dispatch} state={state} />
       )}
     </div>
   );
@@ -257,27 +277,27 @@ const ChantingWindowInner = ({ chants, dispatch, state, toc }) => {
 
 const ChantingWindow = ({
   allowFullscreen = true,
-  mobile = false,
-  ...props
+  chants,
+  mobile,
+  onClose,
+  toc,
 }) => {
-  const [state, dispatch] = useReducer(reducer, { mobile }, initialize);
+  const [state, dispatch] = useReducer(
+    reducer,
+    { chants, mobile, toc },
+    initialize
+  );
 
-  const { reset: resetIdleTimer } = useIdleTimer({
+  useIdleTimer({
     debounce: 500,
     onActive: () => {
-      if (state.view === "CHANT") {
-        dispatch({ type: "SHOW_CONTROLS" });
-      }
+      dispatch({ type: "SET_IDLE", idle: false });
     },
     onIdle: () => {
-      if (state.view === "CHANT") {
-        dispatch({ type: "HIDE_CONTROLS" });
-      }
+      dispatch({ type: "SET_IDLE", idle: true });
     },
-    timeout: 1000 * 5,
+    timeout: 1000 * 2,
   });
-
-  useEffect(resetIdleTimer, [state.mode]);
 
   useEffect(() => {
     if (allowFullscreen) {
@@ -289,9 +309,13 @@ const ChantingWindow = ({
     }
   }, [allowFullscreen, state.maximize, state.mobile]);
 
+  useEffect(() => {
+    if (state.close) onClose();
+  }, [state.close]);
+
   return (
     <ThemeProvider theme={state.themeType === "dark" ? darkTheme : lightTheme}>
-      <ChantingWindowInner {...props} dispatch={dispatch} state={state} />
+      <ChantingWindowInner dispatch={dispatch} state={state} />
     </ThemeProvider>
   );
 };

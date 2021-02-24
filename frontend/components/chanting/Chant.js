@@ -3,11 +3,11 @@ import clsx from "clsx";
 import { createElement, useMemo } from "react";
 
 const useStyles = makeStyles((theme) => ({
-  root: ({ highlight, textZoom }) => ({
+  root: ({ fontSize, highlight }) => ({
     maxWidth: "32.5em",
     margin: "0 auto",
     color: theme.palette.text.primary,
-    fontSize: textZoom ? "1.8rem" : "1.25rem",
+    fontSize,
     fontFamily: "Gentium Incantation",
     [theme.breakpoints.up("sm")]: {
       marginTop: "4em",
@@ -173,8 +173,8 @@ const walkNode = (node, key) => {
   }
 };
 
-const Chant = ({ chant, highlight, textZoom }) => {
-  const classes = useStyles({ highlight, textZoom });
+const Chant = ({ chant, fontSize, highlight }) => {
+  const classes = useStyles({ fontSize, highlight });
   const className = classNameWithLang(chant, classes.root);
   const children = useMemo(() => walkNode(chant), [chant]);
   return <div className={className}>{children}</div>;

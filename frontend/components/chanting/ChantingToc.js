@@ -1,9 +1,12 @@
-import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
+import { makeStyles } from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
+import CancelIcon from "@material-ui/icons/Cancel";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -11,6 +14,17 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: "100%",
     overflowY: "auto",
+    scrollbarWidth: "none",
+    "-ms-overflow-style": "none",
+    "&::-webkit-scrollbar": {
+      display: "none",
+    },
+  },
+  closeButton: {
+    position: "absolute",
+    top: "-0.4rem",
+    right: "-0.35rem",
+    zIndex: 100,
   },
   chant: {
     paddingLeft: "1rem",
@@ -62,14 +76,14 @@ const ChantingTocListItemText = ({ page, title }) => {
   );
 };
 
-const ChantingTocVolume = ({ children, tocVolume, ...props }) => {
+const ChantingTocVolume = ({ children, title, ...props }) => {
   const classes = useStyles();
   return (
     <List
       component="nav"
       subheader={
         <ListSubheader className={classes.subheader} component="div">
-          {tocVolume.title}
+          {title}
         </ListSubheader>
       }
       {...props}
@@ -79,19 +93,12 @@ const ChantingTocVolume = ({ children, tocVolume, ...props }) => {
   );
 };
 
-const ChantingTocPart = ({ children, onOpen, tocPart, ...props }) => {
+const ChantingTocPart = ({ children, onOpen, page, title, ...props }) => {
   const classes = useStyles();
-  const onItemClick = () =>
-    onOpen({
-      chantSet: tocPart.chantSet,
-      link: tocPart.link,
-      title: tocPart.title,
-    });
-
   return (
     <div {...props}>
-      <ListItem button className={classes.part} onClick={onItemClick}>
-        <ChantingTocListItemText page={tocPart.page} title={tocPart.title} />
+      <ListItem button className={classes.part} onClick={onOpen}>
+        <ChantingTocListItemText page={page} title={title} />
       </ListItem>
       <List component="nav" dense disablePadding>
         {children}
@@ -100,44 +107,58 @@ const ChantingTocPart = ({ children, onOpen, tocPart, ...props }) => {
   );
 };
 
-const ChantingTocChant = ({ onOpen, tocChant, tocPart, ...props }) => {
+const ChantingTocChant = ({ onOpen, page, title, ...props }) => {
   const classes = useStyles();
-  const onClick = () =>
-    onOpen({
-      chantSet: tocChant.chantSet || tocPart.chantSet,
-      link: tocChant.link,
-      title: tocPart.title,
-    });
   return (
-    <ListItem button className={classes.chant} onClick={onClick} {...props}>
-      <ChantingTocListItemText title={tocChant.title} page={tocChant.page} />
+    <ListItem button className={classes.chant} onClick={onOpen} {...props}>
+      <ChantingTocListItemText title={title} page={page} />
     </ListItem>
   );
 };
 
-const ChantingToc = ({ onOpen, toc }) => {
+const ChantingToc = ({ dispatch, state }) => {
   const classes = useStyles();
+
+  const onClose = () => dispatch({ type: "CLOSE" });
+  const open = (props) => dispatch({ ...props, type: "OPEN_CHANT_FROM_TOC" });
+
   return (
-    <Grid container className={classes.root}>
-      {toc.map((tocVolume, index) => (
-        <Grid item key={index} xs={12} sm={6}>
-          <ChantingTocVolume key={index} tocVolume={tocVolume}>
-            {tocVolume.parts.map((tocPart, index) => (
-              <ChantingTocPart key={index} onOpen={onOpen} tocPart={tocPart}>
-                {tocPart.chants.map((tocChant, index) => (
-                  <ChantingTocChant
-                    key={index}
-                    onOpen={onOpen}
-                    tocChant={tocChant}
-                    tocPart={tocPart}
-                  />
-                ))}
-              </ChantingTocPart>
-            ))}
-          </ChantingTocVolume>
-        </Grid>
-      ))}
-    </Grid>
+    <>
+      <div className={classes.closeButton}>
+        <IconButton onClick={onClose}>
+          <Tooltip placement="left" title="Exit">
+            <CancelIcon color="disabled" fontSize="large" />
+          </Tooltip>
+        </IconButton>
+      </div>
+      <Grid container className={classes.root}>
+        {state.toc.map(({ parts, title }, volumeIndex) => (
+          <Grid item key={volumeIndex} xs={12} sm={6}>
+            <ChantingTocVolume title={title}>
+              {parts.map(({ chants, page, title }, partIndex) => (
+                <ChantingTocPart
+                  key={partIndex}
+                  onOpen={() => open({ partIndex, volumeIndex })}
+                  page={page}
+                  title={title}
+                >
+                  {chants.map(({ page, title }, chantIndex) => (
+                    <ChantingTocChant
+                      key={chantIndex}
+                      onOpen={() =>
+                        open({ chantIndex, partIndex, volumeIndex })
+                      }
+                      page={page}
+                      title={title}
+                    />
+                  ))}
+                </ChantingTocPart>
+              ))}
+            </ChantingTocVolume>
+          </Grid>
+        ))}
+      </Grid>
+    </>
   );
 };
 

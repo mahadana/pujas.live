@@ -41,6 +41,11 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     overflow: "hidden",
     overflowY: "scroll",
+    scrollbarWidth: "none",
+    "-ms-overflow-style": "none",
+    "&::-webkit-scrollbar": {
+      display: "none",
+    },
     "&:focus": {
       outline: "none",
     },

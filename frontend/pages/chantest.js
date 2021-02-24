@@ -1,4 +1,5 @@
 import Backdrop from "@material-ui/core/Backdrop";
+import Button from "@material-ui/core/Button";
 import Fade from "@material-ui/core/Fade";
 import Modal from "@material-ui/core/Modal";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -58,30 +59,39 @@ const ChanTestPage = () => {
     }
   }, [data]);
 
-  const onClose = () => {
-    setOpen(false);
-  };
+  const onClick = () => setOpen(true);
+  const onClose = () => setOpen(false);
 
   return (
     <>
       <ChantFontStyle />
       <PageLayout queryResult={{ data, loading: !data }}>
         {({ data: { chants, toc } }) => (
-          <Modal
-            open={open}
-            onClose={onClose}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-              timeout: 500,
-            }}
-          >
-            <Fade in={open}>
-              <div>
-                <ChantingWindow chants={chants} mobile={mobile} toc={toc} />
-              </div>
-            </Fade>
-          </Modal>
+          <div style={{ marginTop: "5em", textAlign: "center" }}>
+            <Button onClick={onClick} size="large" variant="contained">
+              Open Chanting Window
+            </Button>
+            <Modal
+              open={open}
+              onClose={onClose}
+              closeAfterTransition
+              BackdropComponent={Backdrop}
+              BackdropProps={{
+                timeout: 500,
+              }}
+            >
+              <Fade in={open}>
+                <div>
+                  <ChantingWindow
+                    chants={chants}
+                    mobile={mobile}
+                    onClose={onClose}
+                    toc={toc}
+                  />
+                </div>
+              </Fade>
+            </Modal>
+          </div>
         )}
       </PageLayout>
     </>
