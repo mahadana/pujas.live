@@ -6,7 +6,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useEffect, useState } from "react";
 
 import ChantFontStyle from "@/components/chanting/ChantFontStyle";
-import ChantingWindow from "@/components/chanting/ChantingWindow";
+import ChantWindow from "@/components/chanting/ChantWindow";
 import PageLayout from "@/components/PageLayout";
 
 const CCB_URL =
@@ -82,7 +82,7 @@ const ChanTestPage = () => {
             >
               <Fade in={open}>
                 <div>
-                  <ChantingWindow
+                  <ChantWindow
                     chants={chants}
                     mobile={mobile}
                     onClose={onClose}

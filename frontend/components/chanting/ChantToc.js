@@ -116,7 +116,7 @@ const ChantingTocChant = ({ onOpen, page, title, ...props }) => {
   );
 };
 
-const ChantingToc = ({ dispatch, state }) => {
+const ChantToc = ({ dispatch, state }) => {
   const classes = useStyles();
 
   const onClose = () => dispatch({ type: "CLOSE" });
@@ -162,4 +162,4 @@ const ChantingToc = ({ dispatch, state }) => {
   );
 };
 
-export default ChantingToc;
+export default ChantToc;

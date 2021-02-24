@@ -10,7 +10,7 @@ import { useIdleTimer } from "react-idle-timer";
 
 import Chant from "@/components/chanting/Chant";
 import ChantControls from "@/components/chanting/ChantControls";
-import ChantingToc from "@/components/chanting/ChantingToc";
+import ChantToc from "@/components/chanting/ChantToc";
 import ChantScroller from "@/components/chanting/ChantScroller";
 import ChantSettings from "@/components/chanting/ChantSettings";
 import darkTheme from "@/lib/theme";
@@ -249,7 +249,7 @@ const getChantFromToc = ({
 };
 
 // This inner component is needed for the theme to apply.
-const ChantingWindowInner = ({ dispatch, state }) => {
+const ChantWindowInner = ({ dispatch, state }) => {
   const classes = useStyles({ state });
   return (
     <div className={classes.root}>
@@ -268,14 +268,12 @@ const ChantingWindowInner = ({ dispatch, state }) => {
           />
         </ChantScroller>
       )}
-      {state.view === "TOC" && (
-        <ChantingToc dispatch={dispatch} state={state} />
-      )}
+      {state.view === "TOC" && <ChantToc dispatch={dispatch} state={state} />}
     </div>
   );
 };
 
-const ChantingWindow = ({
+const ChantWindow = ({
   allowFullscreen = true,
   chants,
   mobile,
@@ -315,9 +313,9 @@ const ChantingWindow = ({
 
   return (
     <ThemeProvider theme={state.themeType === "dark" ? darkTheme : lightTheme}>
-      <ChantingWindowInner dispatch={dispatch} state={state} />
+      <ChantWindowInner dispatch={dispatch} state={state} />
     </ThemeProvider>
   );
 };
 
-export default ChantingWindow;
+export default ChantWindow;
