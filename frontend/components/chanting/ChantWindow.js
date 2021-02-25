@@ -77,9 +77,22 @@ const reducer = (state, action) => {
       if (state.settings) {
         return { ...state, settings: false };
       } else if (state.view === "CHANT") {
-        return { ...state, fullscreen: false, playing: false, view: "TOC" };
+        return {
+          ...state,
+          activeIndex: "START",
+          chant: null,
+          playing: false,
+          view: "TOC",
+        };
       } else {
-        return { ...state, close: true, fullscreen: false, playing: false };
+        return {
+          ...state,
+          activeIndex: "START",
+          chant: null,
+          close: true,
+          fullscreen: false,
+          playing: false,
+        };
       }
     }
     case "INCREMENT_ACTIVE_INDEX": {
@@ -274,7 +287,7 @@ const ChantWindowInner = ({ dispatch, state }) => {
       <Fade in={state.view === "CHANT" && state.settings}>
         <ChantSettings dispatch={dispatch} state={state} />
       </Fade>
-      {state.view === "CHANT" && (
+      <Fade in={state.view === "CHANT"}>
         <ChantScroller dispatch={dispatch} state={state}>
           <Chant
             chant={state.chant}
@@ -282,8 +295,10 @@ const ChantWindowInner = ({ dispatch, state }) => {
             highlight={state.highlight}
           />
         </ChantScroller>
-      )}
-      {state.view === "TOC" && <ChantToc dispatch={dispatch} state={state} />}
+      </Fade>
+      <Fade in={state.view === "TOC"}>
+        <ChantToc dispatch={dispatch} state={state} />
+      </Fade>
     </div>
   );
 };
