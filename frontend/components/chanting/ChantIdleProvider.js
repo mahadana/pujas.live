@@ -10,6 +10,7 @@ const ChantIdleProvider = ({ children }) => {
 
   useIdleTimer({
     debounce: 500,
+    events: ["mousemove", "mousedown", "MSPointerDown"],
     onActive: () => setIdle(false),
     onIdle: () => setIdle(true),
     timeout: 1000 * 2, // 2 seconds
