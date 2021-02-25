@@ -324,7 +324,7 @@ const ChantWindow = ({
     onIdle: () => {
       dispatch({ type: "SET_IDLE", idle: true });
     },
-    timeout: 1000 * 1, // 1 second
+    timeout: 1000 * 2, // 2 seconds
   });
 
   useEffect(() => {
