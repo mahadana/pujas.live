@@ -7,13 +7,13 @@ import throttle from "lodash/throttle";
 import { useEffect, useRef } from "react";
 
 const BREAK_FACTOR = 15;
-const HUMAN_SCROLL_TIMEOUT = 12; // 0.2 seconds
+const HUMAN_SCROLL_TIMEOUT = 1; // 1/60 second
 const MIN_ACCELERATION = -0.1;
 const MAX_ACCELERATION = 0.1;
 const OUTSIDE_HEIGHT = 200;
 const MIN_VELOCITY = -6; // 6*60 = -360 px/s
 const MAX_VELOCITY = 6; // 6*60 = 360 px/s
-const MID_VIEW_RATIO = 0.5; // Middl'ish
+const MID_VIEW_RATIO = 0.45; // Middl'ish
 const END_DISTANCE_THRESHOLD = 100; // px
 
 const DEFAULT_SCROLL_DATA = {
@@ -21,15 +21,20 @@ const DEFAULT_SCROLL_DATA = {
   activeComplete: null,
   activeIndex: null,
   animationRequest: null,
+  chant: null,
   delta: 0,
   dispatch: null,
+  fontSize: null,
   ignoreNextScroll: false,
   skipTop: null,
   next: null,
+  nodes: null,
   humanScrollTimeout: 0,
   scroll: null,
   state: null,
   velocity: 0,
+  windowHeight: null,
+  windowWidth: null,
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -102,18 +107,26 @@ const scrollError = throttle(console.error, 5000);
 //   reportAndResetPerformance();
 // };
 
-const getTextIndexInView = (el, textCount) => {
-  let left = 0;
-  let right = textCount || 0;
-  let middle = parseInt((left + right) / 2);
-  const target = el.scrollTop + parseInt(el.clientHeight * MID_VIEW_RATIO);
-  while (left < middle && middle < right) {
-    const testEl = document.getElementById(`chant-text-index-${middle}`);
-    if (!testEl) return null;
-    const testTop = testEl.offsetTop;
-    const testBottom = testTop + testEl.clientHeight;
+const reportPerformance = (callback, id = "?") => {
+  const start = performance.now();
+  callback();
+  const time = performance.now() - start;
+  console.log(`ChantScroller.${id} ${time.toFixed(2)}ms`);
+};
 
-    if (testBottom < target) {
+const getNodeInMidView = (data) => {
+  const { nodes, scroll } = data;
+  if (!nodes) return [null, null];
+  let left = 0;
+  let right = nodes.length;
+  let middle = parseInt((left + right) / 2);
+  const target = scroll.el.scrollTop + parseInt(scroll.el.clientHeight / 2);
+  while (left < middle && middle < right) {
+    const test = nodes[middle];
+    if (!test) return [null, null];
+    const testTop = test.offsetTop;
+    const testBottom = testTop + test.offsetHeight;
+    if (testBottom <= target) {
       left = middle;
       middle = parseInt((left + right) / 2);
     } else if (target < testTop) {
@@ -123,19 +136,22 @@ const getTextIndexInView = (el, textCount) => {
       break;
     }
   }
-  return middle;
-};
 
-const getNodeData = (chant, index) => {
-  const el = document.getElementById(`chant-text-index-${index}`);
-  const duration = chant.textNodeMap?.[index]?.duration;
-  if (el && _isFinite(duration)) {
-    const clientHeight = el.clientHeight;
-    const offsetTop = el.offsetTop;
-    return { clientHeight, duration, el, offsetTop };
-  } else {
-    return null;
+  let a = middle;
+  let b = middle;
+  while (a > 0 && target < nodes[a - 1].offsetTop + nodes[a - 1].offsetHeight) {
+    a -= 1;
   }
+  while (b < nodes.length - 1 && target >= nodes[b + 1].offsetTop) {
+    b += 1;
+  }
+  const start = nodes[a].offsetTop;
+  const end = nodes[b].offsetTop + nodes[b].offsetHeight;
+  let complete = 1 - clamp((end - target) / (end - start), 0, 1);
+  const factor = complete * (1 + b - a);
+  const index = a + parseInt(factor);
+  complete = factor - parseInt(factor);
+  return [index, complete];
 };
 
 const scrollReset = (data) => {
@@ -155,21 +171,107 @@ const scrollReset = (data) => {
   }
   data.scroll.scrollTop = null;
   data.scroll.scrollHeight = null;
+  data.scroll.clientHeight = null;
 };
 
 const handleHumanScroll = (data) => {
-  const { dispatch, scroll, state } = data;
+  const { nodes, scroll, state } = data;
   data.humanScrollTimeout -= 1;
   if (data.humanScrollTimeout <= 0) {
-    const activeIndex = state.chant
-      ? getTextIndexInView(scroll.el, state.chant.textCount)
-      : null;
-    if (activeIndex) dispatch?.({ type: "SET_ACTIVE_INDEX", activeIndex });
+    const [activeIndex, activeComplete] = getNodeInMidView(data);
+
+    if (_isFinite(activeIndex)) {
+      const active = nodes[activeIndex];
+      if (active) {
+        if (activeIndex === data.activeIndex) {
+          data.activeComplete = activeComplete;
+        } else {
+          if (data.active) data.active.el.classList.remove("chant-active");
+          active.el.classList.add("chant-active");
+          data.active = active;
+          data.activeIndex = activeIndex;
+          data.activeComplete = activeComplete;
+          data.next = null;
+          state.activeIndex = activeIndex;
+        }
+      } else {
+        data.active = null;
+        data.activeIndex = null;
+        data.activeComplete = null;
+        data.next = null;
+        state.activeIndex = null;
+      }
+    }
+
     scroll.scrollTop = null;
     scroll.scrollHeight = null;
+    scroll.clientHeight = null;
     data.velocity = 0;
     data.delta = 0;
     data.humanScrollTimeout = 0;
+  }
+};
+
+const buildNodeCache = (data) => {
+  const { chant } = data.state;
+  if (!chant) return;
+  reportPerformance(() => {
+    const map = chant.textNodeMap || [];
+    const nodes = [];
+    for (let i = 0; map[i]; i++) {
+      const el = document.getElementById(`chant-text-index-${i}`);
+      if (el) {
+        nodes.push({
+          duration: map[i].duration,
+          el,
+          offsetHeight: el.offsetHeight,
+          offsetTop: el.offsetTop,
+        });
+        if (nodes.length > 1) {
+          const a = nodes[nodes.length - 2];
+          const b = nodes[nodes.length - 1];
+          const aBottom = a.offsetTop + a.offsetHeight;
+          if (aBottom == b.offsetTop + 1) {
+            a.offsetHeight -= 1;
+          }
+        }
+      }
+    }
+    if (nodes.length == 0 || nodes.length != map.length) {
+      console.warn("Build node cache mismatch", nodes.length, map.length);
+    } else {
+      data.nodes = nodes;
+    }
+  }, "buildNodeCache");
+};
+
+const updateWindow = (data) => {
+  const { fontSize, windowHeight, windowWidth, state } = data;
+  const currentFontSize = state.fontSize;
+  const currentWindowHeight = window.innerHeight;
+  const currentWindowWidth = window.innerWidth;
+  if (
+    fontSize !== currentFontSize ||
+    windowHeight !== currentWindowHeight ||
+    windowWidth !== currentWindowWidth
+  ) {
+    data.chant = null;
+    data.nodes = null;
+    data.fontSize = currentFontSize;
+    data.windowHeight = currentWindowHeight;
+    data.windowWidth = currentWindowWidth;
+  }
+};
+
+const updateChant = (data) => {
+  const { chant, state } = data;
+  if (!chant && state.chant) {
+    data.chant = data.state.chant;
+    data.nodes = null;
+    buildNodeCache(data);
+  } else if (chant && !state.chant) {
+    data.chant = null;
+    data.nodes = null;
   }
 };
 
@@ -180,21 +282,17 @@ const updateScroll = (data) => {
     // element, this will cause hiccups during scrolling.
     scroll.scrollTop = scroll.el.scrollTop;
     scroll.scrollHeight = scroll.el.scrollHeight;
+    scroll.clientHeight = scroll.el.clientHeight;
   }
-  scroll.clientHeight = scroll.el.clientHeight;
 };
 
 const updateActive = (data) => {
-  const { state } = data;
+  const { nodes, state } = data;
   let { active, activeIndex } = data;
-  if (activeIndex === state?.activeIndex || !state?.chant) return;
+  if (!nodes || activeIndex === state.activeIndex) return;
   activeIndex = state.activeIndex;
   if (active) active.el.classList.remove("chant-active");
-  if (_isFinite(activeIndex) && state?.chant) {
-    active = getNodeData(state.chant, activeIndex);
-  } else {
-    active = null;
-  }
+  active = nodes[activeIndex];
   if (active) active.el.classList.add("chant-active");
   data.active = active;
   data.activeIndex = activeIndex;
@@ -203,15 +301,15 @@ const updateActive = (data) => {
 };
 
 const updateNext = (data) => {
-  const { active, activeIndex, scroll, state } = data;
-  if (data.next || !state?.chant || !active || !_isFinite(activeIndex)) return;
-  const max = state.chant.textCount - 1;
+  const { active, activeIndex, nodes, scroll } = data;
+  if (!nodes || !_isFinite(activeIndex)) return;
+  const max = nodes.length - 1;
   const next = [];
   // Get at least scroll.clientHeight worth of nodes
   for (let i = 0, height = 0; i < max && height < scroll.clientHeight; i++) {
-    const node = getNodeData(state.chant, activeIndex + 1 + i);
+    const node = nodes[activeIndex + 1 + i];
     if (node) {
-      height = node.offsetTop - active.offsetTop + node.clientHeight;
+      height = node.offsetTop - active.offsetTop + node.offsetHeight;
       next.push(node);
     } else {
       break;
@@ -223,7 +321,7 @@ const updateNext = (data) => {
 const updateVelocity = (data) => {
   const { active, activeComplete, next, scroll, state } = data;
 
-  if (!active || !state?.chant || !state?.playing) {
+  if (!active || !state.playing) {
     data.velocity = data.velocity * 0.99;
     return;
   }
@@ -233,13 +331,13 @@ const updateVelocity = (data) => {
     targetDuration = active.duration + sum(next.map((node) => node.duration));
     const lastNext = next[next.length - 1];
     targetHeight =
-      lastNext.offsetTop - active.offsetTop + lastNext.clientHeight;
+      lastNext.offsetTop - active.offsetTop + lastNext.offsetHeight;
   } else {
     targetDuration = active.duration;
-    targetHeight = active.clientHeight;
+    targetHeight = active.offsetHeight;
   }
 
-  const speed = state?.speed || 1;
+  const speed = state.speed || 1;
   let idealVelocity = (speed * targetHeight) / (targetDuration * 60);
 
   const endDistance =
@@ -252,7 +350,7 @@ const updateVelocity = (data) => {
 
   const midHeight = parseInt(scroll.clientHeight * MID_VIEW_RATIO);
   const activeCompleteHeight = parseInt(
-    active.clientHeight * (activeComplete ?? 1)
+    active.offsetHeight * (activeComplete ?? 1)
   );
   const idealTop = active.offsetTop + activeCompleteHeight - midHeight;
   const diffTop = idealTop - scroll.scrollTop;
@@ -278,7 +376,7 @@ const updateVelocity = (data) => {
     idealVelocity * (1 - clampedRatio) + catchUpVelocity * clampedRatio;
 
   let acceleration = clamp(
-    (weightedVelocity - data.velocity) / (10 * 60), // 10 seconds
+    (weightedVelocity - data.velocity) / (1 * 60), // 1 seconds
     MIN_ACCELERATION,
     MAX_ACCELERATION
   );
@@ -308,8 +406,8 @@ const executeScroll = (data) => {
 };
 
 const incrementActive = (data) => {
-  const { active, activeComplete, activeIndex, dispatch, state } = data;
-  if (!state?.playing) return;
+  const { active, activeComplete, activeIndex, dispatch, nodes, state } = data;
+  if (!state.playing) return;
 
   // Instead of using dispatch, we can explicitly set state.activeIndex. This
   // will prevent React from firing and occasionally causing scrolling stutters.
@@ -333,7 +431,7 @@ const incrementActive = (data) => {
     }
   } else if (_isFinite(activeIndex) && _isFinite(activeComplete) && active) {
     if (activeComplete >= 1) {
-      if (activeIndex >= state.chant.textCount - 1) {
+      if (activeIndex >= nodes.length - 1) {
         dispatch({ type: "SET_ACTIVE_INDEX", activeIndex: "END" });
         dispatch({ type: "STOP_PLAYING" });
       } else {
@@ -341,7 +439,7 @@ const incrementActive = (data) => {
       }
       data.activeComplete = null;
     } else {
-      const speed = state?.speed || 1;
+      const speed = state.speed || 1;
       data.activeComplete += speed / (60 * active.duration);
     }
   }
@@ -362,9 +460,11 @@ const scrollLoop = (data) => {
   data.animationRequest = null;
   try {
     // performanceTest(() => {
+    updateWindow(data);
     if (data.humanScrollTimeout > 0) {
       handleHumanScroll(data);
     } else {
+      updateChant(data);
       updateScroll(data);
       updateActive(data);
       updateNext(data);
@@ -385,7 +485,7 @@ const scrollLoop = (data) => {
     scrollLoop(data);
     const long = performance.now() - start;
 
-    if (data.state?.debug) {
+    if (data.state.debug) {
       updateDebugIndicator("chant-scroller-debug-miss", miss);
       updateDebugIndicator("chant-scroller-debug-long", long);
     }
@@ -415,7 +515,7 @@ const ChantScroller = ({ children, dispatch, state, ...props }) => {
     if (data) {
       data.scroll = scroll;
     } else {
-      data = scrollRef.current = { ...DEFAULT_SCROLL_DATA, scroll };
+      data = scrollRef.current = { ...DEFAULT_SCROLL_DATA, scroll, state: {} };
     }
     const localOnScrollEvent = () => onScrollEvent(data);
     const localOnKeyDownEvent = () => onKeyDownEvent(data);

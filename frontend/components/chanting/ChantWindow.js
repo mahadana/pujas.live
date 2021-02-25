@@ -257,6 +257,7 @@ const getChantFromToc = ({
             combined.children.push(node);
           });
         }
+        combined.id = combined.id ? `${combined.id},${chant.id}` : chant.id;
         combined.lang = combined.lang
           ? combined.lang === chant.lang
             ? chant.lang
@@ -264,7 +265,7 @@ const getChantFromToc = ({
           : chant.lang;
         return combined;
       },
-      { title, id: "combined", children: [{ type: "h1", html: escape(title) }] }
+      { title, id: "", children: [{ type: "h1", html: escape(title) }] }
     );
 
   return chant.children?.length > 0 ? addChantMeta(chant) : null;

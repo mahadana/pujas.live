@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     "& .chant-verse": {
       padding: "0.1em 1em 0.2em",
       lineHeight: "1.6em",
-      transition: "background-color 1s ease-out",
+      transition: "background-color 1s cubic-bezier(.04,.9,.8,1)",
       "&.chant-active": {
         backgroundColor: highlight ? "rgba(255, 255, 0, 0.4)" : "inherit",
       },
