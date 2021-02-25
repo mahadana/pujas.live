@@ -1,5 +1,5 @@
 const BASE_URL =
-  "https://pujas-live.sfo3.digitaloceanspaces.com/chantest/fonts";
+  "https://pujas-live.sfo3.cdn.digitaloceanspaces.com/chantest/fonts";
 
 const ChantFontStyle = () => {
   return (

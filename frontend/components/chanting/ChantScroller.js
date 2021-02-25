@@ -7,7 +7,7 @@ import throttle from "lodash/throttle";
 import { useEffect, useRef } from "react";
 
 const BREAK_FACTOR = 15;
-const HUMAN_SCROLL_TIMEOUT = 1; // 1/60 second
+const HUMAN_SCROLL_TIMEOUT = 10; // 1/6 second
 const MIN_ACCELERATION = -0.1;
 const MAX_ACCELERATION = 0.1;
 const OUTSIDE_HEIGHT = 200;

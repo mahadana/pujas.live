@@ -285,10 +285,10 @@ const ChantWindowInner = ({ dispatch, state }) => {
       <Fade in={state.view === "CHANT" && (state.settings || !state.idle)}>
         <ChantControls dispatch={dispatch} state={state} />
       </Fade>
-      <Fade in={state.view === "CHANT" && state.settings}>
+      <Fade in={state.view === "CHANT" && state.settings} unmountOnExit>
         <ChantSettings dispatch={dispatch} state={state} />
       </Fade>
-      <Fade in={state.view === "CHANT"}>
+      <Fade in={state.view === "CHANT"} unmountOnExit>
         <ChantScroller dispatch={dispatch} state={state}>
           <Chant
             chant={state.chant}
@@ -297,7 +297,7 @@ const ChantWindowInner = ({ dispatch, state }) => {
           />
         </ChantScroller>
       </Fade>
-      <Fade in={state.view === "TOC"}>
+      <Fade in={state.view === "TOC"} unmountOnExit>
         <ChantToc dispatch={dispatch} state={state} />
       </Fade>
     </div>
