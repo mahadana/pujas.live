@@ -54,6 +54,22 @@ const useStyles = makeStyles((theme) => ({
       padding: "1rem",
     },
   }),
+  debugIndicatorMiss: {
+    position: "fixed",
+    zIndex: 1000,
+    bottom: 0,
+    right: 5,
+    backgroundColor: "yellow",
+    width: 5,
+  },
+  debugIndicatorLong: {
+    position: "fixed",
+    zIndex: 1000,
+    bottom: 0,
+    right: 0,
+    backgroundColor: "red",
+    width: 5,
+  },
 }));
 
 const scrollError = throttle(console.error, 5000);
@@ -145,7 +161,9 @@ const handleHumanScroll = (data) => {
   const { dispatch, scroll, state } = data;
   data.humanScrollTimeout -= 1;
   if (data.humanScrollTimeout <= 0) {
-    const activeIndex = getTextIndexInView(scroll.el, state.chant.textCount);
+    const activeIndex = state.chant
+      ? getTextIndexInView(scroll.el, state.chant.textCount)
+      : null;
     if (activeIndex) dispatch?.({ type: "SET_ACTIVE_INDEX", activeIndex });
     scroll.scrollTop = null;
     scroll.scrollHeight = null;
@@ -329,6 +347,17 @@ const incrementActive = (data) => {
   }
 };
 
+const updateDebugIndicator = (id, value) => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const current = parseInt(el.style.height) || 0;
+  if (value > current) {
+    el.style.height = `${Math.min(value, 1000)}px`;
+  } else {
+    el.style.height = `${current - 1}px`;
+  }
+};
+
 const scrollLoop = (data) => {
   data.animationRequest = null;
   try {
@@ -347,7 +376,20 @@ const scrollLoop = (data) => {
   } catch (error) {
     scrollError(error);
   }
-  data.animationRequest = window.requestAnimationFrame(() => scrollLoop(data));
+  data.animationRequest = window.requestAnimationFrame((ts) => {
+    if (!_isFinite(data.ts)) data.ts = ts;
+    const miss = ts - data.ts;
+    data.ts = ts;
+
+    const start = performance.now();
+    scrollLoop(data);
+    const long = performance.now() - start;
+
+    if (data.state?.debug) {
+      updateDebugIndicator("chant-scroller-debug-miss", miss);
+      updateDebugIndicator("chant-scroller-debug-long", long);
+    }
+  });
 };
 
 const onScrollEvent = (data) => {
@@ -362,7 +404,7 @@ const onKeyDownEvent = (data) => {
   data.humanScrollTimeout = HUMAN_SCROLL_TIMEOUT;
 };
 
-const ChantScroller = ({ children, dispatch, state }) => {
+const ChantScroller = ({ children, dispatch, state, ...props }) => {
   const domRef = useRef();
   const scrollRef = useRef();
   const classes = useStyles({ state });
@@ -401,7 +443,15 @@ const ChantScroller = ({ children, dispatch, state }) => {
   }, [dispatch, state]);
 
   return (
-    <div className={classes.root} ref={domRef} tabIndex="0">
+    <div {...props} className={classes.root} ref={domRef} tabIndex="0">
+      <div
+        className={classes.debugIndicatorMiss}
+        id="chant-scroller-debug-miss"
+      />
+      <div
+        className={classes.debugIndicatorLong}
+        id="chant-scroller-debug-long"
+      />
       {children}
     </div>
   );
