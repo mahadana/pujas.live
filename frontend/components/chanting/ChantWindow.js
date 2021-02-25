@@ -6,15 +6,16 @@ import {
 } from "@material-ui/core/styles";
 import escape from "lodash/escape";
 import { useEffect, useReducer } from "react";
-import { useIdleTimer } from "react-idle-timer";
 
 import Chant from "@/components/chanting/Chant";
-import ChantCloseButton from "@/components/chanting/ChantCloseButton";
-import ChantControls from "@/components/chanting/ChantControls";
-import ChantDebugButton from "@/components/chanting/ChantDebugButton";
-import ChantToc from "@/components/chanting/ChantToc";
+import ChantCloseControls from "@/components/chanting/ChantCloseControls";
+import ChantOperationControls from "@/components/chanting/ChantOperationControls";
+import ChantDebugControls from "@/components/chanting/ChantDebugControls";
+import ChantIdleProvider from "@/components/chanting/ChantIdleProvider";
+import ChantPerformanceIndicators from "@/components/chanting/ChantPerformanceIndicators";
 import ChantScroller from "@/components/chanting/ChantScroller";
-import ChantSettings from "@/components/chanting/ChantSettings";
+import ChantSettingsPanel from "@/components/chanting/ChantSettingsPanel";
+import ChantToc from "@/components/chanting/ChantToc";
 import darkTheme from "@/lib/theme";
 import { exitFullscreen, requestFullscreen } from "@/lib/util";
 
@@ -61,8 +62,8 @@ const initialize = ({ chants, mobile, toc }) => ({
   fontSize: 24,
   fullscreen: false,
   highlight: false,
-  idle: false,
   mobile,
+  performance: false,
   playing: false,
   settings: false,
   speed: 1.0,
@@ -138,13 +139,15 @@ const reducer = (state, action) => {
     case "SET_ACTIVE_INDEX":
       return { ...state, activeIndex: action.activeIndex };
     case "TOGGLE_DEBUG":
-      return { ...state, debug: !state.debug, highlight: !state.debug };
+      return { ...state, debug: !state.debug };
+    case "TOGGLE_HIGHLIGHT":
+      return { ...state, highlight: !state.highlight };
+    case "TOGGLE_PERFORMANCE":
+      return { ...state, performance: !state.performance };
     case "SET_FONT_SIZE":
       return { ...state, fontSize: action.fontSize };
     case "SET_FULLSCREEN":
       return { ...state, fullscreen: action.fullscreen };
-    case "SET_IDLE":
-      return { ...state, idle: action.idle };
     case "SET_SPEED":
       return { ...state, speed: action.speed };
     case "SET_THEME_TYPE":
@@ -276,30 +279,27 @@ const ChantWindowInner = ({ dispatch, state }) => {
   const classes = useStyles({ state });
   return (
     <div className={classes.root}>
-      <Fade in={state.settings || !state.idle}>
-        <ChantCloseButton dispatch={dispatch} state={state} />
+      <ChantCloseControls dispatch={dispatch} state={state} />
+      <ChantDebugControls dispatch={dispatch} state={state} />
+      <ChantOperationControls dispatch={dispatch} state={state} />
+      <ChantSettingsPanel dispatch={dispatch} state={state} />
+      <Fade in={state.view === "CHANT"}>
+        <div style={{ position: "absolute", width: "100%", height: "100%" }}>
+          <ChantScroller dispatch={dispatch} state={state}>
+            <Chant
+              chant={state.chant}
+              fontSize={state.fontSize}
+              highlight={state.highlight}
+            />
+          </ChantScroller>
+        </div>
       </Fade>
-      <Fade in={state.settings || !state.idle}>
-        <ChantDebugButton dispatch={dispatch} state={state} />
+      <Fade in={state.view === "TOC"}>
+        <div style={{ position: "absolute", width: "100%", height: "100%" }}>
+          <ChantToc dispatch={dispatch} state={state} />
+        </div>
       </Fade>
-      <Fade in={state.view === "CHANT" && (state.settings || !state.idle)}>
-        <ChantControls dispatch={dispatch} state={state} />
-      </Fade>
-      <Fade in={state.view === "CHANT" && state.settings} unmountOnExit>
-        <ChantSettings dispatch={dispatch} state={state} />
-      </Fade>
-      <Fade in={state.view === "CHANT"} unmountOnExit>
-        <ChantScroller dispatch={dispatch} state={state}>
-          <Chant
-            chant={state.chant}
-            fontSize={state.fontSize}
-            highlight={state.highlight}
-          />
-        </ChantScroller>
-      </Fade>
-      <Fade in={state.view === "TOC"} unmountOnExit>
-        <ChantToc dispatch={dispatch} state={state} />
-      </Fade>
+      <ChantPerformanceIndicators />
     </div>
   );
 };
@@ -311,22 +311,8 @@ const ChantWindow = ({
   onClose,
   toc,
 }) => {
-  const [state, dispatch] = useReducer(
-    reducer,
-    { chants, mobile, toc },
-    initialize
-  );
-
-  useIdleTimer({
-    debounce: 500,
-    onActive: () => {
-      dispatch({ type: "SET_IDLE", idle: false });
-    },
-    onIdle: () => {
-      dispatch({ type: "SET_IDLE", idle: true });
-    },
-    timeout: 1000 * 2, // 2 seconds
-  });
+  const reducerDefaults = { chants, mobile, toc };
+  const [state, dispatch] = useReducer(reducer, reducerDefaults, initialize);
 
   useEffect(() => {
     if (allowFullscreen) {
@@ -342,10 +328,14 @@ const ChantWindow = ({
     if (state.close) onClose();
   }, [state.close]);
 
+  const theme = state.themeType === "dark" ? darkTheme : lightTheme;
+
   return (
-    <ThemeProvider theme={state.themeType === "dark" ? darkTheme : lightTheme}>
-      <ChantWindowInner dispatch={dispatch} state={state} />
-    </ThemeProvider>
+    <ChantIdleProvider>
+      <ThemeProvider theme={theme}>
+        <ChantWindowInner dispatch={dispatch} state={state} />
+      </ThemeProvider>
+    </ChantIdleProvider>
   );
 };
 

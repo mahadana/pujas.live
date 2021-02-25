@@ -21,13 +21,27 @@ const TooltipToggleButton = ({ children, title, ...props }) => {
   );
 };
 
-const ChantToggleGroup = ({ buttons, onChange, ...props }) => {
-  const localOnChange = (event, value) => {
-    if (value !== null) onChange?.(value);
+const ChantToggleGroup = ({ buttons, onChange, value, ...props }) => {
+  const localOnChange = (event, newValue) => {
+    if (newValue === null) {
+      newValue = value;
+      for (const button of buttons) {
+        if (button.value !== value) {
+          newValue = button.value;
+          break;
+        }
+      }
+    }
+    onChange?.(newValue);
   };
 
   return (
-    <ToggleButtonGroup {...props} exclusive onChange={localOnChange}>
+    <ToggleButtonGroup
+      {...props}
+      exclusive
+      onChange={localOnChange}
+      value={value}
+    >
       {buttons.map((button, index) => (
         <TooltipToggleButton
           aria-label={button.title}

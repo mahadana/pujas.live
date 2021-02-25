@@ -4,6 +4,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import { makeStyles } from "@material-ui/core/styles";
+import { memo } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -113,38 +114,46 @@ const ChantingTocChant = ({ onOpen, page, title, ...props }) => {
   );
 };
 
-const ChantToc = ({ dispatch, state, ...props }) => {
-  const classes = useStyles();
+const ChantToc = memo(
+  ({ dispatch, state }) => {
+    const classes = useStyles();
 
-  const open = (props) => dispatch({ ...props, type: "OPEN_CHANT_FROM_TOC" });
+    const open = (props) => dispatch({ ...props, type: "OPEN_CHANT_FROM_TOC" });
 
-  return (
-    <Grid {...props} container className={classes.root}>
-      {state.toc?.map?.(({ parts, title }, volumeIndex) => (
-        <Grid item key={volumeIndex} xs={12} sm={6}>
-          <ChantingTocVolume title={title}>
-            {parts?.map?.(({ chants, page, title }, partIndex) => (
-              <ChantingTocPart
-                key={partIndex}
-                onOpen={() => open({ partIndex, volumeIndex })}
-                page={page}
-                title={title}
-              >
-                {chants?.map?.(({ page, title }, chantIndex) => (
-                  <ChantingTocChant
-                    key={chantIndex}
-                    onOpen={() => open({ chantIndex, partIndex, volumeIndex })}
-                    page={page}
-                    title={title}
-                  />
-                ))}
-              </ChantingTocPart>
-            ))}
-          </ChantingTocVolume>
-        </Grid>
-      ))}
-    </Grid>
-  );
-};
+    return (
+      <Grid container className={classes.root}>
+        {state.toc?.map?.(({ parts, title }, volumeIndex) => (
+          <Grid item key={volumeIndex} xs={12} sm={6}>
+            <ChantingTocVolume title={title}>
+              {parts?.map?.(({ chants, page, title }, partIndex) => (
+                <ChantingTocPart
+                  key={partIndex}
+                  onOpen={() => open({ partIndex, volumeIndex })}
+                  page={page}
+                  title={title}
+                >
+                  {chants?.map?.(({ page, title }, chantIndex) => (
+                    <ChantingTocChant
+                      key={chantIndex}
+                      onOpen={() =>
+                        open({ chantIndex, partIndex, volumeIndex })
+                      }
+                      page={page}
+                      title={title}
+                    />
+                  ))}
+                </ChantingTocPart>
+              ))}
+            </ChantingTocVolume>
+          </Grid>
+        ))}
+      </Grid>
+    );
+  },
+  (prev, next) =>
+    prev.dispatch === next.dispatch && prev.state.toc === next.state.toc
+);
+
+ChantToc.displayName = "ChantToc";
 
 export default ChantToc;

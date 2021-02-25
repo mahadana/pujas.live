@@ -6,6 +6,8 @@ import sum from "lodash/sum";
 import throttle from "lodash/throttle";
 import { useEffect, useRef } from "react";
 
+import { useChantIdle } from "@/components/chanting/ChantIdleProvider";
+
 const BREAK_FACTOR = 15;
 const HUMAN_SCROLL_TIMEOUT = 10; // 1/6 second
 const MIN_ACCELERATION = -0.1;
@@ -38,9 +40,9 @@ const DEFAULT_SCROLL_DATA = {
 };
 
 const useStyles = makeStyles((theme) => ({
-  root: ({ state }) => ({
+  root: ({ idle, state }) => ({
     position: "absolute",
-    cursor: state.idle && state.fullscreen ? "none" : "inherit",
+    cursor: idle && state.fullscreen ? "none" : "inherit",
     top: 0,
     right: 0,
     width: "100%",
@@ -59,22 +61,6 @@ const useStyles = makeStyles((theme) => ({
       padding: "1rem",
     },
   }),
-  debugIndicatorMiss: {
-    position: "fixed",
-    zIndex: 1000,
-    bottom: 0,
-    right: 5,
-    backgroundColor: "yellow",
-    width: 5,
-  },
-  debugIndicatorLong: {
-    position: "fixed",
-    zIndex: 1000,
-    bottom: 0,
-    right: 0,
-    backgroundColor: "red",
-    width: 5,
-  },
 }));
 
 const scrollError = throttle(console.error, 5000);
@@ -445,14 +431,15 @@ const incrementActive = (data) => {
   }
 };
 
-const updateDebugIndicator = (id, value) => {
-  const el = document.getElementById(id);
+const updatePerformanceIndicator = (data, name, value) => {
+  const el = document.getElementById(`chant-performance-${name}`);
   if (!el) return;
+  value = Math.max(0, value);
   const current = parseInt(el.style.height) || 0;
-  if (value > current) {
-    el.style.height = `${Math.min(value, 1000)}px`;
+  if (data.state.performance && value > current) {
+    el.style.height = `${Math.min(value, 400)}px`;
   } else {
-    el.style.height = `${current - 1}px`;
+    el.style.height = `${Math.max(0, current - 3)}px`;
   }
 };
 
@@ -485,10 +472,8 @@ const scrollLoop = (data) => {
     scrollLoop(data);
     const long = performance.now() - start;
 
-    if (data.state.debug) {
-      updateDebugIndicator("chant-scroller-debug-miss", miss);
-      updateDebugIndicator("chant-scroller-debug-long", long);
-    }
+    updatePerformanceIndicator(data, "miss", (miss - 1000 / 60) * 2);
+    updatePerformanceIndicator(data, "long", (long - 1) * 10);
   });
 };
 
@@ -504,10 +489,11 @@ const onKeyDownEvent = (data) => {
   data.humanScrollTimeout = HUMAN_SCROLL_TIMEOUT;
 };
 
-const ChantScroller = ({ children, dispatch, state, ...props }) => {
+const ChantScroller = ({ children, dispatch, state }) => {
+  const idle = useChantIdle();
   const domRef = useRef();
   const scrollRef = useRef();
-  const classes = useStyles({ state });
+  const classes = useStyles({ idle, state });
 
   useEffect(() => {
     let data = scrollRef.current;
@@ -543,15 +529,7 @@ const ChantScroller = ({ children, dispatch, state, ...props }) => {
   }, [dispatch, state]);
 
   return (
-    <div {...props} className={classes.root} ref={domRef} tabIndex="0">
-      <div
-        className={classes.debugIndicatorMiss}
-        id="chant-scroller-debug-miss"
-      />
-      <div
-        className={classes.debugIndicatorLong}
-        id="chant-scroller-debug-long"
-      />
+    <div className={classes.root} ref={domRef} tabIndex="0">
       {children}
     </div>
   );
