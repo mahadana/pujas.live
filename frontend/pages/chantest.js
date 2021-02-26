@@ -1,7 +1,8 @@
-import Button from "@material-ui/core/Button";
 import { useState } from "react";
 
+import ChantingBookButton from "@/components/ChantingBookButton";
 import ChantModal from "@/components/chanting/ChantModal";
+import ChantWindow from "@/components/chanting/ChantWindow";
 import PageLayout from "@/components/PageLayout";
 
 const ChanTestPage = () => {
@@ -12,11 +13,19 @@ const ChanTestPage = () => {
 
   return (
     <PageLayout>
-      <div style={{ marginTop: "5em", textAlign: "center" }}>
-        <Button onClick={onClick} size="large" variant="contained">
-          Open Chanting Window
-        </Button>
-        <ChantModal onClose={onClose} open={open} />
+      <div style={{ fontSize: "7vh", marginTop: "0.5em", textAlign: "center" }}>
+        <ChantingBookButton book="1" onClick={onClick} />
+        <ChantingBookButton book="2" onClick={onClick} />
+        <ChantModal onClose={onClose} open={open}>
+          {({ chants, mobile, toc }) => (
+            <ChantWindow
+              chants={chants}
+              mobile={mobile}
+              onClose={onClose}
+              toc={toc}
+            />
+          )}
+        </ChantModal>
       </div>
     </PageLayout>
   );
