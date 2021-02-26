@@ -7,6 +7,7 @@ import throttle from "lodash/throttle";
 import { useEffect, useRef } from "react";
 
 import { useChantIdle } from "@/components/chanting/ChantIdleProvider";
+import ChantMediaPlayer from "@/components/chanting/ChantMediaPlayer";
 
 const BREAK_FACTOR = 15;
 const HUMAN_SCROLL_TIMEOUT = 10; // 1/6 second
@@ -29,6 +30,8 @@ const DEFAULT_SCROLL_DATA = {
   fontSize: null,
   ignoreNextScroll: false,
   skipTop: null,
+  mediaPlayer: null,
+  mediaUrl: null,
   next: null,
   nodes: null,
   humanScrollTimeout: 0,
@@ -431,6 +434,31 @@ const incrementActive = (data) => {
   }
 };
 
+const updateMediaPlayer = (data) => {
+  const { mediaPlayer, state } = data;
+  let { mediaUrl } = data;
+  if (mediaUrl !== state.mediaUrl) {
+    console.log("updateMediaUrl", mediaUrl, state.mediaUrl);
+    data.mediaUrl = mediaUrl = state.mediaUrl;
+    if (mediaUrl) {
+      mediaPlayer.setUrl(mediaUrl);
+      data.active = null;
+      data.activeIndex = "START";
+      data.activeComplete = 0;
+      state.activeIndex = "START";
+    } else {
+      mediaPlayer.remove();
+    }
+  }
+
+  const mediaPlaying = mediaPlayer.isPlaying();
+  if (state.playing && !mediaPlaying) {
+    mediaPlayer.play();
+  } else if (!state.playing && mediaPlaying) {
+    mediaPlayer.pause();
+  }
+};
+
 const updatePerformanceIndicator = (data, name, value) => {
   const el = document.getElementById(`chant-performance-${name}`);
   if (!el) return;
@@ -458,6 +486,7 @@ const scrollLoop = (data) => {
       updateVelocity(data);
       executeScroll(data);
       incrementActive(data);
+      updateMediaPlayer(data);
     }
     // });
   } catch (error) {
@@ -491,17 +520,25 @@ const onKeyDownEvent = (data) => {
 
 const ChantScroller = ({ children, dispatch, state }) => {
   const idle = useChantIdle();
+  const mediaPlayerRef = useRef();
   const domRef = useRef();
   const scrollRef = useRef();
   const classes = useStyles({ idle, state });
 
   useEffect(() => {
     let data = scrollRef.current;
+    const mediaPlayer = mediaPlayerRef.current;
     const scroll = { el: domRef.current };
     if (data) {
+      data.mediaPlayer = mediaPlayer;
       data.scroll = scroll;
     } else {
-      data = scrollRef.current = { ...DEFAULT_SCROLL_DATA, scroll, state: {} };
+      data = scrollRef.current = {
+        ...DEFAULT_SCROLL_DATA,
+        mediaPlayer,
+        scroll,
+        state: {},
+      };
     }
     const localOnScrollEvent = () => onScrollEvent(data);
     const localOnKeyDownEvent = () => onKeyDownEvent(data);
@@ -524,13 +561,19 @@ const ChantScroller = ({ children, dispatch, state }) => {
       data.state = state;
       scrollReset(data);
     } else {
-      scrollRef.current = { ...DEFAULT_SCROLL_DATA, dispatch, state };
+      scrollRef.current = {
+        ...DEFAULT_SCROLL_DATA,
+        dispatch,
+        mediaPlayer: mediaPlayerRef.current,
+        state,
+      };
     }
   }, [dispatch, state]);
 
   return (
     <div className={classes.root} ref={domRef} tabIndex="0">
       {children}
+      <ChantMediaPlayer ref={mediaPlayerRef} />
     </div>
   );
 };

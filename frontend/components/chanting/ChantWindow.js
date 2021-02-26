@@ -62,6 +62,7 @@ const initialize = ({ chants, mobile, toc }) => ({
   fontSize: 24,
   fullscreen: false,
   highlight: false,
+  mediaUrl: null,
   mobile,
   performance: false,
   playing: false,
@@ -148,6 +149,8 @@ const reducer = (state, action) => {
       return { ...state, fontSize: action.fontSize };
     case "SET_FULLSCREEN":
       return { ...state, fullscreen: action.fullscreen };
+    case "SET_MEDIA_URL":
+      return { ...state, mediaUrl: action.mediaUrl };
     case "SET_SPEED":
       return { ...state, speed: action.speed };
     case "SET_THEME_TYPE":

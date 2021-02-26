@@ -6,6 +6,7 @@ import { useChantIdle } from "@/components/chanting/ChantIdleProvider";
 import ChantDebugButton from "@/components/chanting/inputs/ChantDebugButton";
 import ChantHighlightButton from "@/components/chanting/inputs/ChantHighlightButton";
 import ChantPerformanceButton from "@/components/chanting/inputs/ChantPerformanceButton";
+import ChantSetMediaButton from "@/components/chanting/inputs/ChantSetMediaButton";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: 0,
     right: 0,
     width: ({ debug, visible }) =>
-      visible ? `${(debug ? 3 : 1) * 3.75}rem` : 0,
+      visible ? `${(debug ? 4 : 1) * 3.75}rem` : 0,
     height: ({ visible }) => (visible ? "3.75rem" : 0),
   },
   fade: {
@@ -47,6 +48,7 @@ const ChantDebugControls = ({ dispatch, state }) => {
               <>
                 <ChantHighlightButton dispatch={dispatch} state={state} />
                 <ChantPerformanceButton dispatch={dispatch} state={state} />
+                <ChantSetMediaButton dispatch={dispatch} state={state} />
               </>
             )}
             <ChantDebugButton dispatch={dispatch} state={state} />
