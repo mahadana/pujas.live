@@ -5,7 +5,7 @@ import {
   ThemeProvider,
 } from "@material-ui/core/styles";
 import escape from "lodash/escape";
-import { useEffect, useReducer } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 
 import Chant from "@/components/chanting/Chant";
 import ChantCloseControls from "@/components/chanting/ChantCloseControls";
@@ -51,6 +51,11 @@ const useStyles = makeStyles((theme) => ({
           boxShadow: "1px 1px 6px rgb(0 0 0 / 80%)",
         }),
   }),
+  fade: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
 }));
 
 const initialize = ({ chants, mobile, toc }) => ({
@@ -280,6 +285,12 @@ const getChantFromToc = ({
 // This inner component is needed for the theme to apply.
 const ChantWindowInner = ({ dispatch, state }) => {
   const classes = useStyles({ state });
+
+  const onOpenToc = useCallback(
+    (props) => dispatch({ ...props, type: "OPEN_CHANT_FROM_TOC" }),
+    [dispatch]
+  );
+
   return (
     <div className={classes.root}>
       <ChantCloseControls dispatch={dispatch} state={state} />
@@ -287,7 +298,7 @@ const ChantWindowInner = ({ dispatch, state }) => {
       <ChantOperationControls dispatch={dispatch} state={state} />
       <ChantSettingsPanel dispatch={dispatch} state={state} />
       <Fade in={state.view === "CHANT"}>
-        <div style={{ position: "absolute", width: "100%", height: "100%" }}>
+        <div className={classes.fade}>
           <ChantScroller dispatch={dispatch} state={state}>
             <Chant
               chant={state.chant}
@@ -298,8 +309,8 @@ const ChantWindowInner = ({ dispatch, state }) => {
         </div>
       </Fade>
       <Fade in={state.view === "TOC"}>
-        <div style={{ position: "absolute", width: "100%", height: "100%" }}>
-          <ChantToc dispatch={dispatch} state={state} />
+        <div className={classes.fade}>
+          <ChantToc onOpen={onOpenToc} toc={state.toc} />
         </div>
       </Fade>
       <ChantPerformanceIndicators />

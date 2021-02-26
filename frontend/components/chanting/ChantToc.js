@@ -115,20 +115,17 @@ const ChantingTocChant = ({ onOpen, page, title, ...props }) => {
 };
 
 const ChantToc = memo(
-  ({ dispatch, state }) => {
+  ({ onOpen, toc }) => {
     const classes = useStyles();
-
-    const open = (props) => dispatch({ ...props, type: "OPEN_CHANT_FROM_TOC" });
-
     return (
       <Grid container className={classes.root}>
-        {state.toc?.map?.(({ parts, title }, volumeIndex) => (
+        {toc?.map?.(({ parts, title }, volumeIndex) => (
           <Grid item key={volumeIndex} xs={12} sm={6}>
             <ChantingTocVolume title={title}>
               {parts?.map?.(({ chants, page, title }, partIndex) => (
                 <ChantingTocPart
                   key={partIndex}
-                  onOpen={() => open({ partIndex, volumeIndex })}
+                  onOpen={() => onOpen({ partIndex, volumeIndex })}
                   page={page}
                   title={title}
                 >
@@ -136,7 +133,7 @@ const ChantToc = memo(
                     <ChantingTocChant
                       key={chantIndex}
                       onOpen={() =>
-                        open({ chantIndex, partIndex, volumeIndex })
+                        onOpen({ chantIndex, partIndex, volumeIndex })
                       }
                       page={page}
                       title={title}
@@ -150,8 +147,7 @@ const ChantToc = memo(
       </Grid>
     );
   },
-  (prev, next) =>
-    prev.dispatch === next.dispatch && prev.state.toc === next.state.toc
+  (prev, next) => prev.onOpen === next.onOpen && prev.toc === next.toc
 );
 
 ChantToc.displayName = "ChantToc";

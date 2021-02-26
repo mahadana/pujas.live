@@ -438,7 +438,6 @@ const updateMediaPlayer = (data) => {
   const { mediaPlayer, state } = data;
   let { mediaUrl } = data;
   if (mediaUrl !== state.mediaUrl) {
-    console.log("updateMediaUrl", mediaUrl, state.mediaUrl);
     data.mediaUrl = mediaUrl = state.mediaUrl;
     if (mediaUrl) {
       mediaPlayer.setUrl(mediaUrl);

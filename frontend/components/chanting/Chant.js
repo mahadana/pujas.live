@@ -1,8 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
-import { createElement, useMemo } from "react";
-
-import ChantFontStyle from "@/components/chanting/ChantFontStyle";
+import { createElement, memo } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: ({ fontSize, highlight }) => ({
@@ -175,17 +173,11 @@ const walkNode = (node, key) => {
   }
 };
 
-const Chant = ({ chant, fontSize, highlight }) => {
+const Chant = memo(({ chant, fontSize = 20, highlight }) => {
   const classes = useStyles({ fontSize, highlight });
   const className = classNameWithLang(chant, classes.root);
-  const children = useMemo(() => walkNode(chant), [chant]);
-  return (
-    <div className={className}>
-      <ChantFontStyle />
-      {children}
-    </div>
-  );
-};
+  return <div className={className}>{walkNode(chant)}</div>;
+});
 
 Chant.displayName = "Chant";
 

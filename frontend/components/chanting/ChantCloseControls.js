@@ -37,7 +37,7 @@ const ChantCloseControls = ({ dispatch, state }) => {
   const onEnter = () => setVisible(true);
   const onExited = () => setVisible(false);
 
-  const open = state.settings || !idle;
+  const open = state.view === "TOC" || state.settings || !idle;
 
   return (
     <div className={classes.root}>

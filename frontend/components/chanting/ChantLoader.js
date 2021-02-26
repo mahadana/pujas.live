@@ -6,7 +6,7 @@ import Loading from "@/components/Loading";
 const CCB_URL =
   "https://pujas-live.sfo3.digitaloceanspaces.com/chantest/ccb.json";
 
-const fetchData = async () => {
+const fetchData = async (rawToc) => {
   // Remote site needs header "Access-Control-Allow-Origin *"" if serving
   // from another domain;
   const data = await (await fetch(CCB_URL)).json();
@@ -18,6 +18,8 @@ const fetchData = async () => {
     }, {}),
     chants: data.chants,
   };
+
+  if (rawToc) return data;
 
   data.toc.forEach((volume) => {
     volume.parts.forEach((part) => {
@@ -40,13 +42,13 @@ const fetchData = async () => {
   return data;
 };
 
-const ChantLoader = ({ children }) => {
+const ChantLoader = ({ children, rawToc = false }) => {
   const mobile = useMediaQuery("(max-width: 600px), (max-height: 600px)");
   const [data, setData] = useState(null);
 
   useEffect(() => {
     if (!data) {
-      fetchData().then(setData).catch(console.error);
+      fetchData(rawToc).then(setData).catch(console.error);
     }
   }, [data]);
 
