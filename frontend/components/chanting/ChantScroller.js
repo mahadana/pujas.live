@@ -437,8 +437,8 @@ const incrementActive = (data) => {
 const updateMediaPlayer = (data) => {
   const { mediaPlayer, state } = data;
   let { mediaUrl } = data;
-  if (mediaUrl !== state.mediaUrl) {
-    data.mediaUrl = mediaUrl = state.mediaUrl;
+  if (mediaUrl !== state.chant?.mediaUrl) {
+    data.mediaUrl = mediaUrl = state.chant?.mediaUrl;
     if (mediaUrl) {
       mediaPlayer.setUrl(mediaUrl);
       data.active = null;

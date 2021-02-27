@@ -60,6 +60,37 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const modifyToc = (toc, raw) =>
+  toc.map((volume) => {
+    volume = { ...volume };
+    volume.parts = volume.parts.map((part) => {
+      part = { ...part };
+      if (!raw) {
+        if (volume.volume == 1 && (part.part == 1 || part.part == 2)) {
+          part.chantSet = part.chantSet.slice(0, -1);
+          part.chants = part.chants.slice(-1);
+        } else if (volume.volume == 2 && part.part == 3) {
+          part.chants = [];
+        } else if (volume.volume == 1 && part.part == 4) {
+          part.chants = part.chants.slice(1); // Remove Añjali
+        }
+      }
+      part.chants = part.chants.map((chant) => {
+        chant = { ...chant };
+        if (raw) {
+          chant.chantSet = [chant.link];
+        } else {
+          if (!chant.chantSet && !(volume.volume == 2 && part.part == 2)) {
+            chant.chantSet = [chant.link];
+          }
+        }
+        return chant;
+      });
+      return part;
+    });
+    return volume;
+  });
+
 const ChantingTocListItemText = ({ page, title }) => {
   const classes = useStyles();
   return (
@@ -114,41 +145,61 @@ const ChantingTocChant = ({ onOpen, page, title, ...props }) => {
   );
 };
 
-const ChantToc = memo(
-  ({ onOpen, toc }) => {
-    const classes = useStyles();
-    return (
-      <Grid container className={classes.root}>
-        {toc?.map?.(({ parts, title }, volumeIndex) => (
-          <Grid item key={volumeIndex} xs={12} sm={6}>
-            <ChantingTocVolume title={title}>
-              {parts?.map?.(({ chants, page, title }, partIndex) => (
-                <ChantingTocPart
-                  key={partIndex}
-                  onOpen={() => onOpen({ partIndex, volumeIndex })}
-                  page={page}
-                  title={title}
-                >
-                  {chants?.map?.(({ page, title }, chantIndex) => (
-                    <ChantingTocChant
-                      key={chantIndex}
-                      onOpen={() =>
-                        onOpen({ chantIndex, partIndex, volumeIndex })
-                      }
-                      page={page}
-                      title={title}
-                    />
-                  ))}
-                </ChantingTocPart>
-              ))}
-            </ChantingTocVolume>
-          </Grid>
-        ))}
-      </Grid>
-    );
-  },
-  (prev, next) => prev.onOpen === next.onOpen && prev.toc === next.toc
-);
+const ChantToc = memo(({ onOpen: parentOnOpen, raw, toc }) => {
+  const classes = useStyles();
+
+  toc = modifyToc(toc, raw);
+
+  const onOpen = (props) => {
+    const tocPart = toc[props.volumeIndex]?.parts?.[props.partIndex];
+    const tocChant = tocPart?.chants?.[props.chantIndex];
+    if (tocChant && tocPart) {
+      parentOnOpen?.({
+        ...props,
+        chantSet: tocChant.chantSet || tocPart.chantSet,
+        link: tocChant.link,
+        title: tocPart.title,
+      });
+    } else if (tocPart) {
+      parentOnOpen?.({
+        ...props,
+        chantSet: tocPart.chantSet,
+        link: tocPart.link,
+        title: tocPart.title,
+      });
+    }
+  };
+
+  return (
+    <Grid container className={classes.root}>
+      {toc?.map?.(({ parts, title }, volumeIndex) => (
+        <Grid item key={volumeIndex} xs={12} sm={6}>
+          <ChantingTocVolume title={title}>
+            {parts?.map?.(({ chants, page, title }, partIndex) => (
+              <ChantingTocPart
+                key={partIndex}
+                onOpen={() => onOpen({ partIndex, volumeIndex })}
+                page={page}
+                title={title}
+              >
+                {chants?.map?.(({ page, title }, chantIndex) => (
+                  <ChantingTocChant
+                    key={chantIndex}
+                    onOpen={() =>
+                      onOpen({ chantIndex, partIndex, volumeIndex })
+                    }
+                    page={page}
+                    title={title}
+                  />
+                ))}
+              </ChantingTocPart>
+            ))}
+          </ChantingTocVolume>
+        </Grid>
+      ))}
+    </Grid>
+  );
+});
 
 ChantToc.displayName = "ChantToc";
 

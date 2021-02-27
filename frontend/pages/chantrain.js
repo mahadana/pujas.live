@@ -1,5 +1,6 @@
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
+import _isFinite from "lodash/isFinite";
 import { useRouter } from "next/router";
 
 import ChantFontStyle from "@/components/chanting/ChantFontStyle";
@@ -25,15 +26,12 @@ const ChanTrainPage = () => {
       <Container maxWidth="md">
         <div className={classes.root}>
           <h1>Chant Training</h1>
-          <ChantLoader rawToc>
+          <ChantLoader>
             {({ toc }) => {
-              const onOpen = ({ volumeIndex, partIndex, chantIndex }) => {
-                const chantId =
-                  toc[volumeIndex]?.parts?.[partIndex]?.chants?.[chantIndex]
-                    ?.link;
-                if (chantId) router.push(`/chantrain/${chantId}`);
+              const onOpen = ({ chantIndex, link: chantId }) => {
+                if (_isFinite(chantIndex)) router.push(`/chantrain/${chantId}`);
               };
-              return <ChantToc onOpen={onOpen} toc={toc} />;
+              return <ChantToc onOpen={onOpen} raw={true} toc={toc} />;
             }}
           </ChantLoader>
         </div>

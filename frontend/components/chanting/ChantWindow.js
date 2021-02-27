@@ -5,8 +5,10 @@ import {
   ThemeProvider,
 } from "@material-ui/core/styles";
 import escape from "lodash/escape";
+import _isFinite from "lodash/isFinite";
 import { useCallback, useEffect, useReducer } from "react";
 
+import { importTimingFromStore } from "@/components/chanting/editor/ChantEditorReducer";
 import Chant from "@/components/chanting/Chant";
 import ChantCloseControls from "@/components/chanting/ChantCloseControls";
 import ChantOperationControls from "@/components/chanting/ChantOperationControls";
@@ -67,14 +69,15 @@ const initialize = ({ chants, mobile, toc }) => ({
   fontSize: 24,
   fullscreen: false,
   highlight: false,
-  mediaUrl: null,
   mobile,
   performance: false,
   playing: false,
   settings: false,
   speed: 1.0,
   themeType: "light",
+  timing: null,
   toc,
+  useTiming: null,
   view: "TOC",
 });
 
@@ -122,10 +125,10 @@ const reducer = (state, action) => {
     case "OPEN_CHANT_FROM_TOC": {
       const chant = getChantFromToc({
         chants: state.chants,
-        chantIndex: action.chantIndex,
-        partIndex: action.partIndex,
-        toc: state.toc,
-        volumeIndex: action.volumeIndex,
+        chantSet: action.chantSet,
+        link: action.link,
+        title: action.title,
+        useTiming: state.useTiming,
       });
       if (chant) {
         return {
@@ -144,24 +147,22 @@ const reducer = (state, action) => {
     }
     case "SET_ACTIVE_INDEX":
       return { ...state, activeIndex: action.activeIndex };
-    case "TOGGLE_DEBUG":
-      return { ...state, debug: !state.debug };
-    case "TOGGLE_HIGHLIGHT":
-      return { ...state, highlight: !state.highlight };
-    case "TOGGLE_PERFORMANCE":
-      return { ...state, performance: !state.performance };
     case "SET_FONT_SIZE":
       return { ...state, fontSize: action.fontSize };
     case "SET_FULLSCREEN":
       return { ...state, fullscreen: action.fullscreen };
-    case "SET_MEDIA_URL":
-      return { ...state, mediaUrl: action.mediaUrl };
     case "SET_SPEED":
       return { ...state, speed: action.speed };
     case "SET_THEME_TYPE":
       return { ...state, themeType: action.themeType };
     case "STOP_PLAYING":
       return { ...state, playing: false };
+    case "TOGGLE_DEBUG":
+      return { ...state, debug: !state.debug };
+    case "TOGGLE_HIGHLIGHT":
+      return { ...state, highlight: !state.highlight };
+    case "TOGGLE_PERFORMANCE":
+      return { ...state, performance: !state.performance };
     case "TOGGLE_PLAYING": {
       if (!state.playing && state.activeIndex === "END") {
         return { ...state, activeIndex: "START", playing: true };
@@ -171,6 +172,8 @@ const reducer = (state, action) => {
     }
     case "TOGGLE_SETTINGS":
       return { ...state, controls: !state.settings, settings: !state.settings };
+    case "TOGGLE_USE_TIMING":
+      return { ...state, useTiming: !state.useTiming };
     default:
       throw new Error(`Unknown action type ${action.type}`);
   }
@@ -188,30 +191,54 @@ const getWordCharCount = (html) => {
   return [simple.split(" ").length, simple.length];
 };
 
-const addChantMeta = (chant) => {
+const addChantMeta = (chant, useTiming) => {
   let textIndex = 0;
   let startIndex = 0;
   const textNodeMap = [];
 
+  const timing = useTiming ? importTimingFromStore(chant.id) : null;
+
   const walkNode = (node) => {
     if (node?.html) {
-      if (node.type === "raw") return;
       if (node.start) startIndex = textIndex;
-      node.textIndex = textIndex++;
       [node.wordCount, node.charCount] = getWordCharCount(node.html);
-      if (node.type === "verse") {
-        if (node.lang == "pi" || String(node.html).match(/[āīūḷṇṃḍṭṅñ]/)) {
-          node.duration = 0.7 + 0.14 * node.charCount;
+      if (timing) {
+        const timeIndex = textIndex - 2; // ignore first two headers
+        const times = timing.times;
+        const time = times[timeIndex];
+        if (timeIndex == -1) {
+          let duration = null;
+          for (let i = 0; !_isFinite(duration) && i < times.length; i++) {
+            duration = times[i].start;
+          }
+          if (!_isFinite(duration)) duration = 0.001;
+          node.duration = duration;
+        } else if (timeIndex >= 0 && time && time.start) {
+          let end = time.end;
+          for (
+            let i = timeIndex + 1;
+            !_isFinite(end) && i < times.length;
+            i++
+          ) {
+            end = times[i].start;
+          }
+          if (!isFinite(end)) end = 999999999;
+          node.duration = end - time.start;
         } else {
-          node.duration = 1.2 + 0.07 * node.charCount;
+          node.duration = 0.001;
         }
       } else {
-        if (node.html.match(/^bow$/i)) {
-          node.duration = 2;
+        if (node.type === "verse") {
+          if (node.lang == "pi" || String(node.html).match(/[āīūḷṇṃḍṭṅñ]/)) {
+            node.duration = 0.7 + 0.14 * node.charCount;
+          } else {
+            node.duration = 1.2 + 0.07 * node.charCount;
+          }
         } else {
           node.duration = 1;
         }
       }
+      node.textIndex = textIndex++;
       textNodeMap.push(node);
     } else if (node?.children) {
       node?.children?.forEach?.(walkNode);
@@ -219,32 +246,14 @@ const addChantMeta = (chant) => {
   };
   walkNode(chant);
 
+  chant.mediaUrl = timing?.mediaUrl ?? null;
   chant.startIndex = startIndex;
   chant.textCount = textIndex;
   chant.textNodeMap = textNodeMap;
   return chant;
 };
 
-const getChantFromToc = ({
-  chants,
-  chantIndex,
-  partIndex,
-  toc,
-  volumeIndex,
-}) => {
-  const tocPart = toc[volumeIndex]?.parts?.[partIndex];
-  const tocChant = tocPart?.chants?.[chantIndex];
-  let chantSet, link, title;
-  if (tocChant) {
-    chantSet = tocChant.chantSet || tocPart.chantSet;
-    link = tocChant.link;
-    title = tocPart.title;
-  } else {
-    chantSet = tocPart.chantSet;
-    link = tocPart.link;
-    title = tocPart.title;
-  }
-
+const getChantFromToc = ({ chants, chantSet, link, title, useTiming }) => {
   const chant = chantSet
     .map((chantId) => chants.chantMap[chantId])
     .filter((chant) => chant)
@@ -279,7 +288,7 @@ const getChantFromToc = ({
       { title, id: "", children: [{ type: "h1", html: escape(title) }] }
     );
 
-  return chant.children?.length > 0 ? addChantMeta(chant) : null;
+  return chant.children?.length > 0 ? addChantMeta(chant, useTiming) : null;
 };
 
 // This inner component is needed for the theme to apply.
@@ -310,7 +319,7 @@ const ChantWindowInner = ({ dispatch, state }) => {
       </Fade>
       <Fade in={state.view === "TOC"}>
         <div className={classes.fade}>
-          <ChantToc onOpen={onOpenToc} toc={state.toc} />
+          <ChantToc onOpen={onOpenToc} raw={state.debug} toc={state.toc} />
         </div>
       </Fade>
       <ChantPerformanceIndicators />
