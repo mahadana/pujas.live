@@ -11,6 +11,7 @@ import {
   useChantEditorReducer,
 } from "@/components/chanting/editor/ChantEditorReducer";
 import ChantEditorMediaUrlButton from "@/components/chanting/editor/ChantEditorMediaUrlButton";
+import ChantEditorPlaybackSlider from "@/components/chanting/editor/ChantEditorPlaybackSlider";
 import ChantEditorTable from "@/components/chanting/editor/ChantEditorTable";
 import ChantEditorTimeControl from "@/components/chanting/editor/ChantEditorTimeControl";
 
@@ -62,6 +63,13 @@ const ChantEditor = ({ chant }) => {
     }
   }, [state.mediaPlayer, state.timing?.mediaUrl]);
 
+  useEffect(() => {
+    if (state.mediaPlayer) {
+      state.mediaPlayer.playbackRate = state.playbackRate;
+      console.log(state.mediaPlayer.playbackRate);
+    }
+  }, [state.mediaPlayer, state.playbackRate]);
+
   const toggleView = () => dispatch({ type: "TOGGLE_VIEW" });
 
   return (
@@ -84,15 +92,17 @@ const ChantEditor = ({ chant }) => {
       <h1>Chant Training</h1>
       <h2>{`${chant.id} ${chant.title}`}</h2>
       <p>
+        Media URL: {state.timing?.mediaUrl ?? ""}{" "}
         <ChantEditorMediaUrlButton
           dispatch={dispatch}
           size="small"
           state={state}
           variant="outlined"
         >
-          Media URL
-        </ChantEditorMediaUrlButton>
-        {state.timing?.mediaUrl ?? ""}
+          Update
+        </ChantEditorMediaUrlButton>{" "}
+        <br />
+        <ChantEditorPlaybackSlider dispatch={dispatch} state={state} />
       </p>
       <audio autoPlay={false} controls ref={mediaPlayerRef} />
       <ChantEditorTimeControl dispatch={dispatch} state={state} />

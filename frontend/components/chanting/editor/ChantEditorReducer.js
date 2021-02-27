@@ -186,6 +186,8 @@ const reducer = (state, action) => {
       const exportedTiming = exportTiming(timing);
       return { ...state, exportedTiming, timing };
     }
+    case "SET_PLAYBACK_RATE":
+      return { ...state, playbackRate: action.playbackRate };
     case "TOGGLE_VIEW": {
       const view = state.view === "EDIT" ? "STYLED" : "EDIT";
       return { ...state, view };
@@ -217,6 +219,7 @@ const initializer = ({ chant }) => {
     editTime: null,
     exportedTiming: exportTiming(null),
     mediaUrlDialog: false,
+    playbackRate: 1.0,
     timing: null,
     view: "EDIT",
   };
