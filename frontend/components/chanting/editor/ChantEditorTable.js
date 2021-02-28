@@ -1,110 +1,146 @@
 import { emphasize, makeStyles } from "@material-ui/core/styles";
-import _isEqual from "lodash/isEqual";
+import clsx from "clsx";
 import _isFinite from "lodash/isFinite";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
+import ChantEditorTimeDialog from "@/components/chanting/editor/ChantEditorTimeDialog";
 import {
-  getActiveTimes,
+  addExplicitTiming,
+  getIndexWithTime,
+  normalizeTiming,
   timeToHuman,
-} from "@/components/chanting/editor/ChantEditorReducer";
+} from "@/lib/chanting";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    fontFamily: "Gentium Incantation",
+    width: "100%",
+    marginTop: "1rem",
+    borderCollapse: "separate",
+    borderSpacing: 0,
+    fontSize: "1rem",
+    "& th": {
+      position: "sticky",
+      top: "3rem",
+      padding: "0.25rem",
+      backgroundColor: theme.palette.background.default,
+      borderBottom: `1px solid ${theme.palette.text.disabled}`,
+      fontWeight: "bold",
+    },
   },
-  header: {
-    fontWeight: "bold",
+  time: {
+    minWidth: "4em",
+    textAlign: "center",
+    paddingRight: "0.5em",
   },
   button: {
     backgroundColor: emphasize(theme.palette.background.default, 0.1),
-    color: theme.palette.primary.dark,
+    color: theme.palette.primary.main,
     border: "none",
     "&:focus": {
-      backgroundColor: "rgba(255, 255, 0, 0.5)",
+      backgroundColor: "rgba(255, 255, 0, 0.2)",
+    },
+    "&:hover": {
+      backgroundColor: "rgba(255, 255, 0, 0.3)",
     },
   },
   active: {
-    backgroundColor: "rgba(255, 255, 0, 0.3)",
+    backgroundColor: "rgba(255, 255, 0, 0.1)",
+  },
+  verse: {
+    fontFamily: "Gentium Incantation",
   },
 }));
 
-const focusNextButton = (button) => {
+const focusNextButton = () => {
+  const currentButton = document.activeElement;
   const nextButton =
-    button?.parentNode?.parentNode?.nextSibling?.children?.[0]?.children?.[0];
+    currentButton?.parentNode?.parentNode?.nextSibling?.children?.[2]
+      ?.children?.[0];
   if (nextButton) {
     nextButton.focus();
   }
 };
 
 const ChantEditorTable = ({ dispatch, state }) => {
-  const [activeTimes, setActiveTimes] = useState({});
+  const [activeIndex, setActiveIndex] = useState(null);
+  const [editIndex, setEditIndex] = useState(null);
   const classes = useStyles();
+
+  const { mediaPlayer, timing } = state;
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const { mediaPlayer, timing } = state;
-      const currentTime = mediaPlayer ? mediaPlayer.currentTime : null;
-      let currentActiveTimes;
-      if (_isFinite(currentTime) && timing) {
-        currentActiveTimes = getActiveTimes(timing.times, currentTime);
-      } else {
-        currentActiveTimes = {};
-      }
-      if (!_isEqual(currentActiveTimes, activeTimes)) {
-        setActiveTimes(currentActiveTimes);
-      }
+      if (!mediaPlayer) return;
+      const currentTime = mediaPlayer.currentTime;
+      const explicitTiming = addExplicitTiming(normalizeTiming(timing));
+      setActiveIndex(getIndexWithTime(explicitTiming, currentTime));
+      const end = timing?.end;
+      if (_isFinite(end) && currentTime >= end) mediaPlayer.pause();
     }, 50);
     return () => {
       clearInterval(interval);
     };
-  }, [activeTimes, state.mediaPlayer, state.timing]);
+  }, [mediaPlayer, timing]);
 
-  const onClick = (event, index) => {
-    if (state.mediaPlayer?.paused === false) {
-      let start = state.mediaPlayer?.currentTime;
+  const onCloseEdit = useCallback(() => setEditIndex(null), []);
+  const onSavedEdit = focusNextButton;
+  const onClickEdit = (event, index) => {
+    if (mediaPlayer?.paused === false) {
+      const start = mediaPlayer?.currentTime;
       if (_isFinite(start)) {
-        start = parseFloat(start.toFixed(1));
-        dispatch({ type: "UPDATE_NODE", index, start, end: undefined });
-        focusNextButton(event.target);
+        dispatch({ type: "UPDATE_NODE", index, start, end: null });
+        focusNextButton();
       }
     } else {
-      dispatch({ type: "OPEN_TIME_DIALOG", index });
+      setEditIndex(index);
     }
   };
 
   return (
-    <table>
-      <thead>
-        <tr className={classes.header}>
-          <td></td>
-          <td>Start</td>
-          <td>End</td>
-          <td>Verse</td>
-        </tr>
-      </thead>
-      <tbody>
-        {state.timing?.times?.map?.((time, index) => (
-          <tr key={index}>
-            <td>
-              <button
-                className={classes.button}
-                onClick={(event) => onClick(event, index)}
-              >
-                ✎
-              </button>
-            </td>
-            <td>{timeToHuman(time.start)}</td>
-            <td>{timeToHuman(time.end)}</td>
-            <td>
-              <span
-                className={activeTimes[index] && classes.active}
-                dangerouslySetInnerHTML={{ __html: time.html }}
-              />
-            </td>
+    <>
+      <table className={classes.root}>
+        <thead>
+          <tr>
+            <th className={classes.time}>Start</th>
+            <th className={classes.time}>End</th>
+            <th></th>
+            <th>Verse</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {timing?.nodes?.map?.((node, index) => (
+            <tr key={index}>
+              <td className={classes.time}>{timeToHuman(node.start, 1)}</td>
+              <td className={classes.time}>{timeToHuman(node.end, 1)}</td>
+              <td>
+                <button
+                  className={classes.button}
+                  onClick={(event) => onClickEdit(event, index)}
+                >
+                  ✎
+                </button>
+              </td>
+              <td>
+                <span
+                  className={clsx(
+                    classes.verse,
+                    index === activeIndex && classes.active
+                  )}
+                  dangerouslySetInnerHTML={{ __html: node.html }}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <ChantEditorTimeDialog
+        dispatch={dispatch}
+        index={editIndex}
+        onClose={onCloseEdit}
+        onSaved={onSavedEdit}
+        state={state}
+      />
+    </>
   );
 };
 

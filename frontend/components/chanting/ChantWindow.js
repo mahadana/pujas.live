@@ -5,10 +5,8 @@ import {
   ThemeProvider,
 } from "@material-ui/core/styles";
 import escape from "lodash/escape";
-import _isFinite from "lodash/isFinite";
 import { useCallback, useEffect, useReducer } from "react";
 
-import { importTimingFromStore } from "@/components/chanting/editor/ChantEditorReducer";
 import Chant from "@/components/chanting/Chant";
 import ChantCloseControls from "@/components/chanting/ChantCloseControls";
 import ChantOperationControls from "@/components/chanting/ChantOperationControls";
@@ -20,6 +18,12 @@ import ChantSettingsPanel from "@/components/chanting/ChantSettingsPanel";
 import ChantToc from "@/components/chanting/ChantToc";
 import darkTheme from "@/lib/theme";
 import { exitFullscreen, requestFullscreen } from "@/lib/util";
+import {
+  addExplicitTiming,
+  normalizeTiming,
+  importTimingFromStore,
+  getChantNodes,
+} from "@/lib/chanting";
 
 const lightTheme = createMuiTheme({
   ...darkTheme,
@@ -192,64 +196,93 @@ const getWordCharCount = (html) => {
 };
 
 const addChantMeta = (chant, useTiming) => {
-  let textIndex = 0;
-  let startIndex = 0;
-  const textNodeMap = [];
+  const nodes = getChantNodes(chant);
 
-  const timing = useTiming ? importTimingFromStore(chant.id) : null;
-
-  const walkNode = (node) => {
-    if (node?.html) {
-      if (node.start) startIndex = textIndex;
-      [node.wordCount, node.charCount] = getWordCharCount(node.html);
-      if (timing) {
-        const timeIndex = textIndex - 2; // ignore first two headers
-        const times = timing.times;
-        const time = times[timeIndex];
-        if (timeIndex == -1) {
-          let duration = null;
-          for (let i = 0; !_isFinite(duration) && i < times.length; i++) {
-            duration = times[i].start;
-          }
-          if (!_isFinite(duration)) duration = 0.001;
-          node.duration = duration;
-        } else if (timeIndex >= 0 && time && time.start) {
-          let end = time.end;
-          for (
-            let i = timeIndex + 1;
-            !_isFinite(end) && i < times.length;
-            i++
-          ) {
-            end = times[i].start;
-          }
-          if (!isFinite(end)) end = 999999999;
-          node.duration = end - time.start;
+  let timing = useTiming ? importTimingFromStore(chant.id) : null;
+  if (timing) {
+    timing = addExplicitTiming(normalizeTiming(timing, nodes.length - 2));
+    nodes.forEach((node, index) => {
+      if (index < 2) {
+        node.start = node.end = timing.start;
+        node.duration = 0;
+      } else {
+        const timeNode = timing.nodes[index - 2];
+        node.start = timeNode.start;
+        node.end = timeNode.end;
+        node.duration = timeNode.end - timeNode.start;
+      }
+    });
+  } else {
+    let lastEnd = 0;
+    nodes.forEach((node) => {
+      node.start = lastEnd;
+      if (node.type === "verse") {
+        const [, charCount] = getWordCharCount(node.html);
+        if (node.lang == "pi" || String(node.html).match(/[āīūḷṇṃḍṭṅñ]/)) {
+          node.duration = 0.7 + 0.14 * charCount;
         } else {
-          node.duration = 0.001;
+          node.duration = 1.2 + 0.07 * charCount;
         }
       } else {
-        if (node.type === "verse") {
-          if (node.lang == "pi" || String(node.html).match(/[āīūḷṇṃḍṭṅñ]/)) {
-            node.duration = 0.7 + 0.14 * node.charCount;
-          } else {
-            node.duration = 1.2 + 0.07 * node.charCount;
-          }
-        } else {
-          node.duration = 1;
-        }
+        node.duration = 1;
       }
-      node.textIndex = textIndex++;
-      textNodeMap.push(node);
-    } else if (node?.children) {
-      node?.children?.forEach?.(walkNode);
-    }
-  };
-  walkNode(chant);
+      node.end = lastEnd = node.start + node.duration;
+    });
+  }
 
-  chant.mediaUrl = timing?.mediaUrl ?? null;
-  chant.startIndex = startIndex;
-  chant.textCount = textIndex;
-  chant.textNodeMap = textNodeMap;
+  // const walkNode = (node) => {
+  //   if (node?.html) {
+  //     if (node.start) startIndex = textIndex;
+  //     [node.wordCount, node.charCount] = getWordCharCount(node.html);
+  //     if (timing) {
+  //       const timeIndex = textIndex - 2; // ignore first two headers
+  //       const timeNodes = timing.nodes;
+  //       const timeNode = timeNodes[timeIndex];
+  //       if (timeIndex == -1) {
+  //         let duration = null;
+  //         for (let i = 0; !_isFinite(duration) && i < timeNodes.length; i++) {
+  //           duration = timeNodes[i].start;
+  //         }
+  //         if (!_isFinite(duration)) duration = 0.001;
+  //         node.duration = duration;
+  //       } else if (timeIndex >= 0 && timeNode && timeNode.start) {
+  //         let end = timeNode.end;
+  //         for (
+  //           let i = timeIndex + 1;
+  //           !_isFinite(end) && i < timeNodes.length;
+  //           i++
+  //         ) {
+  //           end = timeNodes[i].start;
+  //         }
+  //         if (!isFinite(end)) end = 999999999;
+  //         node.duration = end - timeNode.start;
+  //       } else {
+  //         node.duration = 0.001;
+  //       }
+  //     } else {
+  //       if (node.type === "verse") {
+  //         if (node.lang == "pi" || String(node.html).match(/[āīūḷṇṃḍṭṅñ]/)) {
+  //           node.duration = 0.7 + 0.14 * node.charCount;
+  //         } else {
+  //           node.duration = 1.2 + 0.07 * node.charCount;
+  //         }
+  //       } else {
+  //         node.duration = 1;
+  //       }
+  //     }
+  //     node.textIndex = textIndex++;
+  //     textNodeMap.push(node);
+  //   } else if (node?.children) {
+  //     node?.children?.forEach?.(walkNode);
+  //   }
+  // };
+  // walkNode(chant);
+
+  chant.timing = timing;
+  chant.startIndex = nodes.find((node) => node.startLink)?.index ?? 0;
+  chant.textCount = nodes.length;
+  chant.textNodeMap = nodes;
+  console.log(chant);
   return chant;
 };
 
@@ -261,7 +294,7 @@ const getChantFromToc = ({ chants, chantSet, link, title, useTiming }) => {
       (combined, chant) => {
         combined.children.push({
           type: "h2",
-          start: chant.id === link,
+          startLink: chant.id === link,
           html: escape(chant.title),
         });
         if (chant.type === "raw") {

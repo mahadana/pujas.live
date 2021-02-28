@@ -1,115 +1,118 @@
-import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
-import { useEffect, useRef } from "react";
+import Typography from "@material-ui/core/Typography";
+import { useEffect } from "react";
 
 import ButtonLink from "@/components/ButtonLink";
 import Chant from "@/components/chanting/Chant";
 import ChantEditorJsonButton from "@/components/chanting/editor/ChantEditorJsonButton";
+import { useChantEditorReducer } from "@/components/chanting/editor/ChantEditorReducer";
+import ChantEditorMediaPlayer from "@/components/chanting/editor/ChantEditorMediaPlayer";
+import ChantEditorPlaybackSlider from "@/components/chanting/editor/ChantEditorPlaybackSlider";
+import ChantEditorTable from "@/components/chanting/editor/ChantEditorTable";
+import ChantEditorTimingField from "@/components/chanting/editor/ChantEditorTimingField";
 import {
   exportTimingToStore,
   importTimingFromStore,
-  useChantEditorReducer,
-} from "@/components/chanting/editor/ChantEditorReducer";
-import ChantEditorMediaUrlButton from "@/components/chanting/editor/ChantEditorMediaUrlButton";
-import ChantEditorPlaybackSlider from "@/components/chanting/editor/ChantEditorPlaybackSlider";
-import ChantEditorTable from "@/components/chanting/editor/ChantEditorTable";
-import ChantEditorTimeControl from "@/components/chanting/editor/ChantEditorTimeControl";
+  timeToHuman,
+} from "@/lib/chanting";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    fontFamily: "Gentium Incantation",
-    "& audio": {
-      position: "sticky",
-      top: 5,
-      height: "2.5rem",
-      width: "100%",
+  root: {},
+  links: {
+    display: "flex",
+    justifyContent: "flex-start",
+    "& > button": {
+      marginLeft: "1rem",
     },
-  },
-  buttons: {
-    float: "right",
+    [theme.breakpoints.up("md")]: {
+      justifyContent: "flex-end",
+    },
   },
 }));
 
 const ChantEditor = ({ chant }) => {
   const [state, dispatch] = useChantEditorReducer({ chant });
-  const mediaPlayerRef = useRef();
   const classes = useStyles();
 
-  useEffect(
-    () =>
-      dispatch({
-        type: "SET_MEDIA_PLAYER",
-        mediaPlayer: mediaPlayerRef.current,
-      }),
-    [mediaPlayerRef.current]
-  );
+  const { exportedTiming, timing } = state;
 
   useEffect(() => {
-    if (state.chant) {
-      if (!state.timing || state.timing.id !== state.chant.id) {
-        const importedTiming = importTimingFromStore(state.chant.id);
-        dispatch({ type: "IMPORT_TIMING", importedTiming });
-      } else {
-        exportTimingToStore(chant.id, state.exportedTiming);
-      }
+    if (!timing || chant !== state.chant) {
+      const importedTiming = importTimingFromStore(chant.id);
+      dispatch({ type: "IMPORT_TIMING", importedTiming });
     } else {
-      dispatch({ type: "RESET_TIMING" });
+      exportTimingToStore(chant.id, exportedTiming);
     }
-  }, [state.chant, state.timing]);
-
-  useEffect(() => {
-    if (state.mediaPlayer) {
-      state.mediaPlayer.src = state.timing?.mediaUrl ?? "";
-    }
-  }, [state.mediaPlayer, state.timing?.mediaUrl]);
-
-  useEffect(() => {
-    if (state.mediaPlayer) {
-      state.mediaPlayer.playbackRate = state.playbackRate;
-      console.log(state.mediaPlayer.playbackRate);
-    }
-  }, [state.mediaPlayer, state.playbackRate]);
-
-  const toggleView = () => dispatch({ type: "TOGGLE_VIEW" });
+  }, [chant, timing]);
 
   return (
     <div className={classes.root}>
-      <div className={classes.buttons}>
-        <ButtonLink href="/chantrain" variant="outlined">
-          Table of Contents
-        </ButtonLink>{" "}
-        <Button onClick={toggleView} variant="outlined">
-          {state.view === "EDIT" ? "Styled" : "Edit"}
-        </Button>{" "}
-        <ChantEditorJsonButton
-          dispatch={dispatch}
-          state={state}
-          variant="outlined"
-        >
-          JSON
-        </ChantEditorJsonButton>
-      </div>
-      <h1>Chant Training</h1>
-      <h2>{`${chant.id} ${chant.title}`}</h2>
-      <p>
-        Media URL: {state.timing?.mediaUrl ?? ""}{" "}
-        <ChantEditorMediaUrlButton
-          dispatch={dispatch}
-          size="small"
-          state={state}
-          variant="outlined"
-        >
-          Update
-        </ChantEditorMediaUrlButton>{" "}
-        <br />
-        <ChantEditorPlaybackSlider dispatch={dispatch} state={state} />
-      </p>
-      <audio autoPlay={false} controls ref={mediaPlayerRef} />
-      <ChantEditorTimeControl dispatch={dispatch} state={state} />
-      {state.view === "EDIT" && state.timing && (
-        <ChantEditorTable dispatch={dispatch} state={state} />
-      )}
-      {state.view === "STYLED" && <Chant chant={chant} />}
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={7}>
+          <Typography variant="h3">{`${chant.id} ${chant.title}`}</Typography>
+        </Grid>
+        <Grid className={classes.links} item xs={12} md={5}>
+          <ButtonLink href="/chantrain" variant="outlined">
+            Table of Contents
+          </ButtonLink>
+          <ChantEditorJsonButton
+            dispatch={dispatch}
+            state={state}
+            variant="outlined"
+          >
+            JSON
+          </ChantEditorJsonButton>
+        </Grid>
+        <Grid item xs={12}>
+          <ChantEditorTimingField
+            dispatch={dispatch}
+            fieldName="mediaUrl"
+            fullWidth
+            helperText="Example: https://www.abhayagiri.org/media/chanting/audio/morning.mp3"
+            label="Media URL"
+            size="small"
+            state={state}
+            variant="outlined"
+            value={timing?.mediaUrl ?? ""}
+          />
+        </Grid>
+        <Grid item xs={6} sm={4}>
+          <ChantEditorTimingField
+            dispatch={dispatch}
+            fieldName="start"
+            fullWidth
+            label="Start"
+            size="small"
+            state={state}
+            variant="outlined"
+            value={timeToHuman(timing?.start, 1)}
+          />
+        </Grid>
+        <Grid item xs={6} sm={4}>
+          <ChantEditorTimingField
+            dispatch={dispatch}
+            fieldName="end"
+            fullWidth
+            label="End"
+            size="small"
+            state={state}
+            variant="outlined"
+            value={timeToHuman(timing?.end, 1)}
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <ChantEditorPlaybackSlider dispatch={dispatch} state={state} />
+        </Grid>
+        <Grid item xs={12}>
+          <ChantEditorMediaPlayer dispatch={dispatch} state={state} />
+          <ChantEditorTable dispatch={dispatch} state={state} />
+          <hr />
+        </Grid>
+        <Grid item xs={12}>
+          <Chant chant={chant} />
+        </Grid>
+      </Grid>
     </div>
   );
 };

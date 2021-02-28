@@ -15,7 +15,7 @@ class ChantMediaPlayer extends Component {
     const match = String(url).match(/\.(.{1,4})$/);
     const type = MEDIA_TYPES[match?.[1]];
     if (type) {
-      this.pause();
+      this.remove();
       const audio = new Audio();
       audio.controls = false;
       audio.autoplay = false;

@@ -144,38 +144,40 @@ const groupTypeMap = {
   row: "chant-row",
 };
 
-const walkNode = (node, key) => {
-  if (node?.html) {
-    const tag = ["verse", "raw"].indexOf(node.type) < 0 ? node.type : "div";
-    const className = clsx(
-      classNameWithLang(node),
-      node.type === "verse" && "chant-verse",
-      node.type === "raw" && "chant-raw",
-      node.start && "chant-start"
-    );
-    return createElement(tag, {
-      className,
-      id: `chant-text-index-${node.textIndex}`,
-      key,
-      dangerouslySetInnerHTML: { __html: node.html },
-    });
-  } else if (node?.children) {
-    return (
-      <div
-        key={key}
-        className={classNameWithLang(node, groupTypeMap[node.type])}
-      >
-        {node.children.map?.((node, index) => walkNode(node, index))}
-      </div>
-    );
-  } else {
-    return null;
-  }
-};
-
 const Chant = memo(({ chant, fontSize = 20, highlight }) => {
   const classes = useStyles({ fontSize, highlight });
   const className = classNameWithLang(chant, classes.root);
+
+  let index = 0;
+  const walkNode = (node, key) => {
+    if (node?.html) {
+      const tag = ["verse", "raw"].indexOf(node.type) < 0 ? node.type : "div";
+      const className = clsx(
+        classNameWithLang(node),
+        node.type === "verse" && "chant-verse",
+        node.type === "raw" && "chant-raw",
+        node.start && "chant-start"
+      );
+      return createElement(tag, {
+        className,
+        id: `chant-text-index-${index++}`,
+        key,
+        dangerouslySetInnerHTML: { __html: node.html },
+      });
+    } else if (node?.children) {
+      return (
+        <div
+          key={key}
+          className={classNameWithLang(node, groupTypeMap[node.type])}
+        >
+          {node.children.map?.((node, index) => walkNode(node, index))}
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
   return <div className={className}>{walkNode(chant)}</div>;
 });
 

@@ -31,7 +31,6 @@ const DEFAULT_SCROLL_DATA = {
   ignoreNextScroll: false,
   skipTop: null,
   mediaPlayer: null,
-  mediaUrl: null,
   next: null,
   nodes: null,
   humanScrollTimeout: 0,
@@ -326,6 +325,8 @@ const updateVelocity = (data) => {
     targetHeight = active.offsetHeight;
   }
 
+  if (targetDuration === 0) targetDuration = 0.001;
+
   const speed = state.speed || 1;
   let idealVelocity = (speed * targetHeight) / (targetDuration * 60);
 
@@ -371,6 +372,32 @@ const updateVelocity = (data) => {
   );
   if (Math.sign(diffTop) * acceleration < 0) acceleration *= BREAK_FACTOR;
   data.velocity += acceleration;
+};
+
+const updateMediaPlayer = (data) => {
+  const { dispatch, mediaPlayer, state } = data;
+  const mediaUrl = data.chant?.timing?.mediaUrl;
+  if (mediaUrl) {
+    if (state.playing) {
+      const mediaPlaying = mediaPlayer.isPlaying();
+      if (mediaPlaying) {
+        const end = data.chant.timing.end;
+        if (mediaPlayer.getTime() >= end) {
+          mediaPlayer.remove();
+          dispatch({ type: "STOP_PLAYING" });
+        }
+      } else {
+        mediaPlayer.setUrl(mediaUrl);
+        mediaPlayer.setTime(data.chant.timing.start + 1); // fudge + 1sec
+        mediaPlayer.play();
+        data.active = null;
+        data.activeIndex = "START";
+        data.activeComplete = 0;
+        state.activeIndex = "START";
+      }
+    }
+  }
+  if (!state.playing) mediaPlayer.remove();
 };
 
 const executeScroll = (data) => {
@@ -429,32 +456,13 @@ const incrementActive = (data) => {
       data.activeComplete = null;
     } else {
       const speed = state.speed || 1;
-      data.activeComplete += speed / (60 * active.duration);
+      if (active.duration === 0) {
+        state.activeIndex += 1;
+        data.activeComplete = null;
+      } else {
+        data.activeComplete += speed / (60 * active.duration);
+      }
     }
-  }
-};
-
-const updateMediaPlayer = (data) => {
-  const { mediaPlayer, state } = data;
-  let { mediaUrl } = data;
-  if (mediaUrl !== state.chant?.mediaUrl) {
-    data.mediaUrl = mediaUrl = state.chant?.mediaUrl;
-    if (mediaUrl) {
-      mediaPlayer.setUrl(mediaUrl);
-      data.active = null;
-      data.activeIndex = "START";
-      data.activeComplete = 0;
-      state.activeIndex = "START";
-    } else {
-      mediaPlayer.remove();
-    }
-  }
-
-  const mediaPlaying = mediaPlayer.isPlaying();
-  if (state.playing && !mediaPlaying) {
-    mediaPlayer.play();
-  } else if (!state.playing && mediaPlaying) {
-    mediaPlayer.pause();
   }
 };
 
@@ -483,9 +491,9 @@ const scrollLoop = (data) => {
       updateActive(data);
       updateNext(data);
       updateVelocity(data);
+      updateMediaPlayer(data);
       executeScroll(data);
       incrementActive(data);
-      updateMediaPlayer(data);
     }
     // });
   } catch (error) {

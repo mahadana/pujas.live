@@ -1,5 +1,6 @@
 import Slider from "@material-ui/core/Slider";
 import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 import { memo, useEffect, useState } from "react";
 
 const PLAYBACK_RATE_STEP_SIZE = 0.1;
@@ -8,11 +9,11 @@ const MAX_PLAYBACK_RATE = 3.0;
 
 const useStyles = makeStyles((theme) => ({
   label: {
-    marginRight: "0.5em",
+    margin: 0,
+    fontSize: "0.8rem",
   },
   slider: {
     height: "1em",
-    width: "20em",
     padding: "0.9em 0 0 0",
     verticalAlign: "middle",
   },
@@ -32,9 +33,13 @@ const ChantEditorPlaybackSlider = memo(
 
     return (
       <>
-        <span className={classes.label} id="chant-editor-playback-slider">
-          Playback Rate:
-        </span>
+        <Typography
+          className={classes.label}
+          id="chant-editor-playback-slider"
+          gutterBottom
+        >
+          Playback Rate
+        </Typography>
         <Slider
           aria-labelledby="chant-editor-playback-slider"
           className={classes.slider}
