@@ -10,16 +10,10 @@ const fetchData = async () => {
   // Remote site needs header "Access-Control-Allow-Origin *"" if serving
   // from another domain;
   const data = await (await fetch(CCB_URL)).json();
-
-  data.chants = {
-    chantMap: data.chants.reduce((map, chant) => {
-      map[chant.id] = chant;
-      return map;
-    }, {}),
-    chants: data.chants,
-    toc: data.toc,
-  };
-
+  data.chantMap = data.chants.reduce((map, chant) => {
+    map[chant.id] = chant;
+    return map;
+  }, {});
   return data;
 };
 
@@ -35,7 +29,7 @@ const ChantLoader = ({ children }) => {
 
   return (
     <Loading queryResult={{ data, loading: !data }}>
-      {({ data }) => children({ ...data, mobile })}
+      {({ data: chantData }) => children({ chantData, mobile })}
     </Loading>
   );
 };

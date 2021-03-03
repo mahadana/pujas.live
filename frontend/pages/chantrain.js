@@ -18,11 +18,11 @@ const ChanTrainPage = () => {
       <Container maxWidth="md">
         <PageHeading>Chant Training</PageHeading>
         <ChantLoader>
-          {({ toc }) => {
+          {({ chantData: { toc } }) => {
             const onOpen = ({ chantIndex, link: chantId }) => {
               if (_isFinite(chantIndex)) router.push(`/chantrain/${chantId}`);
             };
-            return <ChantToc onOpen={onOpen} raw={true} toc={toc} />;
+            return <ChantToc fullToc={true} onOpen={onOpen} toc={toc} />;
           }}
         </ChantLoader>
       </Container>

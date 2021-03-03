@@ -5,8 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import ChantEditorTimeDialog from "@/components/chanting/editor/ChantEditorTimeDialog";
 import {
-  addExplicitTiming,
-  getIndexWithTime,
+  interpolateTiming,
   normalizeTiming,
   timeToHuman,
 } from "@/lib/chanting";
@@ -72,10 +71,14 @@ const ChantEditorTable = ({ dispatch, state }) => {
     const interval = setInterval(() => {
       if (!mediaPlayer) return;
       const currentTime = mediaPlayer.currentTime;
-      const explicitTiming = addExplicitTiming(normalizeTiming(timing));
-      setActiveIndex(getIndexWithTime(explicitTiming, currentTime));
-      const end = timing?.end;
-      if (_isFinite(end) && currentTime >= end) mediaPlayer.pause();
+      const newActiveIndex = interpolateTiming(
+        normalizeTiming(timing)
+      ).nodes.findIndex(
+        (time) => time.start <= currentTime && currentTime < time.end
+      );
+      setActiveIndex(newActiveIndex >= 0 ? newActiveIndex : null);
+      if (_isFinite(timing?.end) && timing.end <= currentTime)
+        mediaPlayer.pause();
     }, 50);
     return () => {
       clearInterval(interval);

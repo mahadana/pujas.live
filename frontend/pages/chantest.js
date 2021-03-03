@@ -22,12 +22,11 @@ const ChanTestPage = () => {
         <ChantingBookButton book="1" onClick={onClick} />
         <ChantingBookButton book="2" onClick={onClick} />
         <ChantModal onClose={onClose} open={open}>
-          {({ chants, mobile, toc }) => (
+          {({ chantData, mobile }) => (
             <ChantWindow
-              chants={chants}
+              chantData={chantData}
               mobile={mobile}
               onClose={onClose}
-              toc={toc}
             />
           )}
         </ChantModal>

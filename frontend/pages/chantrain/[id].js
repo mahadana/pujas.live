@@ -17,9 +17,9 @@ const ChanTrainEditPage = () => {
       <Container maxWidth="md">
         <PageHeading>Chant Training</PageHeading>
         <ChantLoader>
-          {({ chants }) => {
+          {({ chantData: { chantMap } }) => {
             const chantId = router.query.id;
-            const chant = chants.chantMap[chantId];
+            const chant = chantMap[chantId];
             if (chant) {
               return <ChantEditor chant={chant} />;
             }

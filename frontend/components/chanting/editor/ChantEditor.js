@@ -4,7 +4,6 @@ import Typography from "@material-ui/core/Typography";
 import { useEffect } from "react";
 
 import ButtonLink from "@/components/ButtonLink";
-import Chant from "@/components/chanting/Chant";
 import ChantEditorJsonButton from "@/components/chanting/editor/ChantEditorJsonButton";
 import { useChantEditorReducer } from "@/components/chanting/editor/ChantEditorReducer";
 import ChantEditorMediaPlayer from "@/components/chanting/editor/ChantEditorMediaPlayer";
@@ -18,7 +17,9 @@ import {
 } from "@/lib/chanting";
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  root: {
+    marginBottom: "5rem",
+  },
   links: {
     display: "flex",
     justifyContent: "flex-start",
@@ -107,10 +108,6 @@ const ChantEditor = ({ chant }) => {
         <Grid item xs={12}>
           <ChantEditorMediaPlayer dispatch={dispatch} state={state} />
           <ChantEditorTable dispatch={dispatch} state={state} />
-          <hr />
-        </Grid>
-        <Grid item xs={12}>
-          <Chant chant={chant} />
         </Grid>
       </Grid>
     </div>

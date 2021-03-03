@@ -60,12 +60,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const modifyToc = (toc, raw) =>
+const modifyToc = (toc, fullToc) =>
   toc.map((volume) => {
     volume = { ...volume };
     volume.parts = volume.parts.map((part) => {
       part = { ...part };
-      if (!raw) {
+      if (!fullToc) {
         if (volume.volume == 1 && (part.part == 1 || part.part == 2)) {
           part.chantSet = part.chantSet.slice(0, -1);
           part.chants = part.chants.slice(-1);
@@ -77,7 +77,7 @@ const modifyToc = (toc, raw) =>
       }
       part.chants = part.chants.map((chant) => {
         chant = { ...chant };
-        if (raw) {
+        if (fullToc) {
           chant.chantSet = [chant.link];
         } else {
           if (!chant.chantSet && !(volume.volume == 2 && part.part == 2)) {
@@ -145,25 +145,25 @@ const ChantingTocChant = ({ onOpen, page, title, ...props }) => {
   );
 };
 
-const ChantToc = memo(({ onOpen: parentOnOpen, raw, toc }) => {
+const ChantToc = memo(({ fullToc, onOpen: parentOnOpen, toc }) => {
   const classes = useStyles();
 
-  toc = modifyToc(toc, raw);
+  toc = modifyToc(toc, fullToc);
 
   const onOpen = (props) => {
     const tocPart = toc[props.volumeIndex]?.parts?.[props.partIndex];
     const tocChant = tocPart?.chants?.[props.chantIndex];
     if (tocChant && tocPart) {
-      parentOnOpen?.({
+      parentOnOpen({
         ...props,
-        chantSet: tocChant.chantSet || tocPart.chantSet,
+        chantIds: tocChant.chantSet || tocPart.chantSet,
         link: tocChant.link,
         title: tocPart.title,
       });
     } else if (tocPart) {
-      parentOnOpen?.({
+      parentOnOpen({
         ...props,
-        chantSet: tocPart.chantSet,
+        chantIds: tocPart.chantSet,
         link: tocPart.link,
         title: tocPart.title,
       });

@@ -2,19 +2,19 @@ import _isNil from "lodash/isNil";
 import { useReducer } from "react";
 
 import {
+  createChantMappings,
   exportTiming,
-  getChantNodes,
   normalizeTiming,
   humanToTime,
 } from "@/lib/chanting";
 
 const importTiming = (timing, chant) => {
-  const chantNodes = getChantNodes(chant);
+  const chantNodes = createChantMappings(chant).nodes;
   timing = normalizeTiming(timing, chantNodes.length);
   timing.id = chant.id;
-  timing.nodes = timing.nodes.map((node, index) => ({
+  timing.nodes = timing.nodes.map((timingNode, index) => ({
     ...chantNodes[index],
-    ...node,
+    ...timingNode,
   }));
   return timing;
 };

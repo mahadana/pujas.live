@@ -56,7 +56,6 @@ const useStyles = makeStyles((theme) => ({
   slider: {
     height: "6rem",
     width: "100%",
-    overflow: "hidden",
     "& p": {
       marginBottom: "0.5rem",
     },
@@ -76,7 +75,6 @@ const useStyles = makeStyles((theme) => ({
   toggle: {
     height: "6rem",
     width: "100%",
-    overflow: "hidden",
     "& p": {
       marginBottom: "0.25rem",
     },

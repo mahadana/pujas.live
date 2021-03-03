@@ -3,18 +3,18 @@ import Tooltip from "@material-ui/core/Tooltip";
 import HearingIcon from "@material-ui/icons/Hearing";
 import { memo } from "react";
 
-const ChantTimingButton = memo(
+const ChantAudioButton = memo(
   ({ dispatch, state }) => {
     const onClick = () => {
-      dispatch({ type: "TOGGLE_USE_TIMING" });
+      dispatch({ type: "TOGGLE_AUDIO" });
     };
 
     return (
       <>
         <IconButton onClick={onClick}>
-          <Tooltip title="Use timing">
+          <Tooltip title="Audio">
             <HearingIcon
-              color={state.useTiming ? "primary" : "disabled"}
+              color={state.audio ? "primary" : "disabled"}
               fontSize="large"
             />
           </Tooltip>
@@ -23,11 +23,9 @@ const ChantTimingButton = memo(
     );
   },
   (prev, next) =>
-    prev.dispatch === next.dispatch &&
-    prev.state.mobile === next.state.mobile &&
-    prev.state.useTiming === next.state.useTiming
+    prev.dispatch === next.dispatch && prev.state.audio === next.state.audio
 );
 
-ChantTimingButton.displayName = "ChantTimingButton";
+ChantAudioButton.displayName = "ChantAudioButton";
 
-export default ChantTimingButton;
+export default ChantAudioButton;
