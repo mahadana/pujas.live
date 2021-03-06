@@ -14,7 +14,6 @@ import {
   getIndexInterTime,
   getIndexPositionFromTime,
   getIndexTimeFromPosition,
-  getTimingStore,
   interpolateTiming,
   normalizeDimension,
   normalizeTiming,
@@ -23,6 +22,8 @@ import {
   scale,
 } from "@/lib/chanting";
 
+const CHANT_TIMING_BASE_URL =
+  "https://raw.githubusercontent.com/mahadana/chanting-pujas.live/main/timing";
 const DEFAULT_FONT_SIZE = 20; // px
 const HUMAN_SCROLL_TIMEOUT = 10; // 1/6 second
 const PREPARING_TIMEOUT = 10; // 1/6 second
@@ -83,14 +84,17 @@ class ChantScrollerModel {
     this.dispatch = dispatch;
   }
 
-  setState(state) {
+  setState(state, chantSetCallback) {
     const reload =
       this.state.chantData !== state.chantData ||
       this.state.chantSet !== state.chantSet;
     this.state = state;
     if (reload) {
-      this._reset();
-      this._initializeChantSet();
+      (async () => {
+        this._reset();
+        await this._initializeChantSet();
+        chantSetCallback?.(this.chantSet);
+      })().catch(console.error);
     }
   }
 
@@ -262,15 +266,24 @@ class ChantScrollerModel {
     return [time, mediaTime];
   }
 
-  _initializeChantSet() {
+  async _fetchTiming(chantId) {
+    const url = `${CHANT_TIMING_BASE_URL}/${chantId}.json`;
+    try {
+      return await (await fetch(url)).json();
+    } catch {
+      return null;
+    }
+  }
+
+  async _initializeChantSet() {
     if (!this.state.chantData || !this.state.chantSet) {
       this.chantSet = null;
       return;
     }
     const { chantIds, link, title } = this.state.chantSet;
-    const timingStore = getTimingStore();
     const chantSetDomId = `chant-id-${_chantSetId++}`;
     this.initialChantIndex = null;
+
     const chants = _castArray(chantIds)
       .map((chantId) => this.state.chantData?.chantMap?.[chantId])
       .filter(_isObject)
@@ -279,15 +292,24 @@ class ChantScrollerModel {
         const domId = `${chantSetDomId}-${index}`;
         const { form, nodes } = createChantMappings(chant);
         nodes.forEach((node) => (node.domId = `${domId}-${node.index}`));
-        let timing = normalizeTiming(timingStore?.[chant.id], nodes.length);
-        if (_isFinite(timing.end)) {
-          timing = interpolateTiming(timing);
-        } else {
-          console.log(`${chant.id} has insufficient timing, using estimate`);
-          timing = this._getEstimatedTiming(nodes);
-        }
-        return { index, id: chant.id, domId, nodes, timing, form };
+        return { index, id: chant.id, domId, nodes, form };
       });
+
+    const timings = await Promise.all(
+      chants.map((chant) => this._fetchTiming(chant.id))
+    );
+    timings.forEach((timing, index) => {
+      const chant = chants[index];
+      if (timing) {
+        timing = normalizeTiming(timing, chant.nodes.length);
+        timing = interpolateTiming(timing);
+      } else {
+        console.log(`${chant.id} not found, using estimate`);
+        timing = this._getEstimatedTiming(chant.nodes);
+      }
+      chant.timing = timing;
+    });
+
     this.chantSet = { chants, domId: chantSetDomId, title };
   }
 

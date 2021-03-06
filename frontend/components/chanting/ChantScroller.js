@@ -48,8 +48,7 @@ const ChantScroller = ({ dispatch, state }) => {
 
   useEffect(() => {
     model.setDispatch(dispatch);
-    model.setState(state);
-    setChantSet(model.chantSet);
+    model.setState(state, setChantSet);
   }, [dispatch, setChantSet, state]);
 
   return (

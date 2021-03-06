@@ -16,7 +16,7 @@ const ChanTestPage = () => {
 
   return (
     <PageLayout>
-      <Title title="Chainting Test" />
+      <Title title="Chanting Test" />
       <ChantFontStyle />
       <div style={{ fontSize: "5vh", marginTop: "0.5em", textAlign: "center" }}>
         <ChantingBookButton book="1" onClick={onClick} />
