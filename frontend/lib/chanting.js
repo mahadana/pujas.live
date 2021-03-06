@@ -22,8 +22,10 @@ import _isFinite from "lodash/isFinite";
 import _isNil from "lodash/isNil";
 import _isObject from "lodash/isObject";
 import _omitBy from "lodash/omitBy";
+import _throttle from "lodash/throttle";
 
 const LOCAL_STORAGE_TIMING_KEY = "chantrain";
+const MAKE_LOOP_TIMEOUT = 20;
 
 export const bindInteger = (value, min, max) => {
   value = parseInt(value);
@@ -247,6 +249,56 @@ export const getTimingStore = () => {
 
 export const importTimingFromStore = (key) => getTimingStore()[key] ?? null;
 
+export const makeLoop = (loopCallback, winContext) => {
+  winContext = winContext ?? window;
+
+  const call = (func, ...args) => {
+    if (func) func(args);
+  };
+
+  const push = (name, value) => {
+    const nameSet = `${name}Set`;
+    loop[nameSet].push(value);
+    if (loop[nameSet].length > MAKE_LOOP_TIMEOUT) loop[nameSet].shift();
+    loop[name] = Math.max(...loop[nameSet]);
+  };
+
+  const loop = {
+    duration: 0,
+    durationSet: [],
+    elapsed: 0,
+    elapsedSet: [],
+    request: null,
+    timestamp: null,
+    loop: (timestamp) => {
+      if (!loop.request) return;
+      loop.request = null;
+      push("elapsed", timestamp - (loop.timestamp ?? timestamp));
+      loop.timestamp = timestamp;
+      const start = winContext.performance.now();
+      try {
+        call(loopCallback, timestamp);
+      } catch (error) {
+        throttle.error(error);
+      }
+      push("duration", winContext.performance.now() - start);
+      loop.request = winContext.requestAnimationFrame(loop.loop);
+    },
+    start: () => {
+      loop.stop();
+      loop.request = winContext.requestAnimationFrame(loop.loop);
+    },
+    stop: () => {
+      if (loop.request) {
+        winContext.cancelAnimationFrame(loop.request);
+      }
+      loop.request = null;
+    },
+  };
+
+  return loop;
+};
+
 export const normalizeDimension = (dim) => {
   const top = bindInteger(dim?.top, 0);
   const bottom = bindInteger(dim?.bottom, top);
@@ -359,6 +411,10 @@ export const staggerRowsInDimension = (dim) => {
   });
   return { top: dim.top, bottom: dim.bottom, nodes };
 };
+
+export const throttleError = _throttle(console.error, 5000);
+export const throttleLog = _throttle(console.log, 250);
+export const throttle = { error: throttleError, log: throttleLog };
 
 export const humanToTime = convertHumanToTime;
 export const timeToHuman = convertTimeToHuman;

@@ -1,8 +1,6 @@
 import _isFinite from "lodash/isFinite";
-import _throttle from "lodash/throttle";
 
-const throttleError = _throttle(console.error, 5000);
-const throttleLog = _throttle(console.log, 250);
+import { makeLoop, throttleLog } from "@/lib/chanting";
 
 let _mediaPlayerSingleton = null;
 
@@ -15,16 +13,16 @@ export const getMediaPlayerSingleton = () => {
 
 class ChantMediaPlayer {
   constructor() {
-    this._reset();
-    this._loop = this._loop.bind(this);
+    this.reset();
+    this.loop = makeLoop(this._loop.bind(this));
   }
 
   attach() {
-    this.animationRequest = window.requestAnimationFrame(this._loop);
+    this.loop.start();
   }
 
   detach() {
-    this._reset();
+    this.loop.stop();
   }
 
   getPlaybackRate() {
@@ -38,6 +36,7 @@ class ChantMediaPlayer {
       REQUEST_PLAY: "R",
       REQUEST_STOP: "X",
       STOPPED: "S",
+      WAITING_FOR_PLAY: "W",
     }[this.state];
   }
 
@@ -67,6 +66,16 @@ class ChantMediaPlayer {
     this._updateSourceAndTime();
   }
 
+  reset() {
+    this.enqueueTime = null;
+    this.playbackRate = 1;
+    this.state = "STOPPED";
+    this.url = null;
+    this.volume = 1;
+    this._destroyAudio();
+    this._createAudio();
+  }
+
   setPlaybackRate(playbackRate) {
     this.playbackRate = playbackRate;
   }
@@ -91,16 +100,7 @@ class ChantMediaPlayer {
     }
   }
 
-  async _loop(timestamp) {
-    try {
-      await this._handleState(timestamp);
-    } catch (error) {
-      throttleError(error);
-    }
-    this.animationRequest = window.requestAnimationFrame(this._loop);
-  }
-
-  async _handleState(timestamp) {
+  _loop() {
     switch (this.state) {
       case "ENDED":
         break;
@@ -123,9 +123,16 @@ class ChantMediaPlayer {
           !this.audio.duration ||
           Math.abs(this.audio.currentTime - this.audio.duration) > 0.05
         ) {
-          await this.audio.play();
-          this.lastCheck = timestamp;
-          this.state = "PLAYING";
+          this.audio
+            .play()
+            .then(() => {
+              if (this.state === "WAITING_FOR_PLAY") this.state = "PLAYING";
+            })
+            .catch(() => {
+              if (this.state === "WAITING_FOR_PLAY")
+                this.state = "REQUEST_PLAY";
+            });
+          this.state = "WAITING_FOR_PLAY";
         } else {
           this.state = "ENDED";
         }
@@ -139,20 +146,20 @@ class ChantMediaPlayer {
       }
 
       case "STOPPED": {
-        if (this.audio) {
-          if (this.audio.paused) {
-            this._updateSourceAndTime();
-          } else {
-            this.audio.pause();
-          }
+        if (this.audio.paused) {
+          this._updateSourceAndTime();
+        } else {
+          this.audio.pause();
         }
         break;
       }
+
+      case "WAITING_FOR_PLAY":
+        break;
     }
   }
 
   _createAudio() {
-    this._destroyAudio();
     const audio = new window.Audio();
     audio.controls = false;
     audio.autoplay = false;
@@ -166,20 +173,6 @@ class ChantMediaPlayer {
       this.audio.load();
       delete this.audio;
     }
-  }
-
-  _reset() {
-    this._destroyAudio();
-    this._createAudio();
-    this.enqueueTime = null;
-    this.playbackRate = 1;
-    this.state = "STOPPED";
-    this.url = null;
-    this.volume = 1;
-    if (this.animationRequest) {
-      window.cancelAnimationFrame(this.animationRequest);
-    }
-    this.animationRequest = null;
   }
 
   _updateSourceAndTime() {
@@ -196,7 +189,7 @@ class ChantMediaPlayer {
       this.enqueueTime = null;
     }
     if (load) {
-      throttleLog("ChantMediaPlayer load", url, time);
+      throttleLog("ChantMediaPlayer audio.load", url, time);
       this.audio.load();
     }
     if (this.audio.playbackRate !== this.playbackRate) {

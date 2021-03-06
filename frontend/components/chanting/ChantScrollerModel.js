@@ -4,7 +4,6 @@ import _isFinite from "lodash/isFinite";
 import _isObject from "lodash/isObject";
 import _merge from "lodash/merge";
 import _pick from "lodash/pick";
-import _throttle from "lodash/throttle";
 
 import { getMediaPlayerSingleton } from "@/components/chanting/ChantMediaPlayer";
 import {
@@ -15,6 +14,7 @@ import {
   getIndexPositionFromTime,
   getIndexTimeFromPosition,
   interpolateTiming,
+  makeLoop,
   normalizeDimension,
   normalizeTiming,
   orderDimension,
@@ -31,21 +31,17 @@ const NEAR_TIME = 1; // seconds
 const FAR_TIME = 5; // seconds
 const MID_VIEW_RATIO = 0.5; // middle of window
 
-const throttleError = _throttle(console.error, 5000);
-// const throttleLog = _throttle(console.log, 1000);
-
 let _chantSetId = 0;
 
 class ChantScrollerModel {
   constructor() {
-    this.animationRequest = null;
     this.debugEl = null;
     this.domEl = null;
     this.dispatch = () => undefined;
     this.mediaPlayer = getMediaPlayerSingleton();
     this.state = { fontSize: DEFAULT_FONT_SIZE };
-    this._reset();
-    this._loop = this._loop.bind(this);
+    this.reset();
+    this.loop = makeLoop(this._loop.bind(this));
     this._onHumanScroll = this._onHumanScroll.bind(this);
   }
 
@@ -60,7 +56,7 @@ class ChantScrollerModel {
     this.debugEl = this._createDebugElement();
     document.body.appendChild(this.debugEl);
     this.mediaPlayer.attach();
-    this.animationRequest = window.requestAnimationFrame(this._loop);
+    this.loop.start();
   }
 
   detach() {
@@ -75,9 +71,26 @@ class ChantScrollerModel {
     if (this.debugEl) document.body.removeChild(this.debugEl);
     this.debugEl = null;
     this.mediaPlayer.detach();
-    if (this.animationRequest)
-      window.cancelAnimationFrame(this.animationRequest);
-    this.animationRequest = null;
+    this.loop.stop();
+  }
+
+  reset() {
+    this.chantSet = null;
+    this.delta = 0;
+    this.dim = null;
+    this.duration = 0;
+    this.elapsed = 0;
+    this.humanTimeout = 0;
+    this.initialChantIndex = null;
+    this.mediaStamp = null;
+    this.setupCounter = 0;
+    this.setupState = "INIT";
+    this.time = 0;
+    this.useMediaPlayer = false;
+    this.velocity = 0;
+    this.windowStamp = null;
+    this.mediaPlayer.reset();
+    this._resetActive();
   }
 
   setDispatch(dispatch) {
@@ -91,7 +104,7 @@ class ChantScrollerModel {
     this.state = state;
     if (reload) {
       (async () => {
-        this._reset();
+        this.reset();
         await this._initializeChantSet();
         chantSetCallback?.(this.chantSet);
       })().catch(console.error);
@@ -354,30 +367,19 @@ class ChantScrollerModel {
     };
   }
 
-  async _loop(timestamp) {
-    this.elapsed = timestamp - this.timestamp ?? timestamp;
-    this.timestamp = timestamp;
-
-    const start = performance.now();
-    try {
-      if (this.setupState === "READY") {
-        this._loopUpdateWindow();
-        this._loopUpdateTime();
-        this._loopHandleHuman();
-        this._loopUpdateActive();
-        this._loopUpdateVelocity();
-        this._loopScroll();
-        this._loopUpdateMedia();
-      } else {
-        this._loopSetup();
-      }
-    } catch (error) {
-      throttleError(error);
+  _loop() {
+    if (this.setupState === "READY") {
+      this._loopUpdateWindow();
+      this._loopUpdateTime();
+      this._loopHandleHuman();
+      this._loopUpdateActive();
+      this._loopUpdateVelocity();
+      this._loopScroll();
+      this._loopUpdateMedia();
+    } else {
+      this._loopSetup();
     }
-    this.duration = performance.now() - start;
-
     this._loopUpdateDebug();
-    this.animationRequest = window.requestAnimationFrame(this._loop);
   }
 
   _loopHandleHuman() {
@@ -388,6 +390,18 @@ class ChantScrollerModel {
         this.dim.scrollTop = this.domEl.scrollTop;
         this._setTimeFromCurrentPosition();
       }
+    }
+  }
+
+  _loopScroll() {
+    if (!this.state.playing || this.humanTimeout > 0) return;
+    const delta = this.delta + this.velocity / 60;
+    const jump = parseInt(delta);
+    const top = this.dim.scrollTop + jump;
+    this.delta = delta - jump;
+    if (Math.abs(jump) > 0) {
+      this.domEl.scrollTo({ left: 0, top });
+      this.dim.scrollTop = top;
     }
   }
 
@@ -423,18 +437,6 @@ class ChantScrollerModel {
     }
   }
 
-  _loopScroll() {
-    if (!this.state.playing || this.humanTimeout > 0) return;
-    const delta = this.delta + this.velocity / 60;
-    const jump = parseInt(delta);
-    const top = this.dim.scrollTop + jump;
-    this.delta = delta - jump;
-    if (Math.abs(jump) > 0) {
-      this.domEl.scrollTo({ left: 0, top });
-      this.dim.scrollTop = top;
-    }
-  }
-
   _loopUpdateActive() {
     if (this.humanTimeout > 0) return;
 
@@ -457,27 +459,26 @@ class ChantScrollerModel {
   }
 
   _loopUpdateDebug() {
-    const calcDebug = (set, value) => {
-      set.push(value);
-      if (set.length > 20) set.shift();
-      return Math.max(...set)
-        .toFixed(2)
-        .padStart(7, "0");
-    };
-    this.debugEl.innerText = [
-      this.setupState[0],
-      this.useMediaPlayer ? "M" : "T",
-      this.mediaPlayer.getStateCode(),
-      this.humanTimeout > 0 ? "H" : "-",
-      `${this.activeChantIndex ?? "--"}`.padStart(2, "0"),
-      `${this.activeIndex ?? "--"}`.padStart(2, "0"),
-      String(this.dim?.scrollTop ?? 0).padStart(5, "0"),
-      this.time.toFixed(1).padStart(6, "0"),
-      this.velocity.toFixed(1).padStart(4, "0"),
-      calcDebug(this.debugDurationSet, this.duration),
-      calcDebug(this.debugElapsedSet, this.elapsed - 1000 / 60),
-      (this._getMediaUrl() ?? "").split("/").splice(-1)[0],
-    ].join(" ");
+    const code =
+      (this.humanTimeout > 0 ? "H" : this.setupState[0]) +
+      (this.useMediaPlayer ? "M" : "T") +
+      this.mediaPlayer.getStateCode();
+    const ci = `${this.activeChantIndex ?? "--"}`.padStart(2, "0");
+    const ni = `${this.activeIndex ?? "--"}`.padStart(2, "0");
+    const t = this.time.toFixed(1).padStart(6, "0");
+    const y = String(this.dim?.scrollTop ?? 0).padStart(5, "0");
+    const v = this.velocity.toFixed(1).padStart(4, "0");
+    const loopValue = (value) =>
+      Math.min(9999, value).toFixed(0).padStart(4, "0");
+    const transformElapsed = (v) => Math.max(0, (v - 1050 / 60) * 10);
+    const se = loopValue(transformElapsed(this.loop.elapsed));
+    const sd = loopValue(this.loop.duration * 1000);
+    const me = loopValue(transformElapsed(this.mediaPlayer.loop.elapsed));
+    const md = loopValue(this.mediaPlayer.loop.duration * 1000);
+    const file = (this._getMediaUrl() ?? "").split("/").splice(-1)[0];
+    this.debugEl.innerText =
+      `${code} ${ci}/${ni} t=${t} y=${y} v=${v} ` +
+      `scroll:${se}/${sd} media:${me}/${md} ${file}`;
     this.debugEl.style.display = this.state.diagnostics ? "block" : "none";
   }
 
@@ -586,28 +587,6 @@ class ChantScrollerModel {
 
   _onHumanScroll() {
     this.humanTimeout = HUMAN_SCROLL_TIMEOUT;
-  }
-
-  _reset() {
-    this._resetActive();
-    this.mediaPlayer.stop();
-    this.chantSet = null;
-    this.debugDurationSet = [];
-    this.debugElapsedSet = [];
-    this.delta = 0;
-    this.dim = null;
-    this.duration = 0;
-    this.elapsed = 0;
-    this.humanTimeout = 0;
-    this.initialChantIndex = null;
-    this.mediaStamp = null;
-    this.setupCounter = 0;
-    this.setupState = "INIT";
-    this.time = 0;
-    this.timestamp = null;
-    this.useMediaPlayer = false;
-    this.velocity = 0;
-    this.windowStamp = null;
   }
 
   _resetActive() {

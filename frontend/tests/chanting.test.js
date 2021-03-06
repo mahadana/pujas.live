@@ -9,11 +9,13 @@ import {
   getIndexPositionFromTime,
   getIndexTimeFromPosition,
   interpolateTiming,
+  makeLoop,
   normalizeDimension,
   normalizeTiming,
   orderDimension,
   scale,
   staggerRowsInDimension,
+  throttle,
 } from "@/lib/chanting";
 
 test("bindInteger", () => {
@@ -333,6 +335,103 @@ describe("interpolateTiming", () => {
         { start: 5, end: 5 },
       ],
     });
+  });
+});
+
+describe("makeLoop", () => {
+  test("start / stop", () => {
+    const window = {
+      cancelAnimationFrame: jest.fn(),
+      requestAnimationFrame: jest.fn().mockReturnValue("abc"),
+    };
+
+    const loop = makeLoop(null, window);
+    expect(window.cancelAnimationFrame).not.toHaveBeenCalled();
+    expect(window.requestAnimationFrame).not.toHaveBeenCalled();
+    expect(loop.request).toBeNull();
+
+    loop.stop();
+    expect(window.cancelAnimationFrame).not.toHaveBeenCalled();
+    expect(window.requestAnimationFrame).not.toHaveBeenCalled();
+    expect(loop.request).toBeNull();
+
+    loop.start();
+    expect(window.cancelAnimationFrame).not.toHaveBeenCalled();
+    expect(window.requestAnimationFrame).toBeCalledWith(loop.loop);
+    expect(loop.request).toBe("abc");
+    window.requestAnimationFrame.mockClear();
+
+    loop.stop();
+    expect(window.cancelAnimationFrame).toBeCalledWith("abc");
+    expect(window.requestAnimationFrame).not.toHaveBeenCalled();
+    expect(loop.request).toBeNull();
+  });
+
+  test("loop", () => {
+    const window = {
+      cancelAnimationFrame: jest.fn(),
+      performance: {
+        now: jest
+          .fn()
+          .mockReturnValueOnce(10.5)
+          .mockReturnValueOnce(10.6)
+          .mockReturnValueOnce(20.5)
+          .mockReturnValueOnce(20.55)
+          .mockReturnValueOnce(30.5)
+          .mockReturnValueOnce(30.75),
+      },
+      requestAnimationFrame: jest.fn(() => "yahoo"),
+    };
+    const inner = jest.fn().mockResolvedValue(11);
+    const loop = makeLoop(inner, window);
+
+    loop.loop(1000);
+    expect(window.cancelAnimationFrame).not.toHaveBeenCalled();
+    expect(window.performance.now).not.toHaveBeenCalledTimes(2);
+    expect(window.requestAnimationFrame).not.toHaveBeenCalled();
+
+    loop.start();
+    expect(window.cancelAnimationFrame).not.toHaveBeenCalled();
+    expect(window.performance.now).not.toHaveBeenCalled();
+    expect(window.requestAnimationFrame).toBeCalledWith(loop.loop);
+    expect(loop.duration).toBe(0);
+    expect(loop.elapsed).toBe(0);
+    expect(loop.timestamp).toBe(null);
+
+    loop.loop(1000);
+    expect(window.performance.now).toHaveBeenCalledTimes(2);
+    expect(loop.duration).toBeCloseTo(0.1);
+    expect(loop.elapsed).toBe(0);
+    expect(loop.timestamp).toBe(1000);
+
+    loop.loop(1010);
+    expect(window.performance.now).toHaveBeenCalledTimes(4);
+    expect(loop.duration).toBeCloseTo(0.1);
+    expect(loop.elapsed).toBe(10);
+
+    loop.loop(1025);
+    expect(window.performance.now).toHaveBeenCalledTimes(6);
+    expect(loop.duration).toBeCloseTo(0.25);
+    expect(loop.elapsed).toBe(15);
+
+    expect(inner).toHaveBeenCalledTimes(3);
+  });
+
+  test("exception", () => {
+    const window = {
+      cancelAnimationFrame: jest.fn(),
+      performance: { now: jest.fn(() => 1) },
+      requestAnimationFrame: jest.fn(() => "xyz"),
+    };
+    const errorSpy = (throttle.error = jest.fn());
+    const inner = () => {
+      throw new Error("foo");
+    };
+    const loop = makeLoop(inner, window);
+    loop.start();
+    loop.loop(456);
+    expect(errorSpy).toHaveBeenCalledTimes(1);
+    expect(errorSpy).toHaveBeenCalledWith(expect.any(Error));
   });
 });
 
