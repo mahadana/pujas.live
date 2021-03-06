@@ -78,10 +78,9 @@ class ChantScrollerModel {
     this.chantSet = null;
     this.delta = 0;
     this.dim = null;
-    this.duration = 0;
-    this.elapsed = 0;
     this.humanTimeout = 0;
     this.initialChantIndex = null;
+    this.lastTimestamp = null;
     this.mediaStamp = null;
     this.setupCounter = 0;
     this.setupState = "INIT";
@@ -539,8 +538,11 @@ class ChantScrollerModel {
     if (_isFinite(mediaPlayerTime)) {
       this.time = mediaPlayerTime;
     } else if (this.humanTimeout <= 0 && this.state.playing) {
-      this.time += (this.elapsed * (this.state.speed ?? 1)) / 1000;
+      const elapsed =
+        this.loop.timestamp - this.lastTimestamp ?? this.loop.timestamp;
+      this.time += (elapsed * (this.state.speed ?? 1)) / 1000;
     }
+    this.lastTimestamp = this.loop.timestamp;
 
     if (this.time >= this.dim.end) {
       this.dispatch({ type: "STOP_PLAYING" });
