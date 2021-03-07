@@ -53,7 +53,7 @@ const ChantScroller = ({ dispatch, state }) => {
 
   return (
     <div className={classes.root} ref={domRef} tabIndex="0">
-      <ChantSet chantSet={chantSet} />
+      {chantSet && <ChantSet chantSet={chantSet} />}
     </div>
   );
 };

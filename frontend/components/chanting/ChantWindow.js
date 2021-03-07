@@ -82,7 +82,7 @@ const reducer = (state, action) => {
       if (state.settings) {
         return { ...state, settings: false };
       } else if (state.view === "CHANT") {
-        return { ...state, playing: false, view: "TOC" };
+        return { ...state, chantSet: null, playing: false, view: "TOC" };
       } else {
         return { ...state, close: true, fullscreen: false, playing: false };
       }

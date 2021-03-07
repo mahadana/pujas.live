@@ -22,11 +22,12 @@ import {
   scale,
 } from "@/lib/chanting";
 
+const ACCELERATION_TIMEOUT = 30; // 1/2 second
 const CHANT_TIMING_BASE_URL =
   "https://raw.githubusercontent.com/mahadana/chanting-pujas.live/main/timing";
 const DEFAULT_FONT_SIZE = 20; // px
 const HUMAN_SCROLL_TIMEOUT = 20; // 2/6 second
-const PREPARING_TIMEOUT = 30; // 1/2 second
+const PREPARING_TIMEOUT = 60; // 1/6 second
 const NEAR_TIME = 1; // seconds
 const FAR_TIME = 5; // seconds
 const MID_VIEW_RATIO = 0.5; // middle of window
@@ -107,7 +108,11 @@ class ChantScrollerModel {
     if (reload) {
       (async () => {
         this.reset();
-        await this._initializeChantSet();
+        if (state.chantData && state.chantSet) {
+          await this._initializeChantSet();
+        } else {
+          this.chantSet = null;
+        }
         chantSetCallback?.(this.chantSet);
       })().catch(console.error);
     }
@@ -291,10 +296,6 @@ class ChantScrollerModel {
   }
 
   async _initializeChantSet() {
-    if (!this.state.chantData || !this.state.chantSet) {
-      this.chantSet = null;
-      return;
-    }
     const { chantIds, link, title } = this.state.chantSet;
     const chantSetDomId = `chant-id-${_chantSetId++}`;
     this.initialChantIndex = null;
@@ -389,6 +390,7 @@ class ChantScrollerModel {
       this.humanTimeout -= 1;
       if (this.humanTimeout <= 0) {
         this.humanTimeout = 0;
+        this.velocity = 0;
         this.dim.scrollTop = this.domEl.scrollTop;
         this._setTimeFromCurrentPosition();
       }
@@ -410,6 +412,10 @@ class ChantScrollerModel {
   _loopSetup() {
     switch (this.setupState) {
       case "INIT": {
+        if (this.domEl) {
+          this.domEl.style.setProperty("opacity", "0");
+          this.domEl.style.setProperty("transition", "opacity 2s");
+        }
         const domId = this.chantSet?.domId;
         if (domId) {
           const el = document.getElementById(this.chantSet.domId);
@@ -427,8 +433,15 @@ class ChantScrollerModel {
           this._initializeDimensions();
           this._scrollToInitialChant();
           this._setTimeFromCurrentPosition();
+          this._loopUpdateActive();
+          this._loopUpdateMedia();
+        }
+        if (this.setupCounter == 1) {
+          this.domEl.style.setProperty("opacity", "1");
         }
         if (this.setupCounter >= PREPARING_TIMEOUT) {
+          this.domEl.style.removeProperty("opacity");
+          this.domEl.style.removeProperty("transition");
           this.setupCounter = 0;
           this.setupState = "READY";
         } else {
@@ -568,7 +581,11 @@ class ChantScrollerModel {
 
     const nearVelocity = (nearPosition - mid - scrollTop) / NEAR_TIME;
     const farVelocity = (farPosition - mid - scrollTop) / FAR_TIME;
-    this.velocity = farVelocity * (1 - ratio) + nearVelocity * ratio;
+    const targetVelocity = farVelocity * (1 - ratio) + nearVelocity * ratio;
+
+    this.velocity =
+      (this.velocity * (ACCELERATION_TIMEOUT - 1) + targetVelocity) /
+      ACCELERATION_TIMEOUT;
   }
 
   _loopUpdateWindow() {
@@ -614,7 +631,7 @@ class ChantScrollerModel {
     if (_isFinite(chantIndex)) {
       const chant = this.dim?.chants?.[chantIndex];
       if (chant) {
-        this._scrollToPosition(chant.top);
+        this._scrollToPosition(chantIndex === 0 ? 0 : chant.top);
       }
     }
   }
@@ -629,6 +646,7 @@ class ChantScrollerModel {
     const position = this.dim.scrollTop + this._getMidPosition();
     const [time, mediaTime] = this._getTimeFromPosition(position);
     this.time = time;
+    this.lastTimestamp = this.loop.timestamp;
     if (this.useMediaPlayer) this.mediaPlayer.setTime(mediaTime);
   }
 }
