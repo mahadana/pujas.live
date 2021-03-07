@@ -25,8 +25,8 @@ import {
 const CHANT_TIMING_BASE_URL =
   "https://raw.githubusercontent.com/mahadana/chanting-pujas.live/main/timing";
 const DEFAULT_FONT_SIZE = 20; // px
-const HUMAN_SCROLL_TIMEOUT = 10; // 1/6 second
-const PREPARING_TIMEOUT = 10; // 1/6 second
+const HUMAN_SCROLL_TIMEOUT = 20; // 2/6 second
+const PREPARING_TIMEOUT = 30; // 1/2 second
 const NEAR_TIME = 1; // seconds
 const FAR_TIME = 5; // seconds
 const MID_VIEW_RATIO = 0.5; // middle of window
@@ -42,16 +42,18 @@ class ChantScrollerModel {
     this.state = { fontSize: DEFAULT_FONT_SIZE };
     this.reset();
     this.loop = makeLoop(this._loop.bind(this));
+    this._onHumanActivity = this._onHumanActivity.bind(this);
     this._onHumanScroll = this._onHumanScroll.bind(this);
   }
 
   attach(domEl) {
     this.detach();
     this.domEl = domEl;
-    this.domEl.addEventListener("keydown", this._onHumanScroll);
-    this.domEl.addEventListener("touchmove", this._onHumanScroll);
-    this.domEl.addEventListener("touchstart", this._onHumanScroll);
-    this.domEl.addEventListener("wheel", this._onHumanScroll);
+    this.domEl.addEventListener("keydown", this._onHumanActivity);
+    this.domEl.addEventListener("touchmove", this._onHumanActivity);
+    this.domEl.addEventListener("touchstart", this._onHumanActivity);
+    this.domEl.addEventListener("wheel", this._onHumanActivity);
+    this.domEl.addEventListener("scroll", this._onHumanScroll);
     this.domEl.style.setProperty("font-size", this.state.fontSize + "px");
     this.debugEl = this._createDebugElement();
     document.body.appendChild(this.debugEl);
@@ -61,10 +63,11 @@ class ChantScrollerModel {
 
   detach() {
     if (this.domEl) {
-      this.domEl.removeEventListener("wheel", this._onHumanScroll);
-      this.domEl.removeEventListener("touchstart", this._onHumanScroll);
-      this.domEl.removeEventListener("touchmove", this._onHumanScroll);
-      this.domEl.removeEventListener("keydown", this._onHumanScroll);
+      this.domEl.removeEventListener("keydown", this._onHumanActivity);
+      this.domEl.removeEventListener("touchmove", this._onHumanActivity);
+      this.domEl.removeEventListener("touchstart", this._onHumanActivity);
+      this.domEl.removeEventListener("wheel", this._onHumanActivity);
+      this.domEl.removeEventListener("scroll", this._onHumanScroll);
       this.domEl.style.removeProperty("font-size");
     }
     this.domEl = null;
@@ -118,7 +121,7 @@ class ChantScrollerModel {
       color: white;
       display: none;
       font-family: monospace;
-      font-size: 14px;
+      font-size: min(2.7vw, 14px);
       left: 0;
       overflow: hidden;
       padding: 4px;
@@ -477,7 +480,7 @@ class ChantScrollerModel {
     const file = (this._getMediaUrl() ?? "").split("/").splice(-1)[0];
     this.debugEl.innerText =
       `${code} ${ci}/${ni} t=${t} y=${y} v=${v} ` +
-      `scroll:${se}/${sd} media:${me}/${md} ${file}`;
+      `s=${se}/${sd} m=${me}/${md} ${file}`;
     this.debugEl.style.display = this.state.diagnostics ? "block" : "none";
   }
 
@@ -587,8 +590,14 @@ class ChantScrollerModel {
     }
   }
 
-  _onHumanScroll() {
+  _onHumanActivity() {
     this.humanTimeout = HUMAN_SCROLL_TIMEOUT;
+  }
+
+  _onHumanScroll() {
+    if (this.humanTimeout > 0) {
+      this.humanTimeout = HUMAN_SCROLL_TIMEOUT;
+    }
   }
 
   _resetActive() {
