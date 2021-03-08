@@ -8,8 +8,8 @@ const ChantEditorJsonButton = ({ children, dispatch, state, ...props }) => {
 
   const onClick = () => setOpen(true);
   const onClose = () => setOpen(false);
-  const onUpdate = (importedTiming) =>
-    dispatch({ type: "IMPORT_TIMING", importedTiming });
+  const onReset = () => dispatch({ type: "RESET_TIMING" });
+  const onUpdate = (timing) => dispatch({ type: "IMPORT_TIMING", timing });
 
   return (
     <>
@@ -19,6 +19,7 @@ const ChantEditorJsonButton = ({ children, dispatch, state, ...props }) => {
       <ChantEditorJsonDialog
         data={state.exportedTiming}
         onClose={onClose}
+        onReset={onReset}
         onUpdate={onUpdate}
         open={open}
       />

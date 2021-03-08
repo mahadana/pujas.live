@@ -36,14 +36,19 @@ const withExport = (state) => {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "IMPORT_TIMING": {
+    case "IMPORT_TIMING":
       return withExport({
         ...state,
-        timing: importTiming(action.importedTiming, state.chant),
+        timing: importTiming(
+          action.timing ?? state.timingFromData,
+          state.chant
+        ),
       });
-    }
     case "RESET_TIMING":
-      return withExport({ ...state, timing: null });
+      return withExport({
+        ...state,
+        timing: importTiming(state.timingFromData, state.chant),
+      });
     case "SET_MEDIA_PLAYER":
       return { ...state, mediaPlayer: action.mediaPlayer };
     case "SET_PLAYBACK_RATE":
@@ -82,14 +87,13 @@ const reducer = (state, action) => {
   }
 };
 
-const initializer = ({ chant }) => {
-  return {
-    chant,
-    exportedTiming: null,
-    playbackRate: 1.0,
-    timing: null,
-  };
-};
+const initializer = ({ chant, timingFromData }) => ({
+  chant,
+  exportedTiming: null,
+  playbackRate: 1.0,
+  timing: null,
+  timingFromData,
+});
 
-export const useChantEditorReducer = ({ chant }) =>
-  useReducer(reducer, { chant }, initializer);
+export const useChantEditorReducer = (props) =>
+  useReducer(reducer, props, initializer);

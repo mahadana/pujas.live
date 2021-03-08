@@ -17,11 +17,14 @@ const ChanTrainEditPage = () => {
       <Container maxWidth="md">
         <PageHeading>Chant Training</PageHeading>
         <ChantLoader>
-          {({ chantData: { chantMap } }) => {
+          {({ chantData: { chantMap, timingMap } }) => {
             const chantId = router.query.id;
             const chant = chantMap[chantId];
+            const timingFromData = timingMap[chantId] ?? null;
             if (chant) {
-              return <ChantEditor chant={chant} />;
+              return (
+                <ChantEditor chant={chant} timingFromData={timingFromData} />
+              );
             }
           }}
         </ChantLoader>

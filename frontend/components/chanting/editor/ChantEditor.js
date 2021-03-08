@@ -32,16 +32,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ChantEditor = ({ chant }) => {
-  const [state, dispatch] = useChantEditorReducer({ chant });
+const ChantEditor = ({ chant, timingFromData }) => {
+  const [state, dispatch] = useChantEditorReducer({ chant, timingFromData });
   const classes = useStyles();
 
   const { exportedTiming, timing } = state;
 
   useEffect(() => {
     if (!timing || chant !== state.chant) {
-      const importedTiming = importTimingFromStore(chant.id);
-      dispatch({ type: "IMPORT_TIMING", importedTiming });
+      dispatch({
+        type: "IMPORT_TIMING",
+        timing: importTimingFromStore(chant.id),
+      });
     } else {
       exportTimingToStore(chant.id, exportedTiming);
     }

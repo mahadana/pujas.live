@@ -1,15 +1,19 @@
 {
   "name": "pujas.live",
-  "version": "0.0.1",
-  "author": "Pujas.live <admin@pujas.live>",
-  "description": "Livestreams and meditation groups",
-  "homepage": "https://github.com/mahadana/pujas.live",
-  "license": "CC0-1.0",
   "private": true,
+  "version": "0.0.1",
+  "description": "Livestreams and meditation groups",
+  "scripts": {
+    "eslint": "eslint --ext .js,.json,.yaml,.yml .",
+    "prettier": "prettier --write **/.eslintrc **/.prettierrc ."
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mahadana/pujas.live.git"
   },
+  "author": "Pujas.live <admin@pujas.live>",
+  "license": "CC0-1.0",
+  "homepage": "https://github.com/mahadana/pujas.live",
   "dependencies": {},
   "devDependencies": {
     "eslint": "^7.18.0",
@@ -19,9 +23,5 @@
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-yaml": "^0.3.0",
     "prettier": "^2.2.1"
-  },
-  "scripts": {
-    "eslint": "eslint --ext .js,.json,.yaml,.yml .",
-    "prettier": "prettier --write **/.eslintrc **/.prettierrc ."
   }
 }

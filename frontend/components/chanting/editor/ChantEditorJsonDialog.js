@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { useSnackbar } from "@/lib/snackbar";
 
-const ChantEditorJsonDialog = ({ data, onClose, onUpdate, open }) => {
+const ChantEditorJsonDialog = ({ data, onClose, onReset, onUpdate, open }) => {
   const fullScreen = useMediaQuery((theme) => theme.breakpoints.down("xs"));
   const textRef = useRef();
   const { snackError, snackInfo } = useSnackbar();
@@ -27,15 +27,21 @@ const ChantEditorJsonDialog = ({ data, onClose, onUpdate, open }) => {
     onClose?.();
   };
 
+  const onClickReset = () => {
+    onReset?.();
+    snackInfo("Resetted timing data");
+    onClose?.();
+  };
+
   const onClickUpdate = () => {
-    let importData;
+    let timing;
     try {
-      importData = JSON.parse(json);
+      timing = JSON.parse(json);
     } catch {
       snackError("Invalid JSON");
       return;
     }
-    onUpdate?.(importData);
+    onUpdate?.(timing);
     snackInfo("Updated data with JSON");
     onClose?.();
   };
@@ -74,6 +80,9 @@ const ChantEditorJsonDialog = ({ data, onClose, onUpdate, open }) => {
         </Button>
         <Button color="primary" onClick={onClickUpdate}>
           Update
+        </Button>
+        <Button color="primary" onClick={onClickReset}>
+          Reset
         </Button>
       </DialogActions>
     </Dialog>
