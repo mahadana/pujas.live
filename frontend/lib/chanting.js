@@ -319,9 +319,9 @@ export const normalizeTiming = (timing, size) => {
 
   id = _isNil(id) ? null : String(id);
   mediaUrl = _isNil(mediaUrl) ? null : String(mediaUrl);
-  start = _isNil(start) ? 0 : humanToTime(start);
+  start = _isNil(start) ? 0 : convertHumanToTime(start);
   if (!_isFinite(start) || start < 0) start = 0;
-  end = _isNil(end) ? null : humanToTime(end);
+  end = _isNil(end) ? null : convertHumanToTime(end);
   if (!_isFinite(end) || end <= start) end = null;
   nodes = Array.isArray(nodes) ? nodes : [];
   if (!_isFinite(size) || size < 0) size = nodes.length;
@@ -331,8 +331,8 @@ export const normalizeTiming = (timing, size) => {
   const newNodes = [];
   for (let index = 0; index < size; index++) {
     const node = nodes[index];
-    let nodeStart = humanToTime(node?.start);
-    let nodeEnd = humanToTime(node?.end);
+    let nodeStart = convertHumanToTime(node?.start);
+    let nodeEnd = convertHumanToTime(node?.end);
     if (
       !_isFinite(nodeStart) ||
       nodeStart < lastStart ||

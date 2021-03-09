@@ -14,8 +14,8 @@ const fetchData = async (dataUrl) => {
   // from another domain;
   const chantsUrl = `${dataUrl}/chants.json`;
   const timingUrl = `${dataUrl}/timing.json`;
-  const fetchers = [fetch(chantsUrl), fetch(timingUrl)];
-  console.log("fetch", chantsUrl, timingUrl);
+  const options = { cache: "no-cache" };
+  const fetchers = [fetch(chantsUrl, options), fetch(timingUrl, options)];
   const [chantData, timing] = await Promise.all(
     (await Promise.all(fetchers)).map((response) => response.json())
   );

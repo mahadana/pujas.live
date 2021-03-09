@@ -7,7 +7,7 @@ import { memo, useCallback, useEffect, useState } from "react";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-    justifyContent: "space-evenly",
+    justifyContent: "space-between",
     width: "100%",
     margin: "2rem 0",
   },
