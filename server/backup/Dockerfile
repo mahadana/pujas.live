@@ -46,8 +46,8 @@ RUN curl -s https://rclone.org/install.sh | bash > /dev/null 2>&1 && \
     rm -rf /tmp/*
 
 RUN curl -s https://raw.githubusercontent.com/mahadana/clickhouse-backup.sh/main/clickhouse-backup.sh \
-      -o /usr/local/bin/clickhouse-backup.sh && \
-    chmod a+x /usr/local/bin/clickhouse-backup.sh
+      -o /usr/bin/clickhouse-backup.sh && \
+    chmod a+x /usr/bin/clickhouse-backup.sh
 
 COPY rsyslog.conf /etc/rsyslog.conf
 COPY backup.sh \
