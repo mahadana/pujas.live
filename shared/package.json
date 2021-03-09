@@ -7,8 +7,8 @@
   },
   "dependencies": {
     "dayjs": "^1.10.4",
-    "lodash": "^4.17.20",
-    "slugify": "^1.4.6",
+    "lodash": "^4.17.21",
+    "slugify": "^1.4.7",
     "timezone-support": "^2.0.2"
   },
   "devDependencies": {
