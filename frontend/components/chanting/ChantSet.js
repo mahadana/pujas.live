@@ -7,27 +7,19 @@ const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: "32.5em",
     margin: "0 auto",
+    marginTop: "30vh",
+    marginBottom: "45vh",
     color: theme.palette.text.primary,
     fontFamily: "Gentium Incantation",
-    [theme.breakpoints.up("sm")]: {
-      marginTop: "30vh",
-      marginBottom: "45vh",
-    },
     "& h1, & h2, & h3, & h4, & h5, & h6": {
       fontFamily: "Ubuntu",
       letterSpacing: "0.01em",
     },
     "& h1": {
-      margin: "0 0",
-      padding: "0.25em 0.55em",
-      fontSize: "1.6em",
       fontWeight: 300,
     },
     "& h2": {
-      margin: "1em 0",
-      padding: "0.25em 0.65em 0",
       borderBottom: `1px solid ${theme.palette.text.secondary}`,
-      fontSize: "1.4em",
       fontWeight: 500,
     },
     "& h3": {
@@ -45,46 +37,18 @@ const useStyles = makeStyles((theme) => ({
     "& .chant-chant": {
       paddingBottom: "1em",
     },
-    "& .chant-group": {
-      margin: "0.8em 0",
-    },
     "& .chant-verse": {
       padding: "0.1em 1em 0.2em",
       lineHeight: "1.6em",
       transition: "background-color 1s cubic-bezier(.04,.9,.8,1)",
     },
     "& .chant-lang-mixed": {
-      ["& .chant-group.chant-lang-en .chant-verse, & .chant-verse.chant-lang-en"]: {
-        paddingLeft: "2.95em",
+      "& .chant-group.chant-lang-en .chant-verse, & .chant-verse.chant-lang-en": {
         fontStyle: "italic",
-      },
-      ["& .chant-verse.chant-lang-en"]: {
-        fontStyle: "italic",
-      },
-    },
-    "& .chant-group.chant-leader, & .chant-group .chant-verse.chant-leader": {
-      paddingLeft: "2.95em",
-      paddingRight: "2.95em",
-    },
-    "& .chant-grid": {
-      padding: "0 0.5em",
-      display: "table",
-      "&.chant-center": {
-        margin: "1em auto",
-      },
-      "& .chant-row": {
-        display: "table-row",
-        "& .chant-verse": {
-          display: "table-cell",
-          paddingLeft: "0.5em",
-          paddingRight: "0.5em",
-        },
       },
     },
     "& aside": {
       marginTop: "0.25em",
-      paddingLeft: "4.3em",
-      paddingRight: "2em",
       fontFamily: "Alegreya X Sans SC",
       fontWeight: "bold",
       fontSize: "0.9em",
@@ -93,12 +57,9 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.text.secondary,
       textIndent: "-0.6em",
       "&.chant-center": {
-        paddingLeft: "2em",
         textAlign: "center",
       },
       "&.chant-right": {
-        paddingLeft: "2em",
-        paddingRight: "1em",
         textAlign: "right",
       },
       "&:before": {
@@ -124,6 +85,103 @@ const useStyles = makeStyles((theme) => ({
       },
       "& dt": {
         fontWeight: "bold",
+      },
+    },
+    [theme.breakpoints.down("xs")]: {
+      "& h1": {
+        margin: "0 0 1em",
+        padding: "0 0.7143em",
+        fontSize: "1.4em",
+      },
+      "& h2": {
+        margin: "0.75em 0",
+        padding: "0 0.87em 0",
+        fontSize: "1.15em",
+      },
+      "& .chant-group": {
+        margin: "0.4em 0",
+      },
+      "& .chant-lang-mixed": {
+        "& .chant-group.chant-lang-en .chant-verse, & .chant-verse.chant-lang-en": {
+          paddingLeft: "1.75em",
+        },
+      },
+      "& .chant-group.chant-leader .chant-verse, & .chant-group .chant-verse.chant-leader": {
+        paddingLeft: "1.75em",
+        paddingRight: "1.75em",
+      },
+      "& .chant-grid": {
+        margin: "0.5em 0",
+        "& .chant-verse:nth-child(1)": {
+          padding: "0 1em 0 1.75em",
+        },
+        "& .chant-verse:nth-child(2)": {
+          padding: "0 1em 0 2.5em",
+        },
+        "& .chant-verse:nth-child(3)": {
+          padding: "0 1em 0 3.25em",
+        },
+      },
+      "& aside": {
+        paddingLeft: "1.65em",
+        paddingRight: "1.65em",
+        "&.chant-center": {
+          paddingLeft: "1.65em",
+        },
+        "&.chant-right": {
+          paddingLeft: "1.65em",
+          paddingRight: "1em",
+        },
+      },
+    },
+    [theme.breakpoints.up("sm")]: {
+      "& h1": {
+        margin: "0",
+        padding: "0.25em 0.55em",
+        fontSize: "1.6em",
+      },
+      "& h2": {
+        margin: "1em 0",
+        padding: "0 0.65em 0",
+        fontSize: "1.4em",
+      },
+      "& .chant-group": {
+        margin: "0.8em 0",
+      },
+      "& .chant-lang-mixed": {
+        "& .chant-group.chant-lang-en .chant-verse, & .chant-verse.chant-lang-en": {
+          paddingLeft: "2.95em",
+        },
+      },
+      "& .chant-group.chant-leader .chant-verse, & .chant-group .chant-verse.chant-leader": {
+        paddingLeft: "2.95em",
+        paddingRight: "2.95em",
+      },
+      "& .chant-grid": {
+        padding: "0 0.5em",
+        display: "table",
+        "&.chant-center": {
+          margin: "1em auto",
+        },
+        "& .chant-row": {
+          display: "table-row",
+          "& .chant-verse": {
+            display: "table-cell",
+            paddingLeft: "0.5em",
+            paddingRight: "0.5em",
+          },
+        },
+      },
+      "& aside": {
+        paddingLeft: "3.4em",
+        paddingRight: "2em",
+        "&.chant-center": {
+          paddingLeft: "2em",
+        },
+        "&.chant-right": {
+          paddingLeft: "2em",
+          paddingRight: "1em",
+        },
       },
     },
   },

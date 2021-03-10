@@ -23,6 +23,15 @@ const classNameWithLang = (node, className) =>
     node?.leader && "chant-leader"
   );
 
+const deOrphan = (html) => {
+  const match = String(html ?? "").match(/^(.+) +(\S{1,7})$/);
+  if (match) {
+    return match[1] + "&nbsp;" + match[2];
+  } else {
+    return html;
+  }
+};
+
 const createNodeElement = (node, key) => {
   const type = node?.type;
   if (node?.html) {
@@ -31,7 +40,7 @@ const createNodeElement = (node, key) => {
       className: clsx(classNameWithLang(node), typeClassMap[type]),
       id: node?.domId,
       key,
-      dangerouslySetInnerHTML: { __html: node.html },
+      dangerouslySetInnerHTML: { __html: deOrphan(node.html) },
     });
   } else if (node?.children) {
     return (
