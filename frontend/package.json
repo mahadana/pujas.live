@@ -20,6 +20,7 @@
     "react-idle-timer": "^4.5.5",
     "react-player": "^2.9.0",
     "shared": "file:../shared",
+    "sharp": "^0.27.2",
     "yup": "^0.32.9"
   },
   "devDependencies": {
