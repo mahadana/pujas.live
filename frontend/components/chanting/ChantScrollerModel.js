@@ -22,12 +22,12 @@ import {
   scale,
 } from "@/lib/chanting";
 
-const ACCELERATION_TIMEOUT = 30; // 1/2 second
+const ACCELERATION_TIMEOUT = 2 * 60; // 2 seconds
 const DEFAULT_FONT_SIZE = 20; // px
 const HUMAN_SCROLL_TIMEOUT = 20; // 2/6 second
 const PREPARING_TIMEOUT = 60; // 1/6 second
 const NEAR_TIME = 1; // seconds
-const FAR_TIME = 5; // seconds
+const FAR_TIME = 20; // seconds
 const MID_VIEW_RATIO = 0.5; // middle of window
 
 let _chantSetId = 0;
@@ -360,7 +360,8 @@ class ChantScrollerModel {
       this._loopUpdateActive();
       this._loopUpdateVelocity();
       this._loopScroll();
-      this._loopUpdateMedia();
+      this._loopUpdateUseMedia();
+      this._loopUpdatePlayMedia();
     } else {
       this._loopSetup();
     }
@@ -381,7 +382,12 @@ class ChantScrollerModel {
 
   _loopScroll() {
     if (!this.state.playing || this.humanTimeout > 0) return;
-    const delta = this.delta + this.velocity / 60;
+    let delta = this.delta;
+    if (Math.abs(this.velocity) < 15) {
+      delta += this.velocity / 60;
+    } else {
+      delta += 2 / Math.ceil(120 / this.velocity);
+    }
     const jump = parseInt(delta);
     const top = this.dim.scrollTop + jump;
     this.delta = delta - jump;
@@ -416,7 +422,7 @@ class ChantScrollerModel {
           this._scrollToInitialChant();
           this._setTimeFromCurrentPosition();
           this._loopUpdateActive();
-          this._loopUpdateMedia();
+          this._loopUpdateUseMedia();
         }
         if (this.setupCounter == 1) {
           this.domEl.style.setProperty("opacity", "1");
@@ -435,7 +441,10 @@ class ChantScrollerModel {
   }
 
   _loopUpdateActive() {
-    if (this.humanTimeout > 0) return;
+    if (this.humanTimeout > 0) {
+      this._resetActive();
+      return;
+    }
 
     const time = this.time;
     const [, chantIndex, nodeIndex] = this._getPositionFromTime(time);
@@ -479,7 +488,29 @@ class ChantScrollerModel {
     this.debugEl.style.display = this.state.diagnostics ? "block" : "none";
   }
 
-  _loopUpdateMedia() {
+  _loopUpdatePlayMedia() {
+    if (this.useMediaPlayer) {
+      const mpState = this.mediaPlayer.state;
+      if (this.state.playing && this.humanTimeout <= 0) {
+        if (mpState === "ENDED") {
+          this.dispatch({ type: "STOP_PLAYING" });
+          this.state.playing = false; // do not wait for React
+        } else {
+          this.mediaPlayer.play();
+        }
+      } else if (!this.state.playing || this.humanTimeout > 0) {
+        if (mpState === "PLAYING" || mpState === "ENDED") {
+          this.mediaPlayer.stop();
+        }
+      }
+      if (_isFinite(this.state.speed)) {
+        this.mediaPlayer.setPlaybackRate(this.state.speed);
+      }
+      this.mediaPlayer.setVolume(this.state.audio ? 1 : 0);
+    }
+  }
+
+  _loopUpdateUseMedia() {
     const chantIndex = this.activeChantIndex;
     const mediaUrl = this._getMediaUrl();
     const mediaStamp = {
@@ -509,26 +540,6 @@ class ChantScrollerModel {
       this.useMediaPlayer = false;
     }
     this.mediaStamp = mediaStamp;
-
-    if (this.useMediaPlayer) {
-      const mpState = this.mediaPlayer.state;
-      if (this.state.playing && this.humanTimeout <= 0) {
-        if (mpState === "ENDED") {
-          this.dispatch({ type: "STOP_PLAYING" });
-          this.state.playing = false; // do not wait for React
-        } else {
-          this.mediaPlayer.play();
-        }
-      } else if (!this.state.playing || this.humanTimeout > 0) {
-        if (mpState === "PLAYING" || mpState === "ENDED") {
-          this.mediaPlayer.stop();
-        }
-      }
-      if (_isFinite(this.state.speed)) {
-        this.mediaPlayer.setPlaybackRate(this.state.speed);
-      }
-      this.mediaPlayer.setVolume(this.state.audio ? 1 : 0);
-    }
   }
 
   _loopUpdateTime() {
@@ -625,7 +636,8 @@ class ChantScrollerModel {
   }
 
   _setTimeFromCurrentPosition() {
-    const position = this.dim.scrollTop + this._getMidPosition();
+    const scrollTop = this.dim.scrollTop;
+    const position = scrollTop == 0 ? 0 : scrollTop + this._getMidPosition();
     const [time, mediaTime] = this._getTimeFromPosition(position);
     this.time = time;
     this.lastTimestamp = this.loop.timestamp;
