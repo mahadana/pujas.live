@@ -27,7 +27,7 @@ const LoadingProgress = ({ loading }) => {
         unmountOnExit
       >
         <Box className={classes.root}>
-          <Image src="/monk.png" layout="fill" />
+          <Image src="/monk.png" width="50" height="100" />
         </Box>
       </Fade>
     </NoSsr>
