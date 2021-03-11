@@ -6,7 +6,6 @@ import { memo } from "react";
 const ChantDiagnosticsButton = memo(
   ({ dispatch, state }) => {
     const onClick = () => dispatch({ type: "TOGGLE_DIAGNOSTICS" });
-
     return (
       <IconButton onClick={onClick}>
         <Tooltip title="Diagnostics">

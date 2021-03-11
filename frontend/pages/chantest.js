@@ -31,6 +31,7 @@ const ChanTestPage = () => {
                 chantData={chantData}
                 mobile={mobile}
                 onClose={onClose}
+                open={open}
               />
             )}
           </ChantModal>

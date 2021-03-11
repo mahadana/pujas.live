@@ -23,11 +23,11 @@ import {
 } from "@/lib/chanting";
 
 const ACCELERATION_TIMEOUT = 2 * 60; // 2 seconds
-const DEFAULT_FONT_SIZE = 20; // px
-const HUMAN_SCROLL_TIMEOUT = 20; // 2/6 second
-const PREPARING_TIMEOUT = 60; // 1/6 second
-const NEAR_TIME = 1; // seconds
-const FAR_TIME = 20; // seconds
+const DEFAULT_FONT_SIZE = 20; // 20px
+const HUMAN_SCROLL_TIMEOUT = 10; // 1/6 second
+const PREPARING_TIMEOUT = 30; // 1/2 second
+const NEAR_TIME = 1; // 1 second
+const FAR_TIME = 20; // 20 seconds
 const MID_VIEW_RATIO = 0.5; // middle of window
 
 let _chantSetId = 0;
@@ -50,7 +50,6 @@ class ChantScrollerModel {
     this.domEl = domEl;
     this.domEl.addEventListener("keydown", this._onHumanActivity);
     this.domEl.addEventListener("touchmove", this._onHumanActivity);
-    this.domEl.addEventListener("touchstart", this._onHumanActivity);
     this.domEl.addEventListener("wheel", this._onHumanActivity);
     this.domEl.addEventListener("scroll", this._onHumanScroll);
     this.domEl.style.setProperty("font-size", this.state.fontSize + "px");
@@ -64,7 +63,6 @@ class ChantScrollerModel {
     if (this.domEl) {
       this.domEl.removeEventListener("keydown", this._onHumanActivity);
       this.domEl.removeEventListener("touchmove", this._onHumanActivity);
-      this.domEl.removeEventListener("touchstart", this._onHumanActivity);
       this.domEl.removeEventListener("wheel", this._onHumanActivity);
       this.domEl.removeEventListener("scroll", this._onHumanScroll);
       this.domEl.style.removeProperty("font-size");
@@ -122,7 +120,7 @@ class ChantScrollerModel {
       color: white;
       display: none;
       font-family: monospace;
-      font-size: min(2.7vw, 14px);
+      font-size: min(2.3vw, 14px);
       left: 0;
       overflow: hidden;
       padding: 4px;
@@ -371,7 +369,9 @@ class ChantScrollerModel {
   _loopHandleHuman() {
     if (this.humanTimeout > 0) {
       this.humanTimeout -= 1;
-      if (this.humanTimeout <= 0) {
+      if (this.humanTimeout == HUMAN_SCROLL_TIMEOUT - 1) {
+        // this.dim.scrollTop = this.domEl.scrollTop;
+      } else if (this.humanTimeout <= 0) {
         this.humanTimeout = 0;
         this.velocity = 0;
         this.dim.scrollTop = this.domEl.scrollTop;
@@ -382,19 +382,9 @@ class ChantScrollerModel {
 
   _loopScroll() {
     if (!this.state.playing || this.humanTimeout > 0) return;
-    let delta = this.delta;
-    if (Math.abs(this.velocity) < 15) {
-      delta += this.velocity / 60;
-    } else {
-      delta += 2 / Math.ceil(120 / this.velocity);
-    }
-    const jump = parseInt(delta);
-    const top = this.dim.scrollTop + jump;
-    this.delta = delta - jump;
-    if (Math.abs(jump) > 0) {
-      this.domEl.scrollTo({ left: 0, top });
-      this.dim.scrollTop = top;
-    }
+    const top = this.dim.scrollTop + this.velocity / 60;
+    this.domEl.scrollTo({ left: 0, top });
+    this.dim.scrollTop = top;
   }
 
   _loopSetup() {
@@ -402,7 +392,7 @@ class ChantScrollerModel {
       case "INIT": {
         if (this.domEl) {
           this.domEl.style.setProperty("opacity", "0");
-          this.domEl.style.setProperty("transition", "opacity 2s");
+          this.domEl.style.setProperty("transition", "opacity 1s");
         }
         const domId = this.chantSet?.domId;
         if (domId) {
@@ -423,6 +413,7 @@ class ChantScrollerModel {
           this._setTimeFromCurrentPosition();
           this._loopUpdateActive();
           this._loopUpdateUseMedia();
+          this.domEl.focus();
         }
         if (this.setupCounter == 1) {
           this.domEl.style.setProperty("opacity", "1");
@@ -472,7 +463,7 @@ class ChantScrollerModel {
     const ci = `${this.activeChantIndex ?? "--"}`.padStart(2, "0");
     const ni = `${this.activeIndex ?? "--"}`.padStart(2, "0");
     const t = this.time.toFixed(1).padStart(6, "0");
-    const y = String(this.dim?.scrollTop ?? 0).padStart(5, "0");
+    const y = (this.dim?.scrollTop ?? 0).toFixed(1).padStart(7, "0");
     const v = this.velocity.toFixed(1).padStart(4, "0");
     const loopValue = (value) =>
       Math.min(9999, value).toFixed(0).padStart(4, "0");
@@ -489,16 +480,16 @@ class ChantScrollerModel {
   }
 
   _loopUpdatePlayMedia() {
-    if (this.useMediaPlayer) {
+    if (this.useMediaPlayer && this.humanTimeout <= 0) {
       const mpState = this.mediaPlayer.state;
-      if (this.state.playing && this.humanTimeout <= 0) {
+      if (this.state.playing) {
         if (mpState === "ENDED") {
           this.dispatch({ type: "STOP_PLAYING" });
           this.state.playing = false; // do not wait for React
         } else {
           this.mediaPlayer.play();
         }
-      } else if (!this.state.playing || this.humanTimeout > 0) {
+      } else if (!this.state.playing) {
         if (mpState === "PLAYING" || mpState === "ENDED") {
           this.mediaPlayer.stop();
         }
@@ -511,6 +502,8 @@ class ChantScrollerModel {
   }
 
   _loopUpdateUseMedia() {
+    if (this.humanTimeout > 0) return;
+
     const chantIndex = this.activeChantIndex;
     const mediaUrl = this._getMediaUrl();
     const mediaStamp = {
@@ -553,7 +546,7 @@ class ChantScrollerModel {
     }
     this.lastTimestamp = this.loop.timestamp;
 
-    if (this.time >= this.dim.end) {
+    if (this.time >= this.dim.end && this.state.playing) {
       this.dispatch({ type: "STOP_PLAYING" });
       this.state.playing = false; // do not wait for React
       this.time = this.dim.end;
@@ -572,8 +565,9 @@ class ChantScrollerModel {
     const diffRatio = (Math.abs(diff) * 2) / this.dim.clientHeight;
     const ratio = Math.min(diffRatio, 1) ** 2;
 
-    const nearVelocity = (nearPosition - mid - scrollTop) / NEAR_TIME;
-    const farVelocity = (farPosition - mid - scrollTop) / FAR_TIME;
+    const speed = this.state.speed ?? 1;
+    const nearVelocity = (nearPosition - mid - scrollTop) / (NEAR_TIME / speed);
+    const farVelocity = (farPosition - mid - scrollTop) / (FAR_TIME / speed);
     const targetVelocity = farVelocity * (1 - ratio) + nearVelocity * ratio;
 
     this.velocity =
@@ -597,6 +591,7 @@ class ChantScrollerModel {
       this._initializeDimensions();
       const [position] = this._getPositionFromTime(this.time);
       this._scrollToPosition(position);
+      this.velocity = 0;
     }
   }
 

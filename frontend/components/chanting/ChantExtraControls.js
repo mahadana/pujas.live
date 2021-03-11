@@ -3,11 +3,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import { memo, useState } from "react";
 
 import { useChantIdle } from "@/components/chanting/ChantIdleProvider";
-import ChantDebugButton from "@/components/chanting/inputs/ChantDebugButton";
-import ChantDiagnosticsButton from "@/components/chanting/inputs/ChantDiagnosticsButton";
+import ChantFullscreenButton from "@/components/chanting/inputs/ChantFullscreenButton";
 import ChantFullTocButton from "@/components/chanting/inputs/ChantFullTocButton";
-import ChantHighlightButton from "@/components/chanting/inputs/ChantHighlightButton";
-import ChantAudioButton from "@/components/chanting/inputs/ChantAudioButton";
+import ChantSettingsButton from "@/components/chanting/inputs/ChantSettingsButton";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,9 +13,12 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 100,
     bottom: 0,
     right: 0,
-    width: ({ debug, visible }) =>
-      visible ? `${(debug ? 5 : 1) * 3.75}rem` : 0,
+    width: ({ count, visible }) => (visible ? `${count * 3.75}rem` : 0),
     height: ({ visible }) => (visible ? "3.75rem" : 0),
+    [theme.breakpoints.up("sm")]: {
+      width: ({ visible }) => (visible ? "3.75rem" : 0),
+      height: ({ count, visible }) => (visible ? `${count * 3.75}rem` : 0),
+    },
   },
   fade: {
     width: "100%",
@@ -30,11 +31,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ChantDebugControls = memo(
+const ChantExtraControls = memo(
   ({ dispatch, state }) => {
     const idle = useChantIdle();
     const [visible, setVisible] = useState(false);
-    const classes = useStyles({ debug: state.debug, visible });
+    const classes = useStyles({ count: state.view === "TOC" ? 1 : 2, visible });
 
     const onEnter = () => setVisible(true);
     const onExited = () => setVisible(false);
@@ -46,15 +47,14 @@ const ChantDebugControls = memo(
         <Fade in={open} onEnter={onEnter} onExited={onExited}>
           <div className={classes.fade}>
             <div className={classes.buttons}>
-              {state.debug && (
+              {state.view === "TOC" ? (
+                <ChantFullTocButton dispatch={dispatch} state={state} />
+              ) : (
                 <>
-                  <ChantFullTocButton dispatch={dispatch} state={state} />
-                  <ChantDiagnosticsButton dispatch={dispatch} state={state} />
-                  <ChantHighlightButton dispatch={dispatch} state={state} />
-                  <ChantAudioButton dispatch={dispatch} state={state} />
+                  <ChantSettingsButton dispatch={dispatch} state={state} />
+                  <ChantFullscreenButton dispatch={dispatch} state={state} />
                 </>
               )}
-              <ChantDebugButton dispatch={dispatch} state={state} />
             </div>
           </div>
         </Fade>
@@ -63,11 +63,10 @@ const ChantDebugControls = memo(
   },
   (prev, next) =>
     prev.dispatch === next.dispatch &&
-    prev.state.audio === next.state.audio &&
-    prev.state.debug === next.state.debug &&
-    prev.state.diagnostics === next.state.diagnostics &&
+    prev.state.fullscreen === next.state.fullscreen &&
     prev.state.fullToc === next.state.fullToc &&
-    prev.state.highlight === next.state.highlight
+    prev.state.settings === next.state.settings &&
+    prev.state.view === next.state.view
 );
 
-export default ChantDebugControls;
+export default ChantExtraControls;

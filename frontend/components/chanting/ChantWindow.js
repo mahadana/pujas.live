@@ -8,7 +8,7 @@ import { useCallback, useEffect, useReducer } from "react";
 
 import ChantCloseControls from "@/components/chanting/ChantCloseControls";
 import ChantOperationControls from "@/components/chanting/ChantOperationControls";
-import ChantDebugControls from "@/components/chanting/ChantDebugControls";
+import ChantExtraControls from "@/components/chanting/ChantExtraControls";
 import ChantIdleProvider from "@/components/chanting/ChantIdleProvider";
 import ChantScroller from "@/components/chanting/ChantScroller";
 import ChantScrollerModel from "@/components/chanting/ChantScrollerModel";
@@ -82,26 +82,32 @@ const reducer = (state, action) => {
       if (state.settings) {
         return { ...state, settings: false };
       } else if (state.view === "CHANT") {
-        return { ...state, chantSet: null, playing: false, view: "TOC" };
+        return {
+          ...state,
+          chantSet: null,
+          fullscreen: false,
+          playing: false,
+          view: "TOC",
+        };
       } else {
         return { ...state, close: true, fullscreen: false, playing: false };
       }
+    }
+    case "EXIT": {
+      return { ...state, close: true, fullscreen: false, playing: false };
     }
     case "OPEN_CHANT_SET":
       return {
         ...state,
         chantSet: action.chantSet,
+        fullscreen: state.mobile,
         playing: true,
         view: "CHANT",
       };
     case "SET_FONT_SIZE":
       return { ...state, fontSize: action.fontSize };
-    case "SET_FULLSCREEN":
-      return { ...state, fullscreen: action.fullscreen };
     case "SET_SPEED":
       return { ...state, speed: action.speed };
-    case "SET_THEME_TYPE":
-      return { ...state, themeType: action.themeType };
     case "STOP_PLAYING":
       return { ...state, playing: false };
     case "TOGGLE_AUDIO":
@@ -110,6 +116,8 @@ const reducer = (state, action) => {
       return { ...state, debug: !state.debug };
     case "TOGGLE_DIAGNOSTICS":
       return { ...state, diagnostics: !state.diagnostics };
+    case "TOGGLE_FULLSCREEN":
+      return { ...state, fullscreen: !state.fullscreen };
     case "TOGGLE_FULL_TOC":
       return { ...state, fullToc: !state.fullToc };
     case "TOGGLE_HIGHLIGHT":
@@ -117,7 +125,12 @@ const reducer = (state, action) => {
     case "TOGGLE_PLAYING":
       return { ...state, playing: !state.playing };
     case "TOGGLE_SETTINGS":
-      return { ...state, controls: !state.settings, settings: !state.settings };
+      return { ...state, settings: !state.settings };
+    case "TOGGLE_THEME_TYPE":
+      return {
+        ...state,
+        themeType: state.themeType === "light" ? "dark" : "light",
+      };
     default:
       throw new Error(`Unknown action type ${action.type}`);
   }
@@ -135,8 +148,8 @@ const ChantWindowInner = ({ dispatch, state }) => {
   return (
     <div className={classes.root}>
       <ChantCloseControls dispatch={dispatch} state={state} />
-      <ChantDebugControls dispatch={dispatch} state={state} />
       <ChantOperationControls dispatch={dispatch} state={state} />
+      <ChantExtraControls dispatch={dispatch} state={state} />
       <ChantSettingsPanel dispatch={dispatch} state={state} />
       <Fade in={state.view === "CHANT"}>
         <div className={classes.fade}>
@@ -161,6 +174,7 @@ const ChantWindow = ({
   chantData,
   mobile,
   onClose,
+  open,
 }) => {
   const reducerDefaults = { chantData, mobile };
   const [state, dispatch] = useReducer(reducer, reducerDefaults, initialize);
@@ -178,6 +192,10 @@ const ChantWindow = ({
   useEffect(() => {
     if (state.close) onClose();
   }, [state.close]);
+
+  useEffect(() => {
+    if (!open) dispatch({ type: "EXIT" });
+  }, [open]);
 
   const theme = state.themeType === "dark" ? darkTheme : lightTheme;
 
