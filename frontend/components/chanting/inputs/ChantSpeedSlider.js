@@ -2,8 +2,7 @@ import Slider from "@material-ui/core/Slider";
 import Typography from "@material-ui/core/Typography";
 import { memo, useEffect, useState } from "react";
 
-const MIN_SPEED = 0.3;
-const MAX_SPEED = 3.0;
+import { MAX_SPEED, MIN_SPEED } from "@/components/chanting/ChantWindowReducer";
 
 const marks = [
   { value: -0.8, label: "Slow" },

@@ -2,10 +2,12 @@ import Slider from "@material-ui/core/Slider";
 import Typography from "@material-ui/core/Typography";
 import { memo, useEffect, useState } from "react";
 
-const FONT_STEP_SIZE = 2;
-const DEFAULT_FONT_SIZE = 20;
-const MIN_FONT_SIZE = 12;
-const MAX_FONT_SIZE = 40;
+import {
+  FONT_SIZE_STEP,
+  DEFAULT_FONT_SIZE,
+  MAX_FONT_SIZE,
+  MIN_FONT_SIZE,
+} from "@/components/chanting/ChantWindowReducer";
 
 const sizedLabel = (label, fontSize) => (
   <span style={{ display: "inline-block", fontSize, marginTop: -fontSize / 3 }}>
@@ -43,7 +45,7 @@ const ChantingFontSizeSlider = memo(
           min={MIN_FONT_SIZE}
           onChange={onChange}
           onChangeCommitted={onChangeCommited}
-          step={FONT_STEP_SIZE}
+          step={FONT_SIZE_STEP}
           value={fontSize}
           valueLabelDisplay="auto"
           valueLabelFormat={valueLabelFormat}

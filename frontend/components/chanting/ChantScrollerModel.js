@@ -42,16 +42,18 @@ class ChantScrollerModel {
     this.reset();
     this.loop = makeLoop(this._loop.bind(this));
     this._onHumanActivity = this._onHumanActivity.bind(this);
+    this._onHumanKey = this._onHumanKey.bind(this);
     this._onHumanScroll = this._onHumanScroll.bind(this);
   }
 
   attach(domEl) {
     this.detach();
     this.domEl = domEl;
-    this.domEl.addEventListener("keydown", this._onHumanActivity);
-    this.domEl.addEventListener("touchmove", this._onHumanActivity);
-    this.domEl.addEventListener("wheel", this._onHumanActivity);
+    this.domEl.addEventListener("keydown", this._onHumanKey);
     this.domEl.addEventListener("scroll", this._onHumanScroll);
+    this.domEl.addEventListener("touchmove", this._onHumanActivity);
+    this.domEl.addEventListener("touchstart", this._onHumanActivity);
+    this.domEl.addEventListener("wheel", this._onHumanActivity);
     this.domEl.style.setProperty("font-size", this.state.fontSize + "px");
     this.debugEl = this._createDebugElement();
     document.body.appendChild(this.debugEl);
@@ -61,10 +63,11 @@ class ChantScrollerModel {
 
   detach() {
     if (this.domEl) {
-      this.domEl.removeEventListener("keydown", this._onHumanActivity);
-      this.domEl.removeEventListener("touchmove", this._onHumanActivity);
-      this.domEl.removeEventListener("wheel", this._onHumanActivity);
+      this.domEl.removeEventListener("keydown", this._onHumanKey);
       this.domEl.removeEventListener("scroll", this._onHumanScroll);
+      this.domEl.removeEventListener("touchmove", this._onHumanActivity);
+      this.domEl.removeEventListener("touchstart", this._onHumanActivity);
+      this.domEl.removeEventListener("wheel", this._onHumanActivity);
       this.domEl.style.removeProperty("font-size");
     }
     this.domEl = null;
@@ -369,9 +372,7 @@ class ChantScrollerModel {
   _loopHandleHuman() {
     if (this.humanTimeout > 0) {
       this.humanTimeout -= 1;
-      if (this.humanTimeout == HUMAN_SCROLL_TIMEOUT - 1) {
-        // this.dim.scrollTop = this.domEl.scrollTop;
-      } else if (this.humanTimeout <= 0) {
+      if (this.humanTimeout <= 0) {
         this.humanTimeout = 0;
         this.velocity = 0;
         this.dim.scrollTop = this.domEl.scrollTop;
@@ -381,10 +382,11 @@ class ChantScrollerModel {
   }
 
   _loopScroll() {
-    if (!this.state.playing || this.humanTimeout > 0) return;
-    const top = this.dim.scrollTop + this.velocity / 60;
-    this.domEl.scrollTo({ left: 0, top });
-    this.dim.scrollTop = top;
+    if (this.state.playing && this.humanTimeout <= 0) {
+      const top = this.dim.scrollTop + this.velocity / 60;
+      this.domEl.scrollTo({ left: 0, top });
+      this.dim.scrollTop = top;
+    }
   }
 
   _loopSetup() {
@@ -597,6 +599,39 @@ class ChantScrollerModel {
 
   _onHumanActivity() {
     this.humanTimeout = HUMAN_SCROLL_TIMEOUT;
+  }
+
+  _onHumanKey(event) {
+    const keyTypeMap = {
+      arrowdown: "scroll",
+      arrowleft: "DECREASE_SPEED",
+      arrowright: "INCREASE_SPEED",
+      arrowup: "scroll",
+      end: "scroll",
+      home: "scroll",
+      pageup: "scroll",
+      pagedown: "scroll",
+      c: "TOGGLE_THEME_TYPE",
+      d: "TOGGLE_DIAGNOSTICS",
+      f: "TOGGLE_FULLSCREEN",
+      h: "TOGGLE_HIGHLIGHT",
+      k: "TOGGLE_PLAYING",
+      m: "TOGGLE_AUDIO",
+      s: "TOGGLE_SETTINGS",
+      0: "RESET_FONT_SIZE",
+      _: "DECREASE_FONT_SIZE",
+      "-": "DECREASE_FONT_SIZE",
+      "+": "INCREASE_FONT_SIZE",
+      "=": "INCREASE_FONT_SIZE",
+      " ": "TOGGLE_PLAYING",
+    };
+    const type = keyTypeMap[String(event.key).toLowerCase()];
+    if (type === "scroll") {
+      this.humanTimeout = HUMAN_SCROLL_TIMEOUT;
+    } else if (type) {
+      this.dispatch({ type });
+      event.preventDefault();
+    }
   }
 
   _onHumanScroll() {
