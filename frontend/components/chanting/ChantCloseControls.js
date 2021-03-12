@@ -1,6 +1,6 @@
 import Fade from "@material-ui/core/Fade";
 import { makeStyles } from "@material-ui/core/styles";
-import { useState } from "react";
+import { memo, useState } from "react";
 
 import { useChantIdle } from "@/components/chanting/ChantIdleProvider";
 import ChantCloseButton from "@/components/chanting/inputs/ChantCloseButton";
@@ -29,27 +29,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ChantCloseControls = ({ dispatch, state }) => {
-  const idle = useChantIdle();
-  const [visible, setVisible] = useState(false);
-  const classes = useStyles({ toc: state.view === "TOC", visible });
+const ChantCloseControls = memo(
+  ({ dispatch, state }) => {
+    const idle = useChantIdle();
+    const [visible, setVisible] = useState(false);
+    const classes = useStyles({ toc: state.view === "TOC", visible });
 
-  const onEnter = () => setVisible(true);
-  const onExited = () => setVisible(false);
+    const onEnter = () => setVisible(true);
+    const onExited = () => setVisible(false);
 
-  const open = state.view === "TOC" || state.settings || !idle;
+    const open = state.view === "TOC" || state.settings || !idle;
 
-  return (
-    <div className={classes.root}>
-      <Fade in={open} onEnter={onEnter} onExited={onExited}>
-        <div className={classes.fade}>
-          <div className={classes.button}>
-            <ChantCloseButton dispatch={dispatch} />
+    return (
+      <div className={classes.root}>
+        <Fade in={open} onEnter={onEnter} onExited={onExited}>
+          <div className={classes.fade}>
+            <div className={classes.button}>
+              <ChantCloseButton dispatch={dispatch} />
+            </div>
           </div>
-        </div>
-      </Fade>
-    </div>
-  );
-};
+        </Fade>
+      </div>
+    );
+  },
+  (prev, next) =>
+    prev.dispatch === next.dispatch &&
+    prev.state.settings === next.state.settings &&
+    prev.state.view === next.state.view
+);
 
 export default ChantCloseControls;

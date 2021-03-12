@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 import { useChantIdle } from "@/components/chanting/ChantIdleProvider";
 import ChantSet from "@/components/chanting/ChantSet";
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-const ChantScroller = ({ dispatch, state }) => {
+const ChantScroller = memo(({ dispatch, state }) => {
   const [chantSet, setChantSet] = useState(null);
   const idle = useChantIdle();
   const domRef = useRef();
@@ -56,6 +56,6 @@ const ChantScroller = ({ dispatch, state }) => {
       {chantSet && <ChantSet chantSet={chantSet} />}
     </div>
   );
-};
+});
 
 export default ChantScroller;

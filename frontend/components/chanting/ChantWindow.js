@@ -1,18 +1,17 @@
-import Fade from "@material-ui/core/Fade";
 import {
   createMuiTheme,
   makeStyles,
   ThemeProvider,
 } from "@material-ui/core/styles";
-import { useCallback, useEffect } from "react";
+import { memo, useEffect } from "react";
 
 import ChantCloseControls from "@/components/chanting/ChantCloseControls";
 import ChantOperationControls from "@/components/chanting/ChantOperationControls";
 import ChantExtraControls from "@/components/chanting/ChantExtraControls";
 import ChantIdleProvider from "@/components/chanting/ChantIdleProvider";
-import ChantScroller from "@/components/chanting/ChantScroller";
+import ChantScrollerWrapper from "@/components/chanting/ChantScrollerWrapper";
 import ChantSettingsPanel from "@/components/chanting/ChantSettingsPanel";
-import ChantToc from "@/components/chanting/ChantToc";
+import ChantTocWrapper from "@/components/chanting/ChantTocWrapper";
 import { useChantWindowReducer } from "@/components/chanting/ChantWindowReducer";
 import darkTheme from "@/lib/theme";
 import { exitFullscreen, requestFullscreen } from "@/lib/util";
@@ -49,45 +48,22 @@ const useStyles = makeStyles((theme) => ({
           boxShadow: "1px 1px 6px rgb(0 0 0 / 80%)",
         }),
   }),
-  fade: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-  },
 }));
 
-// This inner component is needed for the theme to apply.
-const ChantWindowInner = ({ dispatch, state }) => {
+// This inner component is needed for the theme switching to work.
+const ChantWindowInner = memo(({ dispatch, state }) => {
   const classes = useStyles({ state });
-
-  const onOpenToc = useCallback(
-    (chantSet) => dispatch({ type: "OPEN_CHANT_SET", chantSet }),
-    [dispatch]
-  );
-
   return (
     <div className={classes.root}>
       <ChantCloseControls dispatch={dispatch} state={state} />
       <ChantOperationControls dispatch={dispatch} state={state} />
       <ChantExtraControls dispatch={dispatch} state={state} />
       <ChantSettingsPanel dispatch={dispatch} state={state} />
-      <Fade in={state.view === "CHANT"}>
-        <div className={classes.fade}>
-          <ChantScroller dispatch={dispatch} state={state} />
-        </div>
-      </Fade>
-      <Fade in={state.view === "TOC"}>
-        <div className={classes.fade}>
-          <ChantToc
-            fullToc={state.fullToc}
-            onOpen={onOpenToc}
-            toc={state.chantData.toc}
-          />
-        </div>
-      </Fade>
+      <ChantScrollerWrapper dispatch={dispatch} state={state} />
+      <ChantTocWrapper dispatch={dispatch} state={state} />
     </div>
   );
-};
+});
 
 const ChantWindow = ({
   allowFullscreen = true,
