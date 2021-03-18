@@ -164,10 +164,11 @@ const timeString = (option, dayjsClass) => {
     if (time === undefined) {
       time = this.format("HH:mm:ss.SSS");
     }
-    const dts = this.format("YYYY-MM-DD") + "T" + time;
+    const dt = dayjs(this.format("YYYY-MM-DD") + "T" + time);
+    const dts = dt.format("YYYY-MM-DDTHH:mm:ss.SSS") + this.format("Z");
     const tz = this.$x && this.$x.$timezone;
     try {
-      return tz ? dayjs.tz(dts, tz) : dayjs(dts).utc();
+      return tz ? dayjs(dts).tz(tz) : dayjs(dts).utc();
     } catch {
       return dayjs(null);
     }
