@@ -15,7 +15,6 @@ const initialize = ({
   chantData,
   disableAudio = false,
   disableFullScreen = false,
-  disableReturnToc = false,
 }) => {
   const model = new ChantScrollerModel();
   return {
@@ -27,7 +26,6 @@ const initialize = ({
     diagnostics: false,
     disableAudio,
     disableFullScreen,
-    disableReturnToc,
     fontSize: DEFAULT_FONT_SIZE,
     fullScreen: false,
     highlight: false,
@@ -43,7 +41,7 @@ const initialize = ({
 const reducer = (state, action) => {
   switch (action.type) {
     case "CLOSE": {
-      if (state.settings && !state.disableReturnToc) {
+      if (state.settings) {
         return { ...state, settings: false };
       } else {
         return {
@@ -87,7 +85,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         chantSet: action.chantSet,
-        close: !action.chantSet,
+        close: state.chantSet && !action.chantSet,
         playing: Boolean(action.chantSet),
       };
     case "SET_FONT_SIZE":

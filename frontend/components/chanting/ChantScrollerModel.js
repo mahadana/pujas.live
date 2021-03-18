@@ -158,8 +158,11 @@ class ChantScrollerModel {
     return Boolean(this.isMobile.phone);
   }
 
-  hasFullScreen() {
-    return !this.isMobile.apple.phone && !this.state.disableFullScreen;
+  hasMaximize() {
+    return (
+      !this.isMobile.apple.phone &&
+      !(this.state.disableFullScreen && this.getDefaultMaximize())
+    );
   }
 
   reset() {

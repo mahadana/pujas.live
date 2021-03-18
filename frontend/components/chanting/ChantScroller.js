@@ -123,7 +123,7 @@ const useStyles = makeStyles((theme) => ({
       height: "3.75rem",
     },
     [theme.breakpoints.up("sm")]: {
-      bottom: ({ model }) => (model.hasFullScreen() ? "7.5rem" : "3.75rem"),
+      bottom: ({ model }) => (model.hasMaximize() ? "7.5rem" : "3.75rem"),
       right: 0,
       width: "3.75rem",
       height: ({ disableAudio }) => (disableAudio ? "3.75rem" : "7.5rem"),
@@ -205,7 +205,7 @@ const ChantScrollerInner = memo(({ dispatch, state }) => {
           <ChantAudioButton dispatch={dispatch} state={state} />
         )}
       </div>
-      {model.hasFullScreen() && (
+      {model.hasMaximize() && (
         <div className={clsx(classes.fullScreen, "chant-controls")}>
           <ChantFullScreenButton dispatch={dispatch} state={state} />
         </div>
@@ -228,6 +228,7 @@ const ChantScroller = memo(
     chantSet,
     disableAudio,
     disableFullScreen,
+    disableReturnToc,
     onClose,
     setMaximize,
   }) => {
@@ -235,6 +236,7 @@ const ChantScroller = memo(
       chantData,
       disableAudio,
       disableFullScreen,
+      disableReturnToc,
     });
 
     useEffect(() => {

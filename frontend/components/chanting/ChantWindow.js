@@ -33,12 +33,17 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-const ChantWindow = ({ onClose, ...props }) => {
+const ChantWindow = ({ onClose, disableReturnToc = false, ...props }) => {
   const [chantSet, setChantSet] = useState(null);
   const [maximize, setMaximize] = useState(false);
   const classes = useStyles({ maximize });
 
-  const resetChantSet = () => setChantSet(null);
+  const onCloseScroller = () => {
+    setChantSet(null);
+    if (disableReturnToc) {
+      onClose?.();
+    }
+  };
 
   return (
     <div className={classes.root}>
@@ -46,7 +51,7 @@ const ChantWindow = ({ onClose, ...props }) => {
       <ChantScrollerWrapper
         {...props}
         chantSet={chantSet}
-        onClose={resetChantSet}
+        onClose={onCloseScroller}
         setMaximize={setMaximize}
       />
       <ChantTocWrapper

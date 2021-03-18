@@ -97,7 +97,7 @@ const ChantingBooksModal = ({ children }) => {
     setState: (newState) => {
       setState({
         ...newState,
-        inRecording: router.pathname !== "/", // TODO better logic
+        inRecording: router.asPath !== "/", // TODO better logic
         newModal: hasChantDataUrl(),
       });
     },
