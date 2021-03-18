@@ -1,6 +1,7 @@
 import { useIdleTimer } from "react-idle-timer";
 import { useEffect, useState } from "react";
 
+import { useChantingBooksModal } from "@/components/ChantingBooksModal";
 import HomeContent from "@/components/HomeContent";
 import PageLayout from "@/components/PageLayout";
 import { apolloClient } from "@/lib/apollo";
@@ -14,6 +15,7 @@ const fetchHomeResult = async () =>
 
 const HomePage = ({ staticResult }) => {
   const [queryResult, setQueryResult] = useState(null);
+  const { open: chantOpen } = useChantingBooksModal();
 
   const updateQueryResult = () => {
     if (queryResult?.loading) {
@@ -50,7 +52,7 @@ const HomePage = ({ staticResult }) => {
   const { reset: resetIdleTimer } = useIdleTimer({
     debounce: 500,
     onIdle: () => {
-      if (!queryResult?.error) {
+      if (!queryResult?.error && !chantOpen) {
         updateQueryResult();
       }
       resetIdleTimer();

@@ -12,7 +12,9 @@ import ChantModal from "@/components/chanting/ChantModal";
 import { hasChantDataUrl } from "@/components/chanting/ChantDataUrlContent";
 
 export const ChantingBooksModalContext = createContext({
+  newModal: false,
   open: false,
+  parentFullScreen: false,
   setState: () => undefined,
 });
 
@@ -100,8 +102,6 @@ const ChantingBooksModal = ({ children }) => {
     state?.onClose?.();
     setState(null);
   };
-
-  console.log("ChantingBooksModal", state);
 
   return (
     <>
