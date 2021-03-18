@@ -14,23 +14,25 @@ export const SPEED_STEP = 0.1;
 const initialize = ({
   chantData,
   disableAudio = false,
-  parentFullScreen = false,
+  disableFullScreen = false,
+  disableReturnToc = false,
 }) => {
   const model = new ChantScrollerModel();
   return {
-    audio: true,
+    audio: false,
     chantData,
     chantSet: null,
     close: false,
     controls: false,
     diagnostics: false,
     disableAudio,
+    disableFullScreen,
+    disableReturnToc,
     fontSize: DEFAULT_FONT_SIZE,
     fullScreen: false,
     highlight: false,
     maximize: model.getDefaultMaximize(),
     model,
-    parentFullScreen,
     playing: false,
     settings: false,
     speed: DEFAULT_SPEED,
@@ -41,7 +43,7 @@ const initialize = ({
 const reducer = (state, action) => {
   switch (action.type) {
     case "CLOSE": {
-      if (state.settings) {
+      if (state.settings && !state.disableReturnToc) {
         return { ...state, settings: false };
       } else {
         return {
@@ -79,6 +81,8 @@ const reducer = (state, action) => {
       };
     case "RESET_FONT_SIZE":
       return { ...state, fontSize: DEFAULT_FONT_SIZE };
+    case "RESET_SPEED":
+      return { ...state, speed: DEFAULT_SPEED };
     case "SET_CHANT_SET":
       return {
         ...state,

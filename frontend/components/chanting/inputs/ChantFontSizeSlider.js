@@ -1,4 +1,5 @@
 import Slider from "@material-ui/core/Slider";
+import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import { memo, useEffect, useState } from "react";
 
@@ -37,7 +38,9 @@ const ChantingFontSizeSlider = memo(
     return (
       <>
         <Typography id="chant-font-size-slider" variant="body2">
-          Text Size
+          <Tooltip title="Smaller (-) Larger (+)">
+            <span>Text Size</span>
+          </Tooltip>
         </Typography>
         <Slider
           aria-labelledby="chant-font-size-slider"

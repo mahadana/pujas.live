@@ -10,11 +10,11 @@ const ChantThemeTypeButton = memo(
     return (
       <IconButton onClick={onClick}>
         {state.themeType === "light" ? (
-          <Tooltip title="Dark colors">
+          <Tooltip title="Dark colors (c)">
             <Brightness4Icon color="disabled" fontSize="large" />
           </Tooltip>
         ) : (
-          <Tooltip title="Light colors">
+          <Tooltip title="Light colors (c)">
             <Brightness5Icon color="primary" fontSize="large" />
           </Tooltip>
         )}

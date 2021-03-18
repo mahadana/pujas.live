@@ -9,7 +9,7 @@ const ChantHighlightButton = memo(
 
     return (
       <IconButton onClick={onClickHighlight}>
-        <Tooltip title="Highlight">
+        <Tooltip title="Highlight (h)">
           <HighlightIcon
             color={state.highlight ? "primary" : "disabled"}
             fontSize="large"

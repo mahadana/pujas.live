@@ -9,7 +9,7 @@ const ChantSettingsButton = memo(
 
     return (
       <IconButton onClick={onClick}>
-        <Tooltip title="Settings">
+        <Tooltip title="Settings (s)">
           {state.settings ? (
             <SettingsIcon color="primary" fontSize="large" />
           ) : (

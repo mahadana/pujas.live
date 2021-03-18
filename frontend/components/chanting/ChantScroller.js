@@ -49,7 +49,19 @@ const useStyles = makeStyles((theme) => ({
     "&.chant-controls-removed .chant-scroller": {
       cursor: (fullScreen) => (fullScreen ? "none" : "inherit"),
     },
-    "& .chant-settings": {
+    "& .chant-diagnostics": {
+      display: "none",
+    },
+    "&.chant-diagnostics-visible .chant-diagnostics": {
+      display: "block",
+    },
+    "&.chant-highlight-visible .chant-active": {
+      backgroundColor:
+        theme.palette.type === "light"
+          ? "rgba(255, 255, 0, 0.25)"
+          : "rgba(255, 255, 0, 0.1)",
+    },
+    "&.chant-settings": {
       transition: "opacity 0.25s ease",
     },
     "&.chant-settings-visible .chant-settings": {
@@ -73,8 +85,7 @@ const useStyles = makeStyles((theme) => ({
     width: "3.75rem",
     height: "3.75rem",
   },
-  debug: {
-    display: "none",
+  diagnostics: {
     position: "absolute",
     zIndex: 500,
     top: 0,
@@ -112,7 +123,7 @@ const useStyles = makeStyles((theme) => ({
       height: "3.75rem",
     },
     [theme.breakpoints.up("sm")]: {
-      bottom: "7.5rem",
+      bottom: ({ model }) => (model.hasFullScreen() ? "7.5rem" : "3.75rem"),
       right: 0,
       width: "3.75rem",
       height: ({ disableAudio }) => (disableAudio ? "3.75rem" : "7.5rem"),
@@ -122,7 +133,7 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
-  scroller: ({ highlight }) => ({
+  scroller: {
     position: "absolute",
     zIndex: 0,
     top: 0,
@@ -142,14 +153,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("sm")]: {
       padding: "1rem",
     },
-    "& .chant-active": {
-      backgroundColor: highlight
-        ? theme.palette.type === "light"
-          ? "rgba(255, 255, 0, 0.25)"
-          : "rgba(255, 255, 0, 0.1)"
-        : "inherit",
-    },
-  }),
+  },
   settingsButton: {
     position: "absolute",
     zIndex: 300,
@@ -188,7 +192,7 @@ const ChantScrollerInner = memo(({ dispatch, state }) => {
 
   return (
     <div className={classes.root} ref={ref}>
-      <div className={clsx(classes.debug, "chant-debug")} />
+      <div className={clsx(classes.diagnostics, "chant-diagnostics")} />
       <div className={clsx(classes.scroller, "chant-scroller")} tabIndex="0">
         {chantSet && <ChantSet chantSet={chantSet} />}
       </div>
@@ -223,14 +227,14 @@ const ChantScroller = memo(
     chantData,
     chantSet,
     disableAudio,
+    disableFullScreen,
     onClose,
-    parentFullScreen,
     setMaximize,
   }) => {
     const [state, dispatch] = useChantScrollerReducer({
       chantData,
       disableAudio,
-      parentFullScreen,
+      disableFullScreen,
     });
 
     useEffect(() => {

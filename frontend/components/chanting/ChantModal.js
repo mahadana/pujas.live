@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ChantWindow = dynamic(() => import("@/components/chanting/ChantWindow"));
 
-const ChantModal = ({ disableAudio, onClose, open, parentFullScreen }) => {
+const ChantModal = ({ open, ...props }) => {
   const classes = useStyles();
   return (
     <Modal
@@ -22,20 +22,13 @@ const ChantModal = ({ disableAudio, onClose, open, parentFullScreen }) => {
       BackdropProps={{ timeout: 250 }}
       className={classes.modal}
       closeAfterTransition
-      onClose={onClose}
+      onClose={props.onClose}
       open={open}
     >
       <Fade in={open} mountOnEnter unmountOnExit>
         <div>
           <ChantLoader>
-            {(chantData) => (
-              <ChantWindow
-                disableAudio={disableAudio}
-                chantData={chantData}
-                onClose={onClose}
-                parentFullScreen={parentFullScreen}
-              />
-            )}
+            {(chantData) => <ChantWindow {...props} chantData={chantData} />}
           </ChantLoader>
         </div>
       </Fade>

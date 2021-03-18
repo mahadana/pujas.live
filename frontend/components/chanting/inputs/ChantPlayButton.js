@@ -10,11 +10,11 @@ const ChantPlayButton = memo(
     return (
       <IconButton onClick={onClick}>
         {state.playing ? (
-          <Tooltip title="Pause">
+          <Tooltip title="Pause (k)">
             <PauseIcon color="disabled" fontSize="large" />
           </Tooltip>
         ) : (
-          <Tooltip title="Play">
+          <Tooltip title="Play (k)">
             <PlayArrowIcon color="disabled" fontSize="large" />
           </Tooltip>
         )}

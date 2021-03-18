@@ -39,8 +39,8 @@ const useStyles = makeStyles((theme) => ({
       bottom: 0,
       left: 0,
       width: "100%",
-      height: "21rem",
-      padding: "1rem 2rem",
+      height: "22rem",
+      padding: "2rem",
     },
     [theme.breakpoints.up("sm")]: {
       bottom: 0,
@@ -93,6 +93,12 @@ const ChantSettingsPanel = memo(({ dispatch, state }) => {
   return (
     <div className={classes.root}>
       <div className={classes.panel}>
+        <div className={classes.slider}>
+          <ChantFontSizeSlider dispatch={dispatch} state={state} />
+        </div>
+        <div className={classes.slider}>
+          <ChantSpeedSlider dispatch={dispatch} state={state} />
+        </div>
         <div className={classes.options}>
           <Typography variant="body2">Options</Typography>
           <div className={classes.buttons}>
@@ -100,12 +106,6 @@ const ChantSettingsPanel = memo(({ dispatch, state }) => {
             <ChantThemeTypeButton dispatch={dispatch} state={state} />
             <ChantDiagnosticsButton dispatch={dispatch} state={state} />
           </div>
-        </div>
-        <div className={classes.slider}>
-          <ChantFontSizeSlider dispatch={dispatch} state={state} />
-        </div>
-        <div className={classes.slider}>
-          <ChantSpeedSlider dispatch={dispatch} state={state} />
         </div>
       </div>
       <div

@@ -10,7 +10,7 @@ const ChantFullScreenButton = memo(
 
     return (
       <IconButton onClick={onClick}>
-        <Tooltip title="Full screen">
+        <Tooltip title="Full screen (f)">
           {state.fullScreen ? (
             <FullscreenExitIcon color="disabled" fontSize="large" />
           ) : (

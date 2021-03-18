@@ -11,11 +11,11 @@ const ChantAudioButton = memo(
       <>
         <IconButton onClick={onClick}>
           {state.audio ? (
-            <Tooltip title="Mute">
+            <Tooltip title="Mute (m)">
               <VolumeUpIcon color="disabled" fontSize="large" />
             </Tooltip>
           ) : (
-            <Tooltip title="Unmute">
+            <Tooltip title="Unmute (m)">
               <VolumeOffIcon color="disabled" fontSize="large" />
             </Tooltip>
           )}

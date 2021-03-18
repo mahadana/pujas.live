@@ -33,12 +33,7 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-const ChantWindow = ({
-  chantData,
-  disableAudio,
-  onClose,
-  parentFullScreen,
-}) => {
+const ChantWindow = ({ onClose, ...props }) => {
   const [chantSet, setChantSet] = useState(null);
   const [maximize, setMaximize] = useState(false);
   const classes = useStyles({ maximize });
@@ -49,18 +44,16 @@ const ChantWindow = ({
     <div className={classes.root}>
       <ChantFontStyle />
       <ChantScrollerWrapper
-        chantData={chantData}
+        {...props}
         chantSet={chantSet}
-        disableAudio={disableAudio}
         onClose={resetChantSet}
-        parentFullScreen={parentFullScreen}
         setMaximize={setMaximize}
       />
       <ChantTocWrapper
         chantSet={chantSet}
         onClose={onClose}
         onOpen={setChantSet}
-        toc={chantData.toc}
+        toc={props.chantData.toc}
       />
     </div>
   );

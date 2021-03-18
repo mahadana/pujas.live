@@ -9,7 +9,7 @@ const ChantCloseButton = memo(
 
     return (
       <IconButton onClick={onClick}>
-        <Tooltip title="Exit">
+        <Tooltip title="Close (esc)">
           <CancelIcon color="disabled" fontSize="large" />
         </Tooltip>
       </IconButton>

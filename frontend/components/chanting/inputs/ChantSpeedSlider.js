@@ -1,4 +1,5 @@
 import Slider from "@material-ui/core/Slider";
+import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import { memo, useEffect, useState } from "react";
 
@@ -43,7 +44,9 @@ const ChantingSpeedSlider = memo(
     return (
       <>
         <Typography id="chant-speed-slider" variant="body2">
-          Speed
+          <Tooltip title="Slower (←) Faster (→)">
+            <span>Speed</span>
+          </Tooltip>
         </Typography>
         <Slider
           aria-labelledby="chant-speed-slider"

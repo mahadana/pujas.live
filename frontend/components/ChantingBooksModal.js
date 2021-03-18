@@ -82,10 +82,9 @@ const OldChantModal = ({ onClose, open, state }) => {
 
 const DEFAULT_STATE = {
   book: null,
-  disableAudio: false,
+  inRecording: false,
   newModal: false,
   onClose: null,
-  parentFullScreen: false,
 };
 
 const ChantingBooksModal = ({ children }) => {
@@ -98,9 +97,8 @@ const ChantingBooksModal = ({ children }) => {
     setState: (newState) => {
       setState({
         ...newState,
-        disableAudio: router.pathname !== "/", // TODO better logic
+        inRecording: router.pathname !== "/", // TODO better logic
         newModal: hasChantDataUrl(),
-        parentFullScreen: router.pathname !== "/", // TODO better logic
       });
     },
   };
@@ -118,10 +116,11 @@ const ChantingBooksModal = ({ children }) => {
       <NoSsr>
         {state.newModal ? (
           <ChantModal
-            disableAudio={state.disableAudio}
+            disableAudio={state.inRecording}
+            disableFullScreen={state.inRecording}
+            disableReturnToc={state.inRecording}
             onClose={onClose}
             open={open}
-            parentFullScreen={state.parentFullScreen}
           />
         ) : (
           <OldChantModal onClose={onClose} open={open} state={state} />

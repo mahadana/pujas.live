@@ -8,7 +8,7 @@ const ChantDiagnosticsButton = memo(
     const onClick = () => dispatch({ type: "TOGGLE_DIAGNOSTICS" });
     return (
       <IconButton onClick={onClick}>
-        <Tooltip title="Diagnostics">
+        <Tooltip title="Diagnostics (d)">
           <InfoIcon
             color={state.diagnostics ? "primary" : "disabled"}
             fontSize="large"
