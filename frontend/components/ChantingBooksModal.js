@@ -12,9 +12,7 @@ import ChantModal from "@/components/chanting/ChantModal";
 import { hasChantDataUrl } from "@/components/chanting/ChantDataUrlContent";
 
 export const ChantingBooksModalContext = createContext({
-  newModal: false,
   open: false,
-  parentFullScreen: false,
   setState: () => undefined,
 });
 
@@ -82,25 +80,34 @@ const OldChantModal = ({ onClose, open, state }) => {
   );
 };
 
+const DEFAULT_STATE = {
+  book: null,
+  disableAudio: false,
+  newModal: false,
+  onClose: null,
+  parentFullScreen: false,
+};
+
 const ChantingBooksModal = ({ children }) => {
   const router = useRouter();
-  const [state, setState] = useState(true);
+  const [state, setState] = useState(DEFAULT_STATE);
 
-  const open = !!state?.book;
+  const open = Boolean(state.book);
   const context = {
     open,
     setState: (newState) => {
       setState({
         ...newState,
+        disableAudio: router.pathname !== "/", // TODO better logic
         newModal: hasChantDataUrl(),
-        parentFullScreen: router.pathname !== "/",
+        parentFullScreen: router.pathname !== "/", // TODO better logic
       });
     },
   };
 
   const onClose = () => {
-    state?.onClose?.();
-    setState(null);
+    state.onClose?.();
+    setState(DEFAULT_STATE);
   };
 
   return (
@@ -109,11 +116,12 @@ const ChantingBooksModal = ({ children }) => {
         {children}
       </ChantingBooksModalContext.Provider>
       <NoSsr>
-        {state?.newModal ?? true ? (
+        {state.newModal ? (
           <ChantModal
+            disableAudio={state.disableAudio}
             onClose={onClose}
             open={open}
-            parentFullScreen={state?.parentFullScreen ?? true}
+            parentFullScreen={state.parentFullScreen}
           />
         ) : (
           <OldChantModal onClose={onClose} open={open} state={state} />

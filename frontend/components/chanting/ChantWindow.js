@@ -33,7 +33,12 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-const ChantWindow = ({ chantData, onClose, parentFullScreen }) => {
+const ChantWindow = ({
+  chantData,
+  disableAudio,
+  onClose,
+  parentFullScreen,
+}) => {
   const [chantSet, setChantSet] = useState(null);
   const [maximize, setMaximize] = useState(false);
   const classes = useStyles({ maximize });
@@ -46,6 +51,7 @@ const ChantWindow = ({ chantData, onClose, parentFullScreen }) => {
       <ChantScrollerWrapper
         chantData={chantData}
         chantSet={chantSet}
+        disableAudio={disableAudio}
         onClose={resetChantSet}
         parentFullScreen={parentFullScreen}
         setMaximize={setMaximize}

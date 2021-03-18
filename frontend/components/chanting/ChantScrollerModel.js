@@ -768,7 +768,7 @@ class ChantScrollerModel {
       end: this.dim.chants[this.activeChantIndex]?.end ?? null,
     };
 
-    if (mediaUrl) {
+    if (mediaUrl && !this.state.disableAudio) {
       if (mediaStamp.chantIndex !== this.mediaStamp?.chantIndex) {
         this.mediaPlayer.setUrl(mediaUrl);
         if (

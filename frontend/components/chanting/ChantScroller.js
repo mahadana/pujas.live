@@ -108,14 +108,14 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("xs")]: {
       bottom: 0,
       left: 0,
-      width: "7.5rem",
+      width: ({ disableAudio }) => (disableAudio ? "3.75rem" : "7.5rem"),
       height: "3.75rem",
     },
     [theme.breakpoints.up("sm")]: {
       bottom: "7.5rem",
       right: 0,
       width: "3.75rem",
-      height: "7.5rem",
+      height: ({ disableAudio }) => (disableAudio ? "3.75rem" : "7.5rem"),
       textAlign: "center",
       "& > button": {
         display: "flex",
@@ -197,7 +197,9 @@ const ChantScrollerInner = memo(({ dispatch, state }) => {
       </div>
       <div className={clsx(classes.operations, "chant-controls")}>
         <ChantPlayButton dispatch={dispatch} state={state} />
-        <ChantAudioButton dispatch={dispatch} state={state} />
+        {!state.disableAudio && (
+          <ChantAudioButton dispatch={dispatch} state={state} />
+        )}
       </div>
       {model.hasFullScreen() && (
         <div className={clsx(classes.fullScreen, "chant-controls")}>
@@ -217,9 +219,17 @@ const ChantScrollerInner = memo(({ dispatch, state }) => {
 ChantScrollerInner.displayName = "ChantScrollerInner";
 
 const ChantScroller = memo(
-  ({ chantData, chantSet, onClose, parentFullScreen, setMaximize }) => {
+  ({
+    chantData,
+    chantSet,
+    disableAudio,
+    onClose,
+    parentFullScreen,
+    setMaximize,
+  }) => {
     const [state, dispatch] = useChantScrollerReducer({
       chantData,
+      disableAudio,
       parentFullScreen,
     });
 

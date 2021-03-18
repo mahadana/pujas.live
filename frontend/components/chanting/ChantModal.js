@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ChantWindow = dynamic(() => import("@/components/chanting/ChantWindow"));
 
-const ChantModal = ({ onClose, open, parentFullScreen }) => {
+const ChantModal = ({ disableAudio, onClose, open, parentFullScreen }) => {
   const classes = useStyles();
   return (
     <Modal
@@ -30,6 +30,7 @@ const ChantModal = ({ onClose, open, parentFullScreen }) => {
           <ChantLoader>
             {(chantData) => (
               <ChantWindow
+                disableAudio={disableAudio}
                 chantData={chantData}
                 onClose={onClose}
                 parentFullScreen={parentFullScreen}

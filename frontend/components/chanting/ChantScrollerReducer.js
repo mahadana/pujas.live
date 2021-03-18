@@ -11,7 +11,11 @@ export const MAX_FONT_SIZE = 40;
 export const MAX_SPEED = 3.0;
 export const SPEED_STEP = 0.1;
 
-const initialize = ({ chantData, parentFullScreen = false }) => {
+const initialize = ({
+  chantData,
+  disableAudio = false,
+  parentFullScreen = false,
+}) => {
   const model = new ChantScrollerModel();
   return {
     audio: true,
@@ -19,11 +23,12 @@ const initialize = ({ chantData, parentFullScreen = false }) => {
     chantSet: null,
     close: false,
     controls: false,
-    debug: true,
+    debug: false,
     diagnostics: true,
+    disableAudio,
     fontSize: DEFAULT_FONT_SIZE,
     fullScreen: false,
-    highlight: true,
+    highlight: false,
     maximize: model.getDefaultMaximize(),
     model,
     parentFullScreen,
