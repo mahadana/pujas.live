@@ -11,41 +11,42 @@ export const MAX_FONT_SIZE = 40;
 export const MAX_SPEED = 3.0;
 export const SPEED_STEP = 0.1;
 
-const initialize = ({ chantData, mobile }) => ({
-  audio: true,
-  chantData,
-  chantSet: null,
-  close: false,
-  debug: true,
-  diagnostics: true,
-  fontSize: DEFAULT_FONT_SIZE,
-  fullscreen: false,
-  fullToc: true,
-  highlight: true,
-  mobile,
-  model: new ChantScrollerModel(),
-  playing: false,
-  settings: false,
-  speed: DEFAULT_SPEED,
-  themeType: "light",
-  view: "TOC",
-});
+const initialize = ({ chantData, parentFullScreen = false }) => {
+  const model = new ChantScrollerModel();
+  return {
+    audio: true,
+    chantData,
+    chantSet: null,
+    close: false,
+    controls: false,
+    debug: true,
+    diagnostics: true,
+    fontSize: DEFAULT_FONT_SIZE,
+    fullScreen: false,
+    highlight: true,
+    maximize: model.getDefaultMaximize(),
+    model,
+    parentFullScreen,
+    playing: false,
+    settings: false,
+    speed: DEFAULT_SPEED,
+    themeType: "light",
+  };
+};
 
 const reducer = (state, action) => {
   switch (action.type) {
     case "CLOSE": {
       if (state.settings) {
         return { ...state, settings: false };
-      } else if (state.view === "CHANT") {
+      } else {
         return {
           ...state,
-          chantSet: null,
-          fullscreen: false,
+          close: true,
+          fullScreen: false,
+          maximize: state.model.getDefaultMaximize(),
           playing: false,
-          view: "TOC",
         };
-      } else {
-        return { ...state, close: true, fullscreen: false, playing: false };
       }
     }
     case "DECREASE_SPEED":
@@ -58,9 +59,10 @@ const reducer = (state, action) => {
         ...state,
         fontSize: Math.max(MIN_FONT_SIZE, state.fontSize - FONT_SIZE_STEP),
       };
-    case "EXIT": {
-      return { ...state, close: true, fullscreen: false, playing: false };
-    }
+    case "HIDE_CONTROLS":
+      return { ...state, controls: false };
+    case "HIDE_SETTINGS":
+      return { ...state, settings: false };
     case "INCREASE_SPEED":
       return {
         ...state,
@@ -71,20 +73,25 @@ const reducer = (state, action) => {
         ...state,
         fontSize: Math.min(MAX_FONT_SIZE, state.fontSize + FONT_SIZE_STEP),
       };
-    case "OPEN_CHANT_SET":
+    case "RESET_FONT_SIZE":
+      return { ...state, fontSize: DEFAULT_FONT_SIZE };
+    case "SET_CHANT_SET":
       return {
         ...state,
         chantSet: action.chantSet,
-        fullscreen: state.mobile,
-        playing: true,
-        view: "CHANT",
+        close: !action.chantSet,
+        playing: Boolean(action.chantSet),
       };
-    case "RESET_FONT_SIZE":
-      return { ...state, fontSize: DEFAULT_FONT_SIZE };
     case "SET_FONT_SIZE":
       return { ...state, fontSize: action.fontSize };
+    case "SET_FULL_SCREEN":
+      return { ...state, fullScreen: action.fullScreen };
+    case "SET_MAXIMIZE":
+      return { ...state, maximize: action.maximize };
     case "SET_SPEED":
       return { ...state, speed: action.speed };
+    case "SHOW_CONTROLS":
+      return { ...state, controls: true };
     case "STOP_PLAYING":
       return { ...state, playing: false };
     case "TOGGLE_AUDIO":
@@ -93,10 +100,8 @@ const reducer = (state, action) => {
       return { ...state, debug: !state.debug };
     case "TOGGLE_DIAGNOSTICS":
       return { ...state, diagnostics: !state.diagnostics };
-    case "TOGGLE_FULLSCREEN":
-      return { ...state, fullscreen: !state.fullscreen };
-    case "TOGGLE_FULL_TOC":
-      return { ...state, fullToc: !state.fullToc };
+    case "TOGGLE_FULL_SCREEN":
+      return { ...state, fullScreen: !state.fullScreen };
     case "TOGGLE_HIGHLIGHT":
       return { ...state, highlight: !state.highlight };
     case "TOGGLE_PLAYING":
@@ -113,5 +118,5 @@ const reducer = (state, action) => {
   }
 };
 
-export const useChantWindowReducer = (props) =>
+export const useChantScrollerReducer = (props) =>
   useReducer(reducer, props, initialize);

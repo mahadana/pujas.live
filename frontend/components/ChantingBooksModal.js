@@ -6,6 +6,10 @@ import NoSsr from "@material-ui/core/NoSsr";
 import { makeStyles } from "@material-ui/core/styles";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { createContext, useContext, useState } from "react";
+import { useRouter } from "next/router";
+
+import ChantModal from "@/components/chanting/ChantModal";
+import { hasChantDataUrl } from "@/components/chanting/ChantDataUrlContent";
 
 export const ChantingBooksModalContext = createContext({
   open: false,
@@ -44,23 +48,60 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ChantingBooksModal = ({ children }) => {
-  const [state, setState] = useState(null);
+const OldChantModal = ({ onClose, open, state }) => {
   const classes = useStyles();
 
-  const open = !!state?.book;
   const url = open
     ? `https://pujas.live/chanting/iframe.html?book=${state?.book}`
     : null;
+
+  return (
+    <Modal
+      className={classes.modal}
+      closeAfterTransition
+      onClose={onClose}
+      open={open}
+    >
+      <Fade in={open}>
+        <Box className={classes.container}>
+          <IconButton className={classes.closeButton} onClick={onClose}>
+            <CancelIcon className={classes.closeIcon} />
+          </IconButton>
+          <iframe
+            className={classes.iframe}
+            src={url}
+            frameBorder="0"
+            scrolling="no"
+            seamless="seamless"
+          />
+        </Box>
+      </Fade>
+    </Modal>
+  );
+};
+
+const ChantingBooksModal = ({ children }) => {
+  const router = useRouter();
+  const [state, setState] = useState(true);
+
+  const open = !!state?.book;
   const context = {
     open,
-    setState,
+    setState: (newState) => {
+      setState({
+        ...newState,
+        newModal: hasChantDataUrl(),
+        parentFullScreen: router.pathname !== "/",
+      });
+    },
   };
 
   const onClose = () => {
-    state?.onClose && state.onClose();
+    state?.onClose?.();
     setState(null);
   };
+
+  console.log("ChantingBooksModal", state);
 
   return (
     <>
@@ -68,27 +109,15 @@ const ChantingBooksModal = ({ children }) => {
         {children}
       </ChantingBooksModalContext.Provider>
       <NoSsr>
-        <Modal
-          className={classes.modal}
-          closeAfterTransition
-          onClose={onClose}
-          open={open}
-        >
-          <Fade in={open}>
-            <Box className={classes.container}>
-              <IconButton className={classes.closeButton} onClick={onClose}>
-                <CancelIcon className={classes.closeIcon} />
-              </IconButton>
-              <iframe
-                className={classes.iframe}
-                src={url}
-                frameBorder="0"
-                scrolling="no"
-                seamless="seamless"
-              />
-            </Box>
-          </Fade>
-        </Modal>
+        {state?.newModal ?? true ? (
+          <ChantModal
+            onClose={onClose}
+            open={open}
+            parentFullScreen={state?.parentFullScreen ?? true}
+          />
+        ) : (
+          <OldChantModal onClose={onClose} open={open} state={state} />
+        )}
       </NoSsr>
     </>
   );

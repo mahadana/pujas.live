@@ -2,7 +2,10 @@ import Slider from "@material-ui/core/Slider";
 import Typography from "@material-ui/core/Typography";
 import { memo, useEffect, useState } from "react";
 
-import { MAX_SPEED, MIN_SPEED } from "@/components/chanting/ChantWindowReducer";
+import {
+  MAX_SPEED,
+  MIN_SPEED,
+} from "@/components/chanting/ChantScrollerReducer";
 
 const marks = [
   { value: -0.8, label: "Slow" },
@@ -39,7 +42,9 @@ const ChantingSpeedSlider = memo(
 
     return (
       <>
-        <Typography id="chant-speed-slider">Speed</Typography>
+        <Typography id="chant-speed-slider" variant="body2">
+          Speed
+        </Typography>
         <Slider
           aria-labelledby="chant-speed-slider"
           getAriaValueText={valueLabelFormat}

@@ -7,7 +7,7 @@ import {
   DEFAULT_FONT_SIZE,
   MAX_FONT_SIZE,
   MIN_FONT_SIZE,
-} from "@/components/chanting/ChantWindowReducer";
+} from "@/components/chanting/ChantScrollerReducer";
 
 const sizedLabel = (label, fontSize) => (
   <span style={{ display: "inline-block", fontSize, marginTop: -fontSize / 3 }}>
@@ -36,7 +36,9 @@ const ChantingFontSizeSlider = memo(
 
     return (
       <>
-        <Typography id="chant-font-size-slider">Text Size</Typography>
+        <Typography id="chant-font-size-slider" variant="body2">
+          Text Size
+        </Typography>
         <Slider
           aria-labelledby="chant-font-size-slider"
           getAriaValueText={valueLabelFormat}

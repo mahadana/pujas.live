@@ -1,8 +1,10 @@
 import Fade from "@material-ui/core/Fade";
 import { makeStyles } from "@material-ui/core/styles";
-import { memo, useCallback } from "react";
+import { memo, useState } from "react";
 
 import ChantToc from "@/components/chanting/ChantToc";
+import ChantCloseTocButton from "@/components/chanting/inputs/ChantCloseTocButton";
+import ChantFullTocButton from "@/components/chanting/inputs/ChantFullTocButton";
 
 const useStyles = makeStyles({
   fade: {
@@ -10,33 +12,44 @@ const useStyles = makeStyles({
     width: "100%",
     height: "100%",
   },
+  close: {
+    position: "absolute",
+    zIndex: 100,
+    top: "-0.35rem",
+    right: "-0.35rem",
+    width: "3.75rem",
+    height: "3.75rem",
+  },
+  fullToc: {
+    position: "absolute",
+    zIndex: 100,
+    bottom: 0,
+    right: 0,
+    width: "3.75rem",
+    height: "3.75rem",
+  },
 });
 
-const ChantTocWrapper = memo(
-  ({ dispatch, state }) => {
-    const classes = useStyles();
+const ChantTocWrapper = memo(({ chantSet, onClose, onOpen, toc }) => {
+  const [fullToc, setFullToc] = useState(false);
+  const classes = useStyles();
 
-    const onOpen = useCallback(
-      (chantSet) => dispatch({ type: "OPEN_CHANT_SET", chantSet }),
-      [dispatch]
-    );
+  const toggleFullToc = () => setFullToc((fullToc) => !fullToc);
 
-    const toc = state.chantData?.toc;
-
-    return (
-      <Fade in={Boolean(toc) && state.view === "TOC"}>
-        <div className={classes.fade}>
-          <ChantToc fullToc={state.fullToc} onOpen={onOpen} toc={toc} />
+  return (
+    <Fade in={!chantSet} timeout={500}>
+      <div className={classes.fade}>
+        <div className={classes.close}>
+          <ChantCloseTocButton onClick={onClose} />
         </div>
-      </Fade>
-    );
-  },
-  (prev, next) =>
-    prev.dispatch === next.dispatch &&
-    prev.state.chantData === next.state.chantData &&
-    prev.state.fullToc === next.state.fullToc &&
-    prev.state.view === next.state.view
-);
+        <div className={classes.fullToc}>
+          <ChantFullTocButton fullToc={fullToc} onClick={toggleFullToc} />
+        </div>
+        <ChantToc fullToc={fullToc} onOpen={onOpen} toc={toc} />
+      </div>
+    </Fade>
+  );
+});
 
 ChantTocWrapper.displayName = "ChantTocWrapper";
 

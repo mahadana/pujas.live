@@ -9,7 +9,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
-    margin: "2rem 0",
   },
   field: {
     width: "calc(100% - 13rem)",
@@ -39,7 +38,6 @@ const ChantDataUrlField = memo(({ onLocal, onProduction, onSet, url }) => {
         className={classes.field}
         label="Data URL"
         onChange={onChange}
-        size="small"
         value={localUrl}
         variant="outlined"
       />

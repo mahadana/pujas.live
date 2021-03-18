@@ -4,18 +4,15 @@ import FullscreenExitIcon from "@material-ui/icons/FullscreenExit";
 import FullscreenIcon from "@material-ui/icons/Fullscreen";
 import { memo } from "react";
 
-const ChantFullscreenButton = memo(
+const ChantFullScreenButton = memo(
   ({ dispatch, state }) => {
-    const onClick = () => dispatch({ type: "TOGGLE_FULLSCREEN" });
+    const onClick = () => dispatch({ type: "TOGGLE_FULL_SCREEN" });
 
     return (
       <IconButton onClick={onClick}>
         <Tooltip title="Full screen">
-          {state.fullscreen ? (
-            <FullscreenExitIcon
-              color={state.settings ? "primary" : "disabled"}
-              fontSize="large"
-            />
+          {state.fullScreen ? (
+            <FullscreenExitIcon color="disabled" fontSize="large" />
           ) : (
             <FullscreenIcon color="disabled" fontSize="large" />
           )}
@@ -25,10 +22,9 @@ const ChantFullscreenButton = memo(
   },
   (prev, next) =>
     prev.dispatch === next.dispatch &&
-    prev.state.fullscreen === next.state.fullscreen &&
-    prev.state.settings === next.state.settings
+    prev.state.fullScreen === next.state.fullScreen
 );
 
-ChantFullscreenButton.displayName = "ChantFullscreenButton";
+ChantFullScreenButton.displayName = "ChantFullScreenButton";
 
-export default ChantFullscreenButton;
+export default ChantFullScreenButton;

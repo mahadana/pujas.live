@@ -1,46 +1,181 @@
-import { makeStyles } from "@material-ui/core/styles";
+import {
+  createMuiTheme,
+  makeStyles,
+  ThemeProvider,
+} from "@material-ui/core/styles";
+import clsx from "clsx";
 import { memo, useEffect, useRef, useState } from "react";
 
-import { useChantIdle } from "@/components/chanting/ChantIdleProvider";
 import ChantSet from "@/components/chanting/ChantSet";
+import ChantAudioButton from "@/components/chanting/inputs/ChantAudioButton";
+import ChantCloseButton from "@/components/chanting/inputs/ChantCloseButton";
+import ChantFullScreenButton from "@/components/chanting/inputs/ChantFullScreenButton";
+import ChantPlayButton from "@/components/chanting/inputs/ChantPlayButton";
+import ChantSettingsButton from "@/components/chanting/inputs/ChantSettingsButton";
+import ChantSettingsPanel from "@/components/chanting/ChantSettingsPanel";
+import { useChantScrollerReducer } from "@/components/chanting/ChantScrollerReducer";
+import darkTheme from "@/lib/theme";
+
+const lightTheme = createMuiTheme({
+  ...darkTheme,
+  palette: {
+    type: "light",
+  },
+});
 
 const useStyles = makeStyles((theme) => ({
-  root: ({ fullscreen, highlight, idle }) => ({
+  root: {
     position: "absolute",
-    cursor: idle && fullscreen ? "none" : "inherit",
+    width: "100%",
+    height: "100%",
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
+    userSelect: "none",
+    "& .chant-controls": {
+      transition: "top 0.5s ease-out, right 0.5s ease-out, opacity 0.5s ease",
+    },
+    "&.chant-controls-visible .chant-controls": {
+      display: "block",
+      opacity: 1,
+    },
+    "&.chant-controls-hidden .chant-controls": {
+      display: "block",
+      opacity: 0,
+    },
+    "&.chant-controls-removed .chant-controls": {
+      display: "none",
+      opacity: 0,
+    },
+    "&.chant-controls-removed .chant-scroller": {
+      cursor: (fullScreen) => (fullScreen ? "none" : "inherit"),
+    },
+    "& .chant-settings": {
+      transition: "opacity 0.25s ease",
+    },
+    "&.chant-settings-visible .chant-settings": {
+      display: "block",
+      opacity: 1,
+    },
+    "&.chant-settings-hidden .chant-settings": {
+      display: "block",
+      opacity: 0,
+    },
+    "&.chant-settings-removed .chant-settings": {
+      display: "none",
+      opacity: 0,
+    },
+  },
+  close: {
+    position: "absolute",
+    zIndex: 300,
+    top: 0,
+    right: 0,
+    width: "3.75rem",
+    height: "3.75rem",
+  },
+  debug: {
+    display: "none",
+    position: "absolute",
+    zIndex: 500,
+    top: 0,
+    left: 0,
+    width: "100%",
+    padding: "4px",
+    overflow: "hidden",
+    backgroundColor: "black",
+    color: "white",
+    fontFamily: "monospace",
+    fontSize: "min(2vw, 12px)",
+    whiteSpace: "nowrap",
+  },
+  fullScreen: {
+    position: "absolute",
+    zIndex: 100,
+    width: "3.75rem",
+    height: "3.75rem",
+    [theme.breakpoints.down("xs")]: {
+      bottom: 0,
+      right: "3.75rem",
+    },
+    [theme.breakpoints.up("sm")]: {
+      bottom: "3.75rem",
+      right: 0,
+    },
+  },
+  operations: {
+    position: "absolute",
+    zIndex: 100,
+    [theme.breakpoints.down("xs")]: {
+      bottom: 0,
+      left: 0,
+      width: "7.5rem",
+      height: "3.75rem",
+    },
+    [theme.breakpoints.up("sm")]: {
+      bottom: "7.5rem",
+      right: 0,
+      width: "3.75rem",
+      height: "7.5rem",
+      textAlign: "center",
+      "& > button": {
+        display: "flex",
+      },
+    },
+  },
+  scroller: ({ highlight }) => ({
+    position: "absolute",
+    zIndex: 0,
     top: 0,
     right: 0,
     width: "100%",
     height: "100%",
-    overflow: "hidden",
+    overflowX: "hidden",
     overflowY: "scroll",
-    scrollbarWidth: "none",
-    "-ms-overflow-style": "none",
-    "&::-webkit-scrollbar": {
-      display: "none",
-    },
+    transition: "opacity 1s",
+    overscrollBehavior: "none",
     "&:focus": {
       outline: "none",
+    },
+    "&::-webkit-scrollbar ": {
+      display: "none",
     },
     [theme.breakpoints.up("sm")]: {
       padding: "1rem",
     },
     "& .chant-active": {
-      backgroundColor: highlight ? "rgba(255, 255, 0, 0.4)" : "inherit",
+      backgroundColor: highlight
+        ? theme.palette.type === "light"
+          ? "rgba(255, 255, 0, 0.25)"
+          : "rgba(255, 255, 0, 0.1)"
+        : "inherit",
     },
   }),
+  settingsButton: {
+    position: "absolute",
+    zIndex: 300,
+    bottom: 0,
+    right: 0,
+    width: "3.75rem",
+    height: "3.75rem",
+  },
+  settingsPanel: {
+    position: "absolute",
+    zIndex: 200,
+    width: "100%",
+    height: "100%",
+  },
 }));
 
-const ChantScroller = memo(({ dispatch, state }) => {
+// This inner component is needed for the theme switching to work.
+const ChantScrollerInner = memo(({ dispatch, state }) => {
+  const ref = useRef();
   const [chantSet, setChantSet] = useState(null);
-  const idle = useChantIdle();
-  const domRef = useRef();
-  const classes = useStyles({ ...state, idle });
+  const classes = useStyles(state);
 
   const { model } = state;
 
   useEffect(() => {
-    model.attach(domRef.current);
+    model.attach(ref.current);
     model.setDispatch(dispatch);
     model.setState(state);
     return () => model.detach();
@@ -52,10 +187,64 @@ const ChantScroller = memo(({ dispatch, state }) => {
   }, [dispatch, setChantSet, state]);
 
   return (
-    <div className={classes.root} ref={domRef} tabIndex="0">
-      {chantSet && <ChantSet chantSet={chantSet} />}
+    <div className={classes.root} ref={ref}>
+      <div className={clsx(classes.debug, "chant-debug")} />
+      <div className={clsx(classes.scroller, "chant-scroller")} tabIndex="0">
+        {chantSet && <ChantSet chantSet={chantSet} />}
+      </div>
+      <div className={clsx(classes.close, "chant-controls")}>
+        <ChantCloseButton dispatch={dispatch} />
+      </div>
+      <div className={clsx(classes.operations, "chant-controls")}>
+        <ChantPlayButton dispatch={dispatch} state={state} />
+        <ChantAudioButton dispatch={dispatch} state={state} />
+      </div>
+      {model.hasFullScreen() && (
+        <div className={clsx(classes.fullScreen, "chant-controls")}>
+          <ChantFullScreenButton dispatch={dispatch} state={state} />
+        </div>
+      )}
+      <div className={clsx(classes.settingsButton, "chant-controls")}>
+        <ChantSettingsButton dispatch={dispatch} state={state} />
+      </div>
+      <div className={clsx(classes.settingsPanel, "chant-settings")}>
+        <ChantSettingsPanel dispatch={dispatch} state={state} />
+      </div>
     </div>
   );
 });
+
+ChantScrollerInner.displayName = "ChantScrollerInner";
+
+const ChantScroller = memo(
+  ({ chantData, chantSet, onClose, parentFullScreen, setMaximize }) => {
+    const [state, dispatch] = useChantScrollerReducer({
+      chantData,
+      parentFullScreen,
+    });
+
+    useEffect(() => {
+      dispatch({ type: "SET_CHANT_SET", chantSet });
+    }, [chantSet]);
+
+    useEffect(() => {
+      if (state.close) onClose();
+    }, [state.close]);
+
+    useEffect(() => {
+      setMaximize?.(state.maximize);
+    }, [state.maximize]);
+
+    const theme = state.themeType === "dark" ? darkTheme : lightTheme;
+
+    return (
+      <ThemeProvider theme={theme}>
+        <ChantScrollerInner dispatch={dispatch} state={state} />
+      </ThemeProvider>
+    );
+  }
+);
+
+ChantScroller.displayName = "ChantScroller";
 
 export default ChantScroller;

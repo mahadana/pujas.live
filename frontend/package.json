@@ -10,6 +10,7 @@
     "formik": "^2.2.6",
     "fullscreen-polyfill": "^1.0.4",
     "graphql": "^15.5.0",
+    "ismobilejs": "^1.1.1",
     "js-cookie": "^2.2.1",
     "material-ui-popup-state": "^1.7.2",
     "next": "^10.0.8",

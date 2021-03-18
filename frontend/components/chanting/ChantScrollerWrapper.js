@@ -12,12 +12,12 @@ const useStyles = makeStyles({
   },
 });
 
-const ChantScrollerWrapper = memo(({ dispatch, state }) => {
+const ChantScrollerWrapper = memo((props) => {
   const classes = useStyles();
   return (
-    <Fade in={state.view === "CHANT"}>
+    <Fade in={Boolean(props.chantSet)} timeout={500}>
       <div className={classes.fade}>
-        <ChantScroller dispatch={dispatch} state={state} />
+        <ChantScroller {...props} />
       </div>
     </Fade>
   );

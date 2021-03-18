@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography";
 
 import ChangeEmailContent from "@/components/auth/ChangeEmailContent";
 import ChangePasswordContent from "@/components/auth/ChangePasswordContent";
+import ChantDataUrlContent from "@/components/chanting/ChantDataUrlContent";
 
 const useStyles = makeStyles((theme) => ({
   section: {
@@ -22,6 +23,9 @@ const AccountContent = () => {
       </Box>
       <Box className={classes.section}>
         <ChangePasswordContent />
+      </Box>
+      <Box className={classes.section}>
+        <ChantDataUrlContent />
       </Box>
     </Container>
   );

@@ -12,10 +12,7 @@ const ChantAudioButton = memo(
         <IconButton onClick={onClick}>
           {state.audio ? (
             <Tooltip title="Mute">
-              <VolumeUpIcon
-                color={state.settings ? "primary" : "disabled"}
-                fontSize="large"
-              />
+              <VolumeUpIcon color="disabled" fontSize="large" />
             </Tooltip>
           ) : (
             <Tooltip title="Unmute">
@@ -27,9 +24,7 @@ const ChantAudioButton = memo(
     );
   },
   (prev, next) =>
-    prev.dispatch === next.dispatch &&
-    prev.state.audio === next.state.audio &&
-    prev.state.settings === next.state.settings
+    prev.dispatch === next.dispatch && prev.state.audio === next.state.audio
 );
 
 ChantAudioButton.displayName = "ChantAudioButton";

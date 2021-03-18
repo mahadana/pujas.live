@@ -1,145 +1,120 @@
-import Fade from "@material-ui/core/Fade";
 import { makeStyles } from "@material-ui/core/styles";
-import { memo, useState } from "react";
+import Typography from "@material-ui/core/Typography";
+import { memo } from "react";
 
 import ChantDiagnosticsButton from "@/components/chanting/inputs/ChantDiagnosticsButton";
 import ChantFontSizeSlider from "@/components/chanting/inputs/ChantFontSizeSlider";
 import ChantHighlightButton from "@/components/chanting/inputs/ChantHighlightButton";
 import ChantSpeedSlider from "@/components/chanting/inputs/ChantSpeedSlider";
-import ChantThemeTypeButton from "./inputs/ChantThemeTypeButton";
+import ChantThemeTypeButton from "@/components/chanting/inputs/ChantThemeTypeButton";
 
-const HEIGHT_BREAKPOINT = "34rem";
+const MOBILE_LANDSCAPE_HEIGHT = "500px";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     position: "absolute",
-    zIndex: 10,
-    bottom: 0,
-    left: 0,
-    width: ({ visible }) => (visible ? "100%" : 0),
-    height: ({ visible }) => (visible ? "16.75rem" : 0),
+    width: "100%",
+    height: "100%",
+  },
+  backdrop: {
+    position: "absolute",
+    zIndex: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+  },
+  buttons: {
+    textAlign: "center",
     [theme.breakpoints.up("sm")]: {
-      top: 0,
-      right: 0,
-      bottom: "auto",
-      left: "auto",
-      width: ({ visible }) => (visible ? "11.25rem" : 0),
-      height: ({ visible }) => (visible ? "100%" : 0),
-      [`@media (max-height: ${HEIGHT_BREAKPOINT})`]: {
-        width: ({ visible }) => (visible ? "18.75rem" : 0),
+      [`@media (max-height: 300px)`]: {
+        marginTop: "-1rem",
       },
     },
   },
-  fade: {
-    width: "100%",
-    height: "100%",
-  },
   panel: {
-    display: "flex",
-    width: "100%",
-    height: "100%",
-    padding: "1rem",
-    borderTop: `1px solid ${theme.palette.text.disabled}`,
+    zIndex: 10,
+    position: "absolute",
     backgroundColor: theme.palette.background.default,
+    [theme.breakpoints.down("xs")]: {
+      bottom: 0,
+      left: 0,
+      width: "100%",
+      height: "21rem",
+      padding: "1rem 2rem",
+    },
     [theme.breakpoints.up("sm")]: {
+      bottom: 0,
+      right: 0,
+      width: "22rem",
+      height: "22rem",
+      padding: "2rem 2rem 3rem",
+      display: "flex",
       flexDirection: "column",
       flexWrap: "nowrap",
-      justifyContent: "flex-start",
-      alignContent: "space-between",
-      borderTop: 0,
-      borderTopRightRadius: ({ maximize }) => (maximize ? 0 : "0.25rem"),
+      justifyContent: "flex-end",
+      borderTopLeftRadius: ({ maximize }) => (maximize ? 0 : "0.25rem"),
       borderBottomRightRadius: ({ maximize }) => (maximize ? 0 : "0.25rem"),
-      [`@media (max-height: ${HEIGHT_BREAKPOINT})`]: {
-        flexWrap: "wrap",
+      [`@media (max-height: ${MOBILE_LANDSCAPE_HEIGHT})`]: {
+        width: "23rem",
+        height: "100%",
+        padding: "1rem 4rem 1rem 2rem",
+        justifyContent: "space-evenly",
+        borderTopRightRadius: ({ maximize }) => (maximize ? 0 : "0.25rem"),
+      },
+    },
+  },
+  options: {
+    marginBottom: "0.5rem",
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      [`@media (max-height: ${MOBILE_LANDSCAPE_HEIGHT})`]: {
+        marginBottom: 0,
       },
     },
   },
   slider: {
     height: "6rem",
     width: "100%",
-    "& p": {
-      marginBottom: "0.5rem",
-    },
-  },
-  sliders: {
-    marginLeft: "1rem",
-    width: "100%",
     [theme.breakpoints.up("sm")]: {
-      marginLeft: 0,
-      [`@media (max-height: ${HEIGHT_BREAKPOINT})`]: {
-        order: 1,
-        width: "10rem",
-        height: "100%",
+      [`@media (max-height: ${MOBILE_LANDSCAPE_HEIGHT})`]: {
+        height: "5rem",
       },
-    },
-  },
-  options: {
-    width: "6.5rem",
-    textAlign: "center",
-    [theme.breakpoints.up("sm")]: {
-      width: "7.5rem",
-      marginTop: "-1rem",
-      marginLeft: "-1rem",
-      marginBottom: "2.75rem",
-      textAlign: "right",
-    },
-    [`@media (max-height: ${HEIGHT_BREAKPOINT})`]: {
-      order: 2,
-      width: "3.5rem",
-      marginLeft: 0,
-      marginRight: "2.5rem",
-      marginBottom: 0,
     },
   },
 }));
 
-const ChantSettingsPanel = memo(
-  ({ dispatch, state }) => {
-    const [visible, setVisible] = useState(false);
-    const classes = useStyles({
-      maximize: state.fullscreen || state.mobile,
-      visible,
-    });
+const ChantSettingsPanel = memo(({ dispatch, state }) => {
+  const classes = useStyles({
+    maximize: state.fullscreen || state.mobile,
+  });
 
-    const onEnter = () => setVisible(true);
-    const onExited = () => setVisible(false);
+  const close = () => dispatch({ type: "HIDE_SETTINGS" });
 
-    const open = state.view === "CHANT" && state.settings;
-
-    return (
-      <div className={classes.root}>
-        <Fade in={open} onEnter={onEnter} onExited={onExited}>
-          <div className={classes.fade}>
-            <div className={classes.panel}>
-              <div className={classes.options}>
-                <ChantHighlightButton dispatch={dispatch} state={state} />
-                <ChantThemeTypeButton dispatch={dispatch} state={state} />
-                <ChantDiagnosticsButton dispatch={dispatch} state={state} />
-              </div>
-              <div className={classes.sliders}>
-                <div className={classes.slider}>
-                  <ChantFontSizeSlider dispatch={dispatch} state={state} />
-                </div>
-                <div className={classes.slider}>
-                  <ChantSpeedSlider dispatch={dispatch} state={state} />
-                </div>
-              </div>
-            </div>
+  return (
+    <div className={classes.root}>
+      <div className={classes.panel}>
+        <div className={classes.options}>
+          <Typography variant="body2">Options</Typography>
+          <div className={classes.buttons}>
+            <ChantHighlightButton dispatch={dispatch} state={state} />
+            <ChantThemeTypeButton dispatch={dispatch} state={state} />
+            <ChantDiagnosticsButton dispatch={dispatch} state={state} />
           </div>
-        </Fade>
+        </div>
+        <div className={classes.slider}>
+          <ChantFontSizeSlider dispatch={dispatch} state={state} />
+        </div>
+        <div className={classes.slider}>
+          <ChantSpeedSlider dispatch={dispatch} state={state} />
+        </div>
       </div>
-    );
-  },
-  (prev, next) =>
-    prev.dispatch === next.dispatch &&
-    prev.state.diagnostics === next.state.diagnostics &&
-    prev.state.fontSize === next.state.fontSize &&
-    prev.state.fullscreen === next.state.fullscreen &&
-    prev.state.highlight === next.state.highlight &&
-    prev.state.mobile === next.state.mobile &&
-    prev.state.settings === next.state.settings &&
-    prev.state.speed === next.state.speed &&
-    prev.state.themeType === next.state.themeType
-);
+      <div
+        className={classes.backdrop}
+        onMouseDown={close}
+        onTouchStart={close}
+      />
+    </div>
+  );
+});
 
 export default ChantSettingsPanel;

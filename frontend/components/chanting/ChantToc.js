@@ -18,12 +18,6 @@ const useStyles = makeStyles((theme) => ({
       display: "none",
     },
   },
-  closeButton: {
-    position: "absolute",
-    top: "-0.4rem",
-    right: "-0.35rem",
-    zIndex: 100,
-  },
   chant: {
     paddingLeft: "1rem",
   },

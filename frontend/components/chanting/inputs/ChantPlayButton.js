@@ -11,10 +11,7 @@ const ChantPlayButton = memo(
       <IconButton onClick={onClick}>
         {state.playing ? (
           <Tooltip title="Pause">
-            <PauseIcon
-              color={state.settings ? "primary" : "disabled"}
-              fontSize="large"
-            />
+            <PauseIcon color="disabled" fontSize="large" />
           </Tooltip>
         ) : (
           <Tooltip title="Play">
@@ -25,9 +22,7 @@ const ChantPlayButton = memo(
     );
   },
   (prev, next) =>
-    prev.dispatch === next.dispatch &&
-    prev.state.playing === next.state.playing &&
-    prev.state.settings === next.state.settings
+    prev.dispatch === next.dispatch && prev.state.playing === next.state.playing
 );
 
 ChantPlayButton.displayName = "ChantPlayButton";
