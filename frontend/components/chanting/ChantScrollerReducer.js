@@ -23,8 +23,7 @@ const initialize = ({
     chantSet: null,
     close: false,
     controls: false,
-    debug: false,
-    diagnostics: true,
+    diagnostics: false,
     disableAudio,
     fontSize: DEFAULT_FONT_SIZE,
     fullScreen: false,
@@ -101,8 +100,6 @@ const reducer = (state, action) => {
       return { ...state, playing: false };
     case "TOGGLE_AUDIO":
       return { ...state, audio: !state.audio };
-    case "TOGGLE_DEBUG":
-      return { ...state, debug: !state.debug };
     case "TOGGLE_DIAGNOSTICS":
       return { ...state, diagnostics: !state.diagnostics };
     case "TOGGLE_FULL_SCREEN":
