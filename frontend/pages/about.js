@@ -48,6 +48,17 @@ const About = () => {
               controls={true}
               height="100%"
               width="100%"
+              url="https://youtu.be/gKDN2inSzk4"
+            />
+          </Box>
+        </>
+        <>
+          <PageHeading>Using the Group feature</PageHeading>
+          <Box className={classes.player}>
+            <ReactPlayer
+              controls={true}
+              height="100%"
+              width="100%"
               url="https://youtu.be/jSegDnC7-ww"
             />
           </Box>
