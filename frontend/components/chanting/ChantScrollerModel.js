@@ -24,15 +24,11 @@ import {
 
 // Known issues on iOS:
 //
-// 1. When there is some DOM manipulations, iOS will break out of a touch
-//    drag/scroll. An example would be to touch to bring up the controls, wait
-//    for the controls to disappear, then to start dragging. There doesn't seem
-//    to be any workarounds at the moment.
-//
-// 2. After a touch momentum scroll, if the scrollTo during playing start too
-//    quickly, it results in scroll stuttering. This is the reason for
-//    TIMEOUT_RELEASE_SLOW. Similarly, there doesn't seem to be any workarounds
-//    at the moment.
+// 1. Following a touch scroll issued by the user, if the program calls scrollTo
+//    too soon (before it completely comes to a rest + about ~1/2 second), then
+//    subsequent user touch scrolls can result in stuttering.
+//    TIMEOUT_RESULT_SLOW is there to compensate for this problem. There doesn't
+//    seem to be any workarounds at the moment.
 
 const DEFAULT_FONT_SIZE = 20; // 20px
 const DEFAULT_THEME_TYPE = "light";
@@ -94,6 +90,7 @@ class ChantScrollerModel {
       const method = `_on${event}`;
       this[method] = this[method].bind(this);
     });
+    this.onToggleFullScreen = this.onToggleFullScreen.bind(this);
   }
 
   attach(containerEl) {
@@ -166,6 +163,31 @@ class ChantScrollerModel {
       !this.isMobile.apple.phone &&
       !(this.state.disableFullScreen && this.getDefaultMaximize())
     );
+  }
+
+  onToggleFullScreen(fullScreen) {
+    if (!this.state.disableFullScreen) {
+      if (this.fullScreenTimeout <= TIMEOUT_FULL_SCREEN) {
+        this._updateFullScreenCheck();
+        if (fullScreen && !this.fullScreenCheck) {
+          this.fullScreenCheck = true;
+          this.fullScreenTimeout = TIMEOUT_FULL_SCREEN * 2;
+          this.domAccessCount += 1;
+          this.containerEl
+            .requestFullscreen()
+            ?.then?.(() => this._focusScroller())
+            ?.catch?.(console.error);
+        } else if (!fullScreen && this.fullScreenCheck) {
+          this.fullScreenCheck = false;
+          this.fullScreenTimeout = TIMEOUT_FULL_SCREEN * 2;
+          this.domAccessCount += 1;
+          document
+            .exitFullscreen()
+            ?.then?.(() => this._focusScroller())
+            ?.catch?.(console.error);
+        }
+      }
+    }
   }
 
   reset() {
@@ -650,50 +672,19 @@ class ChantScrollerModel {
         }
       }
       return;
-    }
-    if (this.fullScreenTimeout > TIMEOUT_FULL_SCREEN) {
-      this.fullScreenTimeout -= 1;
-    } else if (this.state.fullScreen) {
-      if (this.fullScreenCheck) {
-        if (this.fullScreenTimeout > 0) {
-          this.fullScreenTimeout -= 1;
-        } else {
-          this._updateFullScreenMode();
-          if (!this.fullScreenCheck) {
-            this.dispatch({ type: "SET_FULL_SCREEN", fullScreen: false });
-            this.state.fullScreen = false; // do not wait for React
-          }
-          this.fullScreenTimeout = TIMEOUT_FULL_SCREEN;
-        }
-      } else {
-        this.fullScreenCheck = true;
-        this.fullScreenTimeout = TIMEOUT_FULL_SCREEN * 2;
-        this.domAccessCount += 1;
-        this.containerEl
-          .requestFullscreen()
-          .then(() => this._focusScroller())
-          .catch(console.error);
-      }
     } else {
-      if (this.fullScreenCheck) {
-        this.fullScreenCheck = false;
-        this.fullScreenTimeout = TIMEOUT_FULL_SCREEN * 2;
-        this.domAccessCount += 1;
-        document
-          .exitFullscreen()
-          .then(() => this._focusScroller())
-          .catch(console.error);
+      if (this.fullScreenTimeout > 0) {
+        this.fullScreenTimeout -= 1;
       } else {
-        if (this.fullScreenTimeout > 0) {
-          this.fullScreenTimeout -= 1;
-        } else {
-          this._updateFullScreenMode();
-          if (this.fullScreenCheck) {
-            this.dispatch({ type: "SET_FULL_SCREEN", fullScreen: true });
-            this.state.fullScreen = true; // do not wait for React
-          }
-          this.fullScreenTimeout = TIMEOUT_FULL_SCREEN;
+        this._updateFullScreenCheck();
+        if (this.state.fullScreen !== this.fullScreenCheck) {
+          this.dispatch({
+            type: "SET_FULL_SCREEN",
+            fullScreen: this.fullScreenCheck,
+          });
+          this.state.fullScreen = this.fullScreenCheck; // do not wait for React
         }
+        this.fullScreenTimeout = TIMEOUT_FULL_SCREEN;
       }
     }
   }
@@ -907,6 +898,9 @@ class ChantScrollerModel {
       if (type !== "CLOSE" || !this.state.close) {
         event.preventDefault();
         event.stopPropagation();
+        if (type === "TOGGLE_FULL_SCREEN") {
+          this.onToggleFullScreen(!this.state.fullScreen);
+        }
         this.dispatch({ type });
       }
     } else {
@@ -1136,7 +1130,7 @@ class ChantScrollerModel {
       this.controlsTimeout = TIMEOUT_CONTROLS_IDLE;
   }
 
-  _updateFullScreenMode() {
+  _updateFullScreenCheck() {
     this.fullScreenCheck =
       document.fullScreen ||
       document.mozFullScreen ||

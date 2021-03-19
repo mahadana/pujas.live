@@ -216,7 +216,11 @@ const ChantScrollerInner = memo(({ dispatch, state }) => {
       </div>
       {model.hasMaximize() && (
         <div className={clsx(classes.fullScreen, "chant-controls")}>
-          <ChantFullScreenButton dispatch={dispatch} state={state} />
+          <ChantFullScreenButton
+            dispatch={dispatch}
+            onToggle={model.onToggleFullScreen}
+            state={state}
+          />
         </div>
       )}
       <div className={clsx(classes.settingsButton, "chant-controls")}>
