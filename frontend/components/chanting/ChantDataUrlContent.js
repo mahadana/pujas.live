@@ -13,6 +13,9 @@ export const hasChantDataUrl = () => Boolean(getChantDataUrlFromStore());
 export const getChantDataUrl = () =>
   getChantDataUrlFromStore() || PRODUCTION_DATA_URL;
 
+export const setDefaultChantDataUrl = () =>
+  setChantDataUrlToStore(PRODUCTION_DATA_URL);
+
 const getChantDataUrlFromStore = () =>
   window.localStorage.getItem(LOCAL_STORAGE_DATA_URL_KEY) ?? null;
 
