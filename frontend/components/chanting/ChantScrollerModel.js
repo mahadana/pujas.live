@@ -59,7 +59,7 @@ const TIMEOUT_TOUCH = 30; // 0.5 seconds
 const TIMEOUT_MOVE = 60 * 3; // 3 seconds
 const TIMEOUT_RELEASE = 6; // 0.1 seconds
 const TIMEOUT_RELEASE_SCROLL = 3; // 0.05 seconds -- quicker play after touch scrolling
-const TIMEOUT_RELEASE_SLOW = 15; // 0.25 seconds -- longer timeout for iOS due quirks in touch scrolling
+const TIMEOUT_RELEASE_SLOW = 20; // 0.33 seconds -- longer timeout for iOS due quirks in touch scrolling
 const TIMEOUT_SETTINGS = 15; // 0.25 seconds -- fade in/out time
 
 let _chantSetId = 0;
@@ -76,7 +76,9 @@ class ChantScrollerModel {
     this.reset();
     this.loop = makeLoop(this._loop.bind(this));
     [
+      "Blur",
       "Click",
+      "Focus",
       "KeyDown",
       "MouseMove",
       "Resize",
@@ -102,6 +104,8 @@ class ChantScrollerModel {
     const scrollerEl = getElement("chant-scroller");
     const diagnosticsEl = getElement("chant-diagnostics");
     this.detach();
+    window.addEventListener("blur", this._onBlur);
+    window.addEventListener("focus", this._onFocus);
     window.addEventListener("resize", this._onResize);
     document.addEventListener("click", this._onClick);
     document.addEventListener("keydown", this._onKeyDown, { capture: true });
@@ -197,6 +201,7 @@ class ChantScrollerModel {
     this.diagnosticsCheck = false;
     this.dim = null;
     this.domAccessCount = 0;
+    this.focused = true;
     this.fontSizeCheck = DEFAULT_FONT_SIZE;
     this.fullScreenCheck = false;
     this.fullScreenTimeout = 0;
@@ -792,7 +797,7 @@ class ChantScrollerModel {
       end: this.dim.chants[this.activeChantIndex]?.end ?? null,
     };
 
-    if (mediaUrl && !this.state.disableAudio) {
+    if (mediaUrl && this.focused && !this.state.disableAudio) {
       if (mediaStamp.chantIndex !== this.mediaStamp?.chantIndex) {
         this.mediaPlayer.setUrl(mediaUrl);
         if (
@@ -856,8 +861,16 @@ class ChantScrollerModel {
     this.velocity = (this.velocity * (timeout - 1) + targetVelocity) / timeout;
   }
 
+  _onBlur() {
+    this.focused = false;
+  }
+
   _onClick() {
     this._showControls();
+  }
+
+  _onFocus() {
+    this.focused = true;
   }
 
   _onKeyDown(event) {
