@@ -5,11 +5,13 @@ import Modal from "@material-ui/core/Modal";
 import NoSsr from "@material-ui/core/NoSsr";
 import { makeStyles } from "@material-ui/core/styles";
 import CancelIcon from "@material-ui/icons/Cancel";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 
-import ChantModal from "@/components/chanting/ChantModal";
 import { hasChantDataUrl } from "@/components/chanting/ChantDataUrlContent";
+
+const ChantModal = dynamic(() => import("@/components/chanting/ChantModal"));
 
 export const ChantingBooksModalContext = createContext({
   open: false,
@@ -83,29 +85,32 @@ const OldChantModal = ({ onClose, open, state }) => {
 const DEFAULT_STATE = {
   book: null,
   inRecording: false,
-  newModal: false,
   onClose: null,
+  newModal: false,
 };
 
 const ChantingBooksModal = ({ children }) => {
   const router = useRouter();
   const [state, setState] = useState(DEFAULT_STATE);
 
-  const open = Boolean(state.book);
-  const context = {
-    open,
-    setState: (newState) => {
-      setState({
-        ...newState,
-        inRecording: router.asPath !== "/", // TODO better logic
-        newModal: hasChantDataUrl(),
-      });
-    },
-  };
+  useEffect(() => {
+    setState((newState) => ({
+      ...newState,
+      inRecording: router.asPath !== "/",
+      newModal: hasChantDataUrl(),
+    }));
+  }, [router.asPath, setState]);
 
   const onClose = () => {
     state.onClose?.();
-    setState(DEFAULT_STATE);
+    setState((oldState) => ({ ...oldState, book: null, onClose: null }));
+  };
+
+  const open = Boolean(state.book);
+  const context = {
+    open,
+    setState: (newState) =>
+      setState((oldState) => ({ ...oldState, ...newState })),
   };
 
   return (
@@ -114,7 +119,7 @@ const ChantingBooksModal = ({ children }) => {
         {children}
       </ChantingBooksModalContext.Provider>
       <NoSsr>
-        {state.newModal ? (
+        {router.isReady && state.newModal ? (
           <ChantModal
             disableAudio={state.inRecording}
             disableFullScreen={state.inRecording}
