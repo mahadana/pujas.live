@@ -76,18 +76,17 @@ class ChantScrollerModel {
     this.reset();
     this.loop = makeLoop(this._loop.bind(this));
     [
-      "Blur",
       "Click",
-      "Focus",
       "KeyDown",
       "MouseMove",
       "Resize",
+      "Scroll",
       "TouchCancel",
       "TouchEnd",
       "TouchMove",
       "TouchStart",
+      "VisibilityChange",
       "Wheel",
-      "Scroll",
     ].forEach((event) => {
       const method = `_on${event}`;
       this[method] = this[method].bind(this);
@@ -104,12 +103,11 @@ class ChantScrollerModel {
     const scrollerEl = getElement("chant-scroller");
     const diagnosticsEl = getElement("chant-diagnostics");
     this.detach();
-    window.addEventListener("blur", this._onBlur);
-    window.addEventListener("focus", this._onFocus);
     window.addEventListener("resize", this._onResize);
     document.addEventListener("click", this._onClick);
     document.addEventListener("keydown", this._onKeyDown, { capture: true });
     document.addEventListener("mousemove", this._onMouseMove);
+    document.addEventListener("visibilitychange", this._onVisibilityChange);
     containerEl.classList.add("chant-controls-removed");
     containerEl.classList.add("chant-settings-removed");
     this.containerEl = containerEl;
@@ -132,6 +130,7 @@ class ChantScrollerModel {
     document.removeEventListener("click", this._onClick);
     document.removeEventListener("keydown", this._onKeyDown, { capture: true });
     document.removeEventListener("mousemove", this._onMouseMove);
+    document.removeEventListener("visibilitychange", this._onVisibilityChange);
     if (this.containerEl) {
       this.containerEl.classList.remove("chant-controls-hidden");
       this.containerEl.classList.remove("chant-controls-removed");
@@ -201,7 +200,7 @@ class ChantScrollerModel {
     this.diagnosticsCheck = false;
     this.dim = null;
     this.domAccessCount = 0;
-    this.focused = true;
+    this.visible = true;
     this.fontSizeCheck = DEFAULT_FONT_SIZE;
     this.fullScreenCheck = false;
     this.fullScreenTimeout = 0;
@@ -551,6 +550,7 @@ class ChantScrollerModel {
   _loopScroll() {
     if (
       this.state.playing &&
+      this.visible &&
       (this.scrollState === STATE_SCROLLING ||
         this.scrollState === STATE_TOUCH ||
         this.scrollState === STATE_CATCHUP)
@@ -701,14 +701,14 @@ class ChantScrollerModel {
         this.scrollState === STATE_CATCHUP)
     ) {
       const mpState = this.mediaPlayer.state;
-      if (this.state.playing) {
+      if (this.state.playing && this.visible) {
         if (mpState === "ENDED") {
           this.dispatch({ type: "STOP_PLAYING" });
           this.state.playing = false; // do not wait for React
         } else {
           this.mediaPlayer.play();
         }
-      } else if (!this.state.playing) {
+      } else {
         if (mpState === "PLAYING" || mpState === "ENDED") {
           this.mediaPlayer.stop();
         }
@@ -797,7 +797,7 @@ class ChantScrollerModel {
       end: this.dim.chants[this.activeChantIndex]?.end ?? null,
     };
 
-    if (mediaUrl && this.focused && !this.state.disableAudio) {
+    if (mediaUrl && this.visible && !this.state.disableAudio) {
       if (mediaStamp.chantIndex !== this.mediaStamp?.chantIndex) {
         this.mediaPlayer.setUrl(mediaUrl);
         if (
@@ -823,7 +823,7 @@ class ChantScrollerModel {
     const mediaPlayerTime = this._getMediaPlayerTime();
     if (_isFinite(mediaPlayerTime)) {
       this.time = mediaPlayerTime;
-    } else if (this.state.playing) {
+    } else if (this.state.playing && this.visible) {
       const elapsed =
         this.loop.timestamp - this.lastTimestamp ?? this.loop.timestamp;
       this.time += (elapsed * (this.state.speed ?? 1)) / 1000;
@@ -861,16 +861,8 @@ class ChantScrollerModel {
     this.velocity = (this.velocity * (timeout - 1) + targetVelocity) / timeout;
   }
 
-  _onBlur() {
-    this.focused = false;
-  }
-
   _onClick() {
     this._showControls();
-  }
-
-  _onFocus() {
-    this.focused = true;
   }
 
   _onKeyDown(event) {
@@ -992,6 +984,15 @@ class ChantScrollerModel {
     }
     if (scrollState !== STATE_SCROLLING && scrollState !== STATE_CATCHUP) {
       this._showControls(false);
+    }
+  }
+
+  _onVisibilityChange() {
+    this.visible = !document.hidden;
+    if (!this.visible) {
+      // We need to do this because animationRequest loops are paused when we
+      // switch tabs.
+      this.mediaPlayer.stop({ force: true });
     }
   }
 

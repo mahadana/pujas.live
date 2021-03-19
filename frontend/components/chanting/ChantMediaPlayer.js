@@ -23,6 +23,7 @@ class ChantMediaPlayer {
 
   detach() {
     this.loop.stop();
+    this.reset();
   }
 
   getPlaybackRate() {
@@ -92,8 +93,10 @@ class ChantMediaPlayer {
     this.volume = volume;
   }
 
-  stop() {
-    if (this.state === "PLAYING") {
+  stop({ force = false } = {}) {
+    if (force) {
+      this.audio.pause();
+    } else if (this.state === "PLAYING") {
       this.state = "REQUEST_STOP";
     } else if (this.state === "ENDED") {
       this.state = "STOPPED";
