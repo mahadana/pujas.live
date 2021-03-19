@@ -18,15 +18,17 @@ const useStyles = makeStyles((theme) => ({
           height: "100%",
           top: 0,
           left: 0,
+          // This is necessary to prevent a bug on iOS that occasionally causes
+          // the right side of the window to go blank.
+          borderRadius: "0.01px",
         }
       : {
           width: "90vw",
-          height: "92vh",
+          maxWidth: "48rem",
+          height: "90vh",
           top: "50%",
           left: "50%",
-          marginLeft: "max(-45vw,-24rem)",
-          marginTop: "-46vh",
-          maxWidth: "48rem",
+          transform: "translate(-50%, -50%)",
           borderRadius: "0.25rem",
           boxShadow: "1px 1px 6px rgb(0 0 0 / 80%)",
         }),
@@ -35,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ChantWindow = ({ onClose, disableReturnToc = false, ...props }) => {
   const [chantSet, setChantSet] = useState(null);
-  const [maximize, setMaximize] = useState(false);
+  const [maximize, setMaximize] = useState(true);
   const classes = useStyles({ maximize });
 
   const onCloseScroller = () => {
