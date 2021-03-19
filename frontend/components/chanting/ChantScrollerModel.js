@@ -1,6 +1,5 @@
 import isMobile from "ismobilejs";
 import _castArray from "lodash/castArray";
-import _isEqual from "lodash/isEqual";
 import _isFinite from "lodash/isFinite";
 import _isObject from "lodash/isObject";
 import _merge from "lodash/merge";
@@ -36,6 +35,7 @@ import {
 //    at the moment.
 
 const DEFAULT_FONT_SIZE = 20; // 20px
+const DEFAULT_THEME_TYPE = "light";
 const MID_VIEW_RATIO = 0.5; // middle of window
 const NEAR_TIME = 1; // 1 second
 const FAR_TIME = 20; // 20 seconds
@@ -52,13 +52,13 @@ const STATE_REMOVED = 0;
 const STATE_HIDDEN = 1;
 const STATE_VISIBLE = 2;
 
-const TIMEOUT_REFLOW = 20; // 0.33 seconds
+const TIMEOUT_REFLOW = 30; // 0.5 seconds
 const TIMEOUT_ACCELERATION = 60 * 2; // 2 seconds
 const TIMEOUT_ACCELERATION_CATCHUP = 20; // 0.33 seconds
 const TIMEOUT_CONTROLS = 30; // 0.5 seconds -- fade in/out time
 const TIMEOUT_CONTROLS_IDLE = TIMEOUT_CONTROLS + 60 * 3; // 3 seconds -- idle time before fade out
 const TIMEOUT_CATCHUP = 30; // 0.5 seconds
-const TIMEOUT_FULLSCREEN = 60; // 1 second -- interval to check fullscreen
+const TIMEOUT_FULL_SCREEN = 45; // .75 seconds -- interval to check dom fullScreen
 const TIMEOUT_TOUCH = 30; // 0.5 seconds
 const TIMEOUT_MOVE = 60 * 3; // 3 seconds
 const TIMEOUT_RELEASE = 6; // 0.1 seconds
@@ -83,6 +83,7 @@ class ChantScrollerModel {
       "Click",
       "KeyDown",
       "MouseMove",
+      "Resize",
       "TouchCancel",
       "TouchEnd",
       "TouchMove",
@@ -104,6 +105,7 @@ class ChantScrollerModel {
     const scrollerEl = getElement("chant-scroller");
     const diagnosticsEl = getElement("chant-diagnostics");
     this.detach();
+    window.addEventListener("resize", this._onResize);
     document.addEventListener("click", this._onClick);
     document.addEventListener("keydown", this._onKeyDown, { capture: true });
     document.addEventListener("mousemove", this._onMouseMove);
@@ -117,7 +119,7 @@ class ChantScrollerModel {
     scrollerEl.addEventListener("touchmove", this._onTouchMove, p);
     scrollerEl.addEventListener("touchstart", this._onTouchStart, p);
     scrollerEl.addEventListener("wheel", this._onWheel, p);
-    scrollerEl.style.setProperty("font-size", this.state.fontSize + "px");
+    scrollerEl.style.setProperty("font-size", this.fontSizeCheck + "px");
     this.scrollerEl = scrollerEl;
     this.diagnosticsEl = diagnosticsEl;
     this.mediaPlayer.attach();
@@ -125,6 +127,7 @@ class ChantScrollerModel {
   }
 
   detach() {
+    window.removeEventListener("resize", this._onResize);
     document.removeEventListener("click", this._onClick);
     document.removeEventListener("keydown", this._onKeyDown, { capture: true });
     document.removeEventListener("mousemove", this._onMouseMove);
@@ -169,8 +172,11 @@ class ChantScrollerModel {
     this.chantSet = null;
     this.controlsState = STATE_REMOVED;
     this.controlsTimeout = 0;
+    this.diagnosticsCheck = false;
     this.dim = null;
-    this.fullScreenMode = false;
+    this.domAccessCount = 0;
+    this.fontSizeCheck = DEFAULT_FONT_SIZE;
+    this.fullScreenCheck = false;
     this.fullScreenTimeout = 0;
     this.initialChantIndex = null;
     this.lastTimestamp = null;
@@ -180,9 +186,9 @@ class ChantScrollerModel {
     this.settingsState = STATE_REMOVED;
     this.settingsTimeout = 0;
     this.time = 0;
+    this.themeTypeCheck = DEFAULT_THEME_TYPE;
     this.useMediaPlayer = false;
     this.velocity = 0;
-    this.windowStamp = null;
     this.mediaPlayer.reset();
     this._resetActive();
   }
@@ -207,6 +213,11 @@ class ChantScrollerModel {
     }
   }
 
+  _focusScroller() {
+    this.scrollerEl.focus();
+    this.domAccessCount += 1;
+  }
+
   _getDimensions() {
     const dim = {
       scrollTop: this.scrollerEl.scrollTop,
@@ -214,6 +225,7 @@ class ChantScrollerModel {
       clientHeight: this.scrollerEl.clientHeight,
       chants: [],
     };
+    this.domAccessCount += 3;
     let chantIndex = 0;
     for (const chant of this.chantSet.chants) {
       const chantEl = document.getElementById(chant.domId);
@@ -431,12 +443,12 @@ class ChantScrollerModel {
   }
 
   _loop() {
+    this._loopCheckState();
     if (this.scrollState === STATE_POLLING) {
       this._loopPoll();
     } else if (this.scrollState === STATE_REFLOW) {
       this._loopReflow();
     } else {
-      this._loopUpdateWindow();
       this._loopUpdateTime();
       this._loopUpdateActive();
       this._loopUpdateState();
@@ -448,19 +460,37 @@ class ChantScrollerModel {
     this._loopUpdateFullScreen();
     this._loopUpdateControls();
     this._loopUpdateSettings();
-    this._loopUpdateClasses();
     this._loopUpdateDiagnostics();
   }
 
-  _loopPoll() {
-    if (this.scrollerEl) {
-      this.scrollerEl.style.setProperty("opacity", "0");
-      this.scrollerEl.style.setProperty("overflow-y", "hidden");
-      this.scrollerEl.style.setProperty("visibility", "hidden");
+  _loopCheckState() {
+    const { diagnostics, fontSize, highlight, themeType } = this.state;
+    if (this.diagnosticsCheck !== diagnostics) {
+      this.diagnosticsCheck = diagnostics;
+      this._setClassDiagnostics(diagnostics);
     }
+    if (this.fontSizeCheck !== fontSize) {
+      this.fontSizeCheck = fontSize;
+      this.scrollerEl.style.setProperty("font-size", fontSize + "px");
+      this.domAccessCount += 1;
+      this._resetDimensions();
+    }
+    if (this.highlightCheck !== highlight) {
+      this.highlightCheck = highlight;
+      this._setClassHighlight(highlight);
+    }
+    if (this.themeTypeCheck !== themeType) {
+      this.themeTypeCheck = themeType;
+      this._resetContainerClass();
+    }
+  }
+
+  _loopPoll() {
+    if (this.containerEl) this._setClassSetup(true);
     const domId = this.chantSet?.domId;
     if (domId) {
       const el = document.getElementById(this.chantSet.domId);
+      this.domAccessCount += 1;
       if (this.scrollerEl && el) {
         this.scrollState = STATE_REFLOW;
         this.scrollTimeout = TIMEOUT_REFLOW;
@@ -475,13 +505,12 @@ class ChantScrollerModel {
         // doesn't always accurately assign the offsets.
         this._initializeDimensions();
         this._scrollToInitialChant();
+        this._resetContainerClass();
       }
       this.scrollTimeout -= 1;
     } else {
-      this.scrollerEl.style.setProperty("opacity", "1");
-      this.scrollerEl.style.removeProperty("overflow-y");
-      this.scrollerEl.style.removeProperty("visibility");
-      this.scrollerEl.focus();
+      this._setClassSetup(false);
+      this._focusScroller();
       this.scrollState = STATE_SCROLLING;
       this._setTimeFromCurrentPosition();
       this._loopUpdateVelocity();
@@ -506,6 +535,7 @@ class ChantScrollerModel {
         this.scrollState === STATE_CATCHUP
       ) {
         this.scrollerEl.scrollTo({ left: 0, top });
+        // Not incrementing domAccessCount because this occurs every frame
       }
     }
   }
@@ -533,48 +563,8 @@ class ChantScrollerModel {
         const nodes = this.chantSet.chants[chantIndex].nodes;
         this.activeEl = document.getElementById(nodes[nodeIndex].domId);
         this.activeEl.classList.add("chant-active");
+        this.domAccessCount += 2;
       }
-    }
-  }
-
-  _loopUpdateClasses() {
-    const { containerEl, controlsState, settingsState, state } = this;
-    const classList = containerEl.classList;
-    if (state.highlight) {
-      classList.add("chant-highlight-visible");
-    } else {
-      classList.remove("chant-highlight-visible");
-    }
-    if (state.diagnostics) {
-      classList.add("chant-diagnostics-visible");
-    } else {
-      classList.remove("chant-diagnostics-visible");
-    }
-    if (controlsState === STATE_VISIBLE) {
-      classList.remove("chant-controls-hidden");
-      classList.remove("chant-controls-removed");
-      classList.add("chant-controls-visible");
-    } else if (controlsState === STATE_HIDDEN) {
-      classList.add("chant-controls-hidden");
-      classList.remove("chant-controls-removed");
-      classList.remove("chant-controls-visible");
-    } else {
-      classList.remove("chant-controls-hidden");
-      classList.add("chant-controls-removed");
-      classList.remove("chant-controls-visible");
-    }
-    if (settingsState === STATE_VISIBLE) {
-      classList.remove("chant-settings-hidden");
-      classList.remove("chant-settings-removed");
-      classList.add("chant-settings-visible");
-    } else if (settingsState === STATE_HIDDEN) {
-      classList.add("chant-settings-hidden");
-      classList.remove("chant-settings-removed");
-      classList.remove("chant-settings-visible");
-    } else {
-      classList.remove("chant-settings-hidden");
-      classList.add("chant-settings-removed");
-      classList.remove("chant-settings-visible");
     }
   }
 
@@ -582,20 +572,27 @@ class ChantScrollerModel {
     const { controlsState, controlsTimeout, state } = this;
     if (controlsTimeout === 0 && !state.settings) {
       if (controlsState === STATE_VISIBLE) {
+        this._setClassControls(STATE_HIDDEN);
         this.controlsState = STATE_HIDDEN;
         this.controlsTimeout = TIMEOUT_CONTROLS;
       } else if (controlsState === STATE_HIDDEN) {
+        this._setClassControls(STATE_REMOVED);
         this.controlsState = STATE_REMOVED;
         this.controlsTimeout = 0;
-        this.scrollerEl.focus();
+        this._focusScroller();
       }
     } else if (controlsTimeout <= TIMEOUT_CONTROLS && !state.settings) {
-      this.controlsState = STATE_HIDDEN;
+      if (controlsState === STATE_VISIBLE || controlsState === STATE_REMOVED) {
+        this._setClassControls(STATE_HIDDEN);
+        this.controlsState = STATE_HIDDEN;
+      }
       this.controlsTimeout -= 1;
     } else {
       if (controlsState === STATE_HIDDEN) {
+        this._setClassControls(STATE_VISIBLE);
         this.controlsState = STATE_VISIBLE;
       } else if (controlsState === STATE_REMOVED) {
+        this._setClassControls(STATE_HIDDEN);
         this.controlsState = STATE_HIDDEN;
       }
       if (state.settings) {
@@ -614,6 +611,7 @@ class ChantScrollerModel {
     const st = String(this.scrollTimeout).padStart(3, "0");
     const ct = String(this.controlsTimeout).padStart(3, "0");
     const tt = String(this.settingsTimeout).padStart(2, "0");
+    const ft = String(this.fullScreenTimeout).padStart(2, "0");
     const ci = `${this.activeChantIndex ?? "--"}`.padStart(2, "0");
     const ni = `${this.activeIndex ?? "--"}`.padStart(2, "0");
     const t = this.time.toFixed(1).padStart(6, "0");
@@ -622,14 +620,20 @@ class ChantScrollerModel {
     const loopValue = (value) =>
       Math.min(9999, value).toFixed(0).padStart(4, "0");
     const transformElapsed = (v) => Math.max(0, (v - 1050 / 60) * 10);
-    const se = loopValue(transformElapsed(this.loop.elapsed));
-    const sd = loopValue(this.loop.duration * 1000);
-    const me = loopValue(transformElapsed(this.mediaPlayer.loop.elapsed));
-    const md = loopValue(this.mediaPlayer.loop.duration * 1000);
+    const se = loopValue(
+      transformElapsed(
+        Math.max(this.loop.elapsed, this.mediaPlayer.loop.elapsed)
+      )
+    );
+    const sd = loopValue(
+      (this.loop.duration + this.mediaPlayer.loop.duration) * 1000
+    );
+    const ac = String(this.domAccessCount % 1000).padStart(3, "0");
     const file = (this.mediaPlayer.getUrl() ?? "").split("/").splice(-1)[0];
     this.diagnosticsEl.innerText =
-      `${code}:${st}:${ct}:${tt} ${ci}/${ni} t=${t} y=${y} v=${v} ` +
-      `s=${se}/${sd} m=${me}/${md} ${file}`;
+      `${code}:${st}:${ct}:${tt}:${ft} ${ci}/${ni} t=${t} y=${y} v=${v} ` +
+      `s=${se}:${sd}:${ac} ${file}`;
+    // Not incrementing domAccessCount because this occurs every frame
   }
 
   _loopUpdateFullScreen() {
@@ -647,42 +651,50 @@ class ChantScrollerModel {
       }
       return;
     }
-    const fullScreenMode =
-      document.fullScreen ||
-      document.mozFullScreen ||
-      document.webkitIsFullScreen;
-    if (this.state.fullScreen) {
-      if (!fullScreenMode && this.fullScreenTimeout === 0) {
-        if (this.fullScreenMode) {
-          this.fullScreenMode = false;
-          this.fullScreenTimeout = TIMEOUT_FULLSCREEN;
-          this.dispatch({ type: "SET_FULL_SCREEN", fullScreen: false });
-          this.state.fullScreen = false; // do not wait for React
+    if (this.fullScreenTimeout > TIMEOUT_FULL_SCREEN) {
+      this.fullScreenTimeout -= 1;
+    } else if (this.state.fullScreen) {
+      if (this.fullScreenCheck) {
+        if (this.fullScreenTimeout > 0) {
+          this.fullScreenTimeout -= 1;
         } else {
-          this.fullScreenMode = true;
-          this.fullScreenTimeout = TIMEOUT_FULLSCREEN;
-          this.containerEl
-            .requestFullscreen()
-            .then(() => {
-              this.scrollerEl.focus();
-            })
-            .catch(console.error);
+          this._updateFullScreenMode();
+          if (!this.fullScreenCheck) {
+            this.dispatch({ type: "SET_FULL_SCREEN", fullScreen: false });
+            this.state.fullScreen = false; // do not wait for React
+          }
+          this.fullScreenTimeout = TIMEOUT_FULL_SCREEN;
         }
-      }
-    } else {
-      if (fullScreenMode && this.fullScreenTimeout === 0) {
-        this.fullScreenMode = false;
-        this.fullScreenTimeout = TIMEOUT_FULLSCREEN;
-        document
-          .exitFullscreen()
-          .then(() => {
-            this.scrollerEl.focus();
-          })
+      } else {
+        this.fullScreenCheck = true;
+        this.fullScreenTimeout = TIMEOUT_FULL_SCREEN * 2;
+        this.domAccessCount += 1;
+        this.containerEl
+          .requestFullscreen()
+          .then(() => this._focusScroller())
           .catch(console.error);
       }
-    }
-    if (this.fullScreenTimeout > 0) {
-      this.fullScreenTimeout -= 1;
+    } else {
+      if (this.fullScreenCheck) {
+        this.fullScreenCheck = false;
+        this.fullScreenTimeout = TIMEOUT_FULL_SCREEN * 2;
+        this.domAccessCount += 1;
+        document
+          .exitFullscreen()
+          .then(() => this._focusScroller())
+          .catch(console.error);
+      } else {
+        if (this.fullScreenTimeout > 0) {
+          this.fullScreenTimeout -= 1;
+        } else {
+          this._updateFullScreenMode();
+          if (this.fullScreenCheck) {
+            this.dispatch({ type: "SET_FULL_SCREEN", fullScreen: true });
+            this.state.fullScreen = true; // do not wait for React
+          }
+          this.fullScreenTimeout = TIMEOUT_FULL_SCREEN;
+        }
+      }
     }
   }
 
@@ -716,9 +728,11 @@ class ChantScrollerModel {
     const { settingsState, settingsTimeout, state } = this;
     if (state.settings) {
       if (settingsState === STATE_REMOVED) {
+        this._setClassSettings(STATE_HIDDEN);
         this.settingsState = STATE_HIDDEN;
         this.settingsTimeout = 0;
       } else if (settingsState === STATE_HIDDEN) {
+        this._setClassSettings(STATE_VISIBLE);
         this.settingsState = STATE_VISIBLE;
         this.settingsTimeout = 0;
       } else {
@@ -728,9 +742,11 @@ class ChantScrollerModel {
       }
     } else {
       if (settingsState === STATE_VISIBLE) {
+        this._setClassSettings(STATE_HIDDEN);
         this.settingsState = STATE_HIDDEN;
       } else if (settingsState === STATE_HIDDEN) {
         if (settingsTimeout <= 0) {
+          this._setClassSettings(STATE_REMOVED);
           this.settingsState = STATE_REMOVED;
           this.settingsTimeout = 0;
         } else {
@@ -754,6 +770,7 @@ class ChantScrollerModel {
             this.scrollTimeout = TIMEOUT_CATCHUP;
             this.velocity = 0;
             this.dim.scrollTop = this.scrollerEl.scrollTop;
+            this.domAccessCount += 1;
             this._setTimeFromCurrentPosition();
             break;
           default:
@@ -848,26 +865,6 @@ class ChantScrollerModel {
     this.velocity = (this.velocity * (timeout - 1) + targetVelocity) / timeout;
   }
 
-  _loopUpdateWindow() {
-    const windowStamp = [window.innerWidth, window.innerHeight];
-    let reload =
-      Boolean(this.windowStamp) && !_isEqual(windowStamp, this.windowStamp);
-    this.windowStamp = windowStamp;
-
-    const fontSizeValue = this.state.fontSize + "px";
-    if (this.scrollerEl.style.getPropertyValue("font-size") !== fontSizeValue) {
-      this.scrollerEl.style.setProperty("font-size", fontSizeValue);
-      reload = true;
-    }
-
-    if (reload) {
-      this._initializeDimensions();
-      const [position] = this._getPositionFromTime(this.time);
-      this._scrollToPosition(position);
-      this.velocity = 0;
-    }
-  }
-
   _onClick() {
     this._showControls();
   }
@@ -919,6 +916,10 @@ class ChantScrollerModel {
 
   _onMouseMove() {
     this._showControls();
+  }
+
+  _onResize() {
+    this._resetDimensions();
   }
 
   _onTouchCancel() {
@@ -997,10 +998,31 @@ class ChantScrollerModel {
   _resetActive() {
     if (this.activeEl) {
       this.activeEl.classList.remove("chant-active");
+      this.domAccessCount += 1;
       this.activeEl = null;
     }
     this.activeIndex = null;
     this.activeChantIndex = null;
+  }
+
+  _resetContainerClass() {
+    const { controlsState, scrollState, settingsState, state } = this;
+    this._setClassControls(controlsState);
+    this._setClassDiagnostics(state.diagnostics);
+    this._setClassHighlight(state.highlight);
+    this._setClassSettings(settingsState);
+    this._setClassSetup(
+      scrollState === STATE_POLLING || scrollState === STATE_REFLOW
+    );
+  }
+
+  _resetDimensions() {
+    if (this.chantSet) {
+      this._initializeDimensions();
+      const [position] = this._getPositionFromTime(this.time);
+      this._scrollToPosition(position);
+      this.velocity = 0;
+    }
   }
 
   _scrollToInitialChant() {
@@ -1016,7 +1038,61 @@ class ChantScrollerModel {
   _scrollToPosition(position) {
     const top = Math.max(0, position - this._getMidPosition());
     this.scrollerEl.scrollTo({ left: 0, top });
+    this.domAccessCount += 1;
     this.dim.scrollTop = top;
+  }
+
+  _setClassControls(controlsState) {
+    const classList = this.containerEl.classList;
+    if (controlsState === STATE_VISIBLE) {
+      classList.remove("chant-controls-hidden");
+      classList.remove("chant-controls-removed");
+      classList.add("chant-controls-visible");
+    } else if (controlsState === STATE_HIDDEN) {
+      classList.remove("chant-controls-removed");
+      classList.remove("chant-controls-visible");
+      classList.add("chant-controls-hidden");
+    } else {
+      classList.remove("chant-controls-hidden");
+      classList.remove("chant-controls-visible");
+      classList.add("chant-controls-removed");
+    }
+    this.domAccessCount += 3;
+  }
+
+  _setClassDiagnostics(diagnostics) {
+    const method = diagnostics ? "add" : "remove";
+    this.containerEl.classList[method]("chant-diagnostics-visible");
+    this.domAccessCount += 1;
+  }
+
+  _setClassHighlight(highlight) {
+    const method = highlight ? "add" : "remove";
+    this.containerEl.classList[method]("chant-highlight-visible");
+    this.domAccessCount += 1;
+  }
+
+  _setClassSettings(settingsState) {
+    const classList = this.containerEl.classList;
+    if (settingsState === STATE_VISIBLE) {
+      classList.remove("chant-settings-hidden");
+      classList.remove("chant-settings-removed");
+      classList.add("chant-settings-visible");
+    } else if (settingsState === STATE_HIDDEN) {
+      classList.remove("chant-settings-removed");
+      classList.remove("chant-settings-visible");
+      classList.add("chant-settings-hidden");
+    } else {
+      classList.remove("chant-settings-hidden");
+      classList.remove("chant-settings-visible");
+      classList.add("chant-settings-removed");
+    }
+    this.domAccessCount += 3;
+  }
+
+  _setClassSetup(enabled) {
+    this.containerEl.classList[enabled ? "add" : "remove"]("chant-setup");
+    this.domAccessCount += 1;
   }
 
   _setStateMove() {
@@ -1058,6 +1134,14 @@ class ChantScrollerModel {
   _showControls(force = true) {
     if (force || this.controlsTimeout > 0)
       this.controlsTimeout = TIMEOUT_CONTROLS_IDLE;
+  }
+
+  _updateFullScreenMode() {
+    this.fullScreenCheck =
+      document.fullScreen ||
+      document.mozFullScreen ||
+      document.webkitIsFullScreen;
+    this.domAccessCount += 1;
   }
 }
 

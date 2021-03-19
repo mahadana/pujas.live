@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
       opacity: 0,
     },
     "&.chant-controls-removed .chant-scroller": {
-      cursor: (fullScreen) => (fullScreen ? "none" : "inherit"),
+      cursor: "none",
     },
     "& .chant-diagnostics": {
       display: "none",
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
           ? "rgba(255, 255, 0, 0.25)"
           : "rgba(255, 255, 0, 0.1)",
     },
-    "&.chant-settings": {
+    "& .chant-settings": {
       transition: "opacity 0.25s ease",
     },
     "&.chant-settings-visible .chant-settings": {
@@ -75,6 +75,17 @@ const useStyles = makeStyles((theme) => ({
     "&.chant-settings-removed .chant-settings": {
       display: "none",
       opacity: 0,
+    },
+    "& .chant-scroller": {
+      opacity: 1,
+      visibility: "visible",
+      overflowY: "scroll",
+      transition: "opacity 1s",
+    },
+    "&.chant-setup .chant-scroller": {
+      opacity: 0,
+      visibility: "hidden",
+      overflowY: "hidden",
     },
   },
   close: {
@@ -141,8 +152,6 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: "100%",
     overflowX: "hidden",
-    overflowY: "scroll",
-    transition: "opacity 1s",
     overscrollBehavior: "none",
     "&:focus": {
       outline: "none",
