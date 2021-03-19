@@ -165,9 +165,9 @@ class ChantScrollerModel {
     );
   }
 
-  onToggleFullScreen(fullScreen) {
+  onToggleFullScreen(fullScreen, force = false) {
     if (!this.state.disableFullScreen) {
-      if (this.fullScreenTimeout <= TIMEOUT_FULL_SCREEN) {
+      if (force || this.fullScreenTimeout <= TIMEOUT_FULL_SCREEN) {
         this._updateFullScreenCheck();
         if (fullScreen && !this.fullScreenCheck) {
           this.fullScreenCheck = true;

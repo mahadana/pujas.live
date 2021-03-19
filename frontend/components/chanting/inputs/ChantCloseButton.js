@@ -4,8 +4,11 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import { memo } from "react";
 
 const ChantCloseButton = memo(
-  ({ dispatch }) => {
-    const onClick = () => dispatch({ type: "CLOSE" });
+  ({ dispatch, onToggle }) => {
+    const onClick = () => {
+      onToggle?.(false, true);
+      dispatch({ type: "CLOSE" });
+    };
 
     return (
       <IconButton onClick={onClick}>

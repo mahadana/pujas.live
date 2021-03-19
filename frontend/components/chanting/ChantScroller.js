@@ -206,7 +206,10 @@ const ChantScrollerInner = memo(({ dispatch, state }) => {
         {chantSet && <ChantSet chantSet={chantSet} />}
       </div>
       <div className={clsx(classes.close, "chant-controls")}>
-        <ChantCloseButton dispatch={dispatch} />
+        <ChantCloseButton
+          dispatch={dispatch}
+          onToggle={model.onToggleFullScreen}
+        />
       </div>
       <div className={clsx(classes.operations, "chant-controls")}>
         <ChantPlayButton dispatch={dispatch} state={state} />
