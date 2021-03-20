@@ -8,7 +8,7 @@ import {
   DEFAULT_FONT_SIZE,
   MAX_FONT_SIZE,
   MIN_FONT_SIZE,
-} from "@/components/chanting/ChantScrollerReducer";
+} from "@/components/chanting/ChantReducer";
 
 const sizedLabel = (label, fontSize) => (
   <span style={{ display: "inline-block", fontSize, marginTop: -fontSize / 3 }}>

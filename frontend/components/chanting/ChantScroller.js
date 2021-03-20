@@ -6,14 +6,14 @@ import {
 import clsx from "clsx";
 import { memo, useEffect, useRef, useState } from "react";
 
-import ChantSet from "@/components/chanting/ChantSet";
 import ChantAudioButton from "@/components/chanting/inputs/ChantAudioButton";
 import ChantCloseButton from "@/components/chanting/inputs/ChantCloseButton";
 import ChantFullScreenButton from "@/components/chanting/inputs/ChantFullScreenButton";
 import ChantPlayButton from "@/components/chanting/inputs/ChantPlayButton";
 import ChantSettingsButton from "@/components/chanting/inputs/ChantSettingsButton";
+import ChantModel from "@/components/chanting/ChantModel";
+import ChantSet from "@/components/chanting/ChantSet";
 import ChantSettingsPanel from "@/components/chanting/ChantSettingsPanel";
-import { useChantScrollerReducer } from "@/components/chanting/ChantScrollerReducer";
 import darkTheme from "@/lib/theme";
 
 const lightTheme = createMuiTheme({
@@ -130,14 +130,14 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("xs")]: {
       bottom: 0,
       left: 0,
-      width: ({ model }) => (model.hasAudio() ? "7.5rem" : "3.75rem"),
+      width: ({ model }) => (model?.hasAudio?.() ? "7.5rem" : "3.75rem"),
       height: "3.75rem",
     },
     [theme.breakpoints.up("sm")]: {
-      bottom: ({ model }) => (model.hasMaximize() ? "7.5rem" : "3.75rem"),
+      bottom: ({ model }) => (model?.hasMaximize?.() ? "7.5rem" : "3.75rem"),
       right: 0,
       width: "3.75rem",
-      height: ({ model }) => (model.hasAudio() ? "7.5rem" : "3.75rem"),
+      height: ({ model }) => (model?.hasAudio?.() ? "7.5rem" : "3.75rem"),
       textAlign: "center",
       "& > button": {
         display: "flex",
@@ -182,46 +182,45 @@ const useStyles = makeStyles((theme) => ({
 // This inner component is needed for the theme switching to work.
 const ChantScrollerInner = memo(({ dispatch, state }) => {
   const ref = useRef();
-  const [chantSet, setChantSet] = useState(null);
-  const classes = useStyles(state);
-
-  const { model } = state;
+  const [model, setModel] = useState(null);
+  const classes = useStyles({ model });
 
   useEffect(() => {
-    model.attach(ref.current);
-    model.setDispatch(dispatch);
-    model.setState(state);
-    return () => model.detach();
-  }, []);
+    if (state.chantData && state.chantSet) {
+      const newModel = new ChantModel(dispatch, state);
+      newModel.attach(ref.current);
+      setModel(newModel);
+      return () => {
+        newModel.detach();
+        setModel(null);
+      };
+    }
+  }, [state.chantData, state.chantSet]);
 
   useEffect(() => {
-    model.setDispatch(dispatch);
-    model.setState(state, setChantSet);
-  }, [dispatch, setChantSet, state]);
+    model?.setDispatchState?.(dispatch, state);
+  }, [dispatch, state]);
 
   return (
     <div className={classes.root} ref={ref}>
       <div className={clsx(classes.diagnostics, "chant-diagnostics")} />
       <div className={clsx(classes.scroller, "chant-scroller")} tabIndex="0">
-        {chantSet && <ChantSet chantSet={chantSet} />}
+        {model?.chantSet && <ChantSet chantSet={model.chantSet} />}
       </div>
       <div className={clsx(classes.close, "chant-controls")}>
-        <ChantCloseButton
-          dispatch={dispatch}
-          onToggle={model.onToggleFullScreen}
-        />
+        <ChantCloseButton dispatch={dispatch} model={model} />
       </div>
       <div className={clsx(classes.operations, "chant-controls")}>
         <ChantPlayButton dispatch={dispatch} state={state} />
-        {model.hasAudio() && (
+        {model?.hasAudio?.() && (
           <ChantAudioButton dispatch={dispatch} state={state} />
         )}
       </div>
-      {model.hasMaximize() && (
+      {model?.hasMaximize?.() && (
         <div className={clsx(classes.fullScreen, "chant-controls")}>
           <ChantFullScreenButton
             dispatch={dispatch}
-            onToggle={model.onToggleFullScreen}
+            model={model}
             state={state}
           />
         </div>
@@ -238,44 +237,14 @@ const ChantScrollerInner = memo(({ dispatch, state }) => {
 
 ChantScrollerInner.displayName = "ChantScrollerInner";
 
-const ChantScroller = memo(
-  ({
-    chantData,
-    chantSet,
-    disableAudio,
-    disableFullScreen,
-    disableReturnToc,
-    onClose,
-    setMaximize,
-  }) => {
-    const [state, dispatch] = useChantScrollerReducer({
-      chantData,
-      disableAudio,
-      disableFullScreen,
-      disableReturnToc,
-    });
-
-    useEffect(() => {
-      dispatch({ type: "SET_CHANT_SET", chantSet });
-    }, [chantSet]);
-
-    useEffect(() => {
-      if (state.close) onClose();
-    }, [state.close]);
-
-    useEffect(() => {
-      setMaximize?.(state.maximize);
-    }, [state.maximize]);
-
-    const theme = state.themeType === "dark" ? darkTheme : lightTheme;
-
-    return (
-      <ThemeProvider theme={theme}>
-        <ChantScrollerInner dispatch={dispatch} state={state} />
-      </ThemeProvider>
-    );
-  }
-);
+const ChantScroller = memo(({ dispatch, state }) => {
+  const theme = state.themeType === "dark" ? darkTheme : lightTheme;
+  return (
+    <ThemeProvider theme={theme}>
+      <ChantScrollerInner dispatch={dispatch} state={state} />
+    </ThemeProvider>
+  );
+});
 
 ChantScroller.displayName = "ChantScroller";
 

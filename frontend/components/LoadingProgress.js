@@ -25,7 +25,6 @@ const LoadingProgress = ({ loading }) => {
   return (
     <NoSsr>
       <Fade
-        closeAfterTransition
         in={loading}
         mountOnEnter
         timeout={{ enter: 2000, exit: 10000 }}

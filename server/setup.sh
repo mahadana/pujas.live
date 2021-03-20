@@ -6,10 +6,6 @@ PROJECT="pujas.live"
 GIT_URL="https://github.com/mahadana/$PROJECT.git"
 BASE_DIR="/opt/$PROJECT"
 
-CHANTING_PROJECT="chanting"
-CHANTING_GIT_URL="https://github.com/mahadana/$CHANTING_PROJECT.git"
-CHANTING_BASE_DIR="/opt/$CHANTING_PROJECT"
-
 WEBHOOK_CONF="/etc/webhook.conf"
 WEBHOOK_SECRET="/etc/webhook.secret"
 
@@ -41,12 +37,8 @@ chmod a+x /usr/local/bin/docker-compose
 
 test -d "$BASE_DIR" || git clone "$GIT_URL" "$BASE_DIR"
 
-test -d "$CHANTING_BASE_DIR" || \
-  git clone "$CHANTING_GIT_URL" "$CHANTING_BASE_DIR"
-
 if ! test -f "$BASE_DIR/.env"; then
   echo "Missing: $env"
-  echo "Please create and edit the missing .env files"
   exit 1
 fi
 

@@ -171,15 +171,11 @@ docker-compose exec backup /restore.sh uploads REMOTE
     - Outbound Rules: _Defaults_
     - Droplets: `do.pujas.live`
 
-10. Add [GitHub] webhooks with the following repositories:
+10. Add a webhook for the [Pujas.live repository][github]:
 
-    - [pujas.live](https://github.com/mahadana/pujas.live/settings/hooks):
-      `https://pujas.live/hooks/pujas.live-github-deploy`
-
-    - [chanting](https://github.com/mahadana/chanting/settings/hooks):
-      `https://pujas.live/hooks/chanting-github-deploy`
-
-    The secret for each can be found in `/etc/webhook.secret` on `do.pujas.live`.
+    - Payload URL: `https://pujas.live/hooks/pujas.live-github-deploy`
+    - Content Type: `application/x-www-form-urlencoded`
+    - Secret: See `/etc/webhook.secret` on `do.pujas.live`
 
 [digital ocean]: https://cloud.digitalocean.com/
 [digital ocean firewall]: https://cloud.digitalocean.com/networking/firewalls

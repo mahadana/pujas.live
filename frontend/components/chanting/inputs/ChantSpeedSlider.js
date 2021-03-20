@@ -3,10 +3,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import { memo, useEffect, useState } from "react";
 
-import {
-  MAX_SPEED,
-  MIN_SPEED,
-} from "@/components/chanting/ChantScrollerReducer";
+import { MAX_SPEED, MIN_SPEED } from "@/components/chanting/ChantReducer";
 
 const marks = [
   { value: -0.8, label: "Slow" },

@@ -3,6 +3,7 @@ import Fade from "@material-ui/core/Fade";
 import Modal from "@material-ui/core/Modal";
 import { makeStyles } from "@material-ui/core/styles";
 
+import ChantFontStyle from "@/components/chanting/ChantFontStyle";
 import ChantLoader from "@/components/chanting/ChantLoader";
 import ChantWindow from "@/components/chanting/ChantWindow";
 
@@ -25,9 +26,14 @@ const ChantModal = ({ open, ...props }) => {
     >
       <Fade in={open} mountOnEnter timeout={500} unmountOnExit>
         <div>
-          <ChantLoader>
-            {(chantData) => <ChantWindow {...props} chantData={chantData} />}
-          </ChantLoader>
+          <ChantFontStyle />
+          {props.chantData ? (
+            <ChantWindow {...props} />
+          ) : (
+            <ChantLoader>
+              {(chantData) => <ChantWindow {...props} chantData={chantData} />}
+            </ChantLoader>
+          )}
         </div>
       </Fade>
     </Modal>

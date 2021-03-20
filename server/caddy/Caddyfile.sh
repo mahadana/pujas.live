@@ -12,11 +12,6 @@ PLAUSIBLE_DOMAIN="$(deurl "$PLAUSIBLE_URL")"
 
 cat <<EOF
 $FRONTEND_DOMAIN {
-  redir /chanting /chanting/
-  handle_path /chanting/* {
-    root * /opt/chanting
-    file_server
-  }
   redir /logs /logs/
   handle_path /logs/* {
     root * /logs

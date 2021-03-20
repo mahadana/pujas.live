@@ -5,12 +5,12 @@ import FullscreenIcon from "@material-ui/icons/Fullscreen";
 import { memo } from "react";
 
 const ChantFullScreenButton = memo(
-  ({ dispatch, onToggle, state }) => {
+  ({ dispatch, model, state }) => {
     const onClick = () => {
-      onToggle?.(!state.fullScreen);
+      // We need the following due to iOS not handling fullscreen requests not
+      // triggered by a user event.
+      model.onToggleFullScreen?.(!state.fullScreen);
       dispatch({ type: "TOGGLE_FULL_SCREEN" });
-      // We need to add this here due to iOS not handling fullscreen requests
-      // that not triggered in the same event flow.
     };
 
     return (
@@ -27,6 +27,7 @@ const ChantFullScreenButton = memo(
   },
   (prev, next) =>
     prev.dispatch === next.dispatch &&
+    prev.model === next.model &&
     prev.state.fullScreen === next.state.fullScreen
 );
 

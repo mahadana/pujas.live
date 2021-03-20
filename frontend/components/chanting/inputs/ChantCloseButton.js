@@ -4,9 +4,11 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import { memo } from "react";
 
 const ChantCloseButton = memo(
-  ({ dispatch, onToggle }) => {
+  ({ dispatch, model }) => {
     const onClick = () => {
-      onToggle?.(false, true);
+      // We need the following due to iOS not handling fullscreen requests not
+      // triggered by a user event.
+      model?.onToggleFullScreen?.(false, true);
       dispatch({ type: "CLOSE" });
     };
 
@@ -18,7 +20,7 @@ const ChantCloseButton = memo(
       </IconButton>
     );
   },
-  (prev, next) => prev.dispatch === next.dispatch
+  (prev, next) => prev.dispatch === next.dispatch && prev.model === next.model
 );
 
 ChantCloseButton.displayName = "ChantCloseButton";

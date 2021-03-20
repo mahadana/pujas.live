@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core/styles";
-import { useState } from "react";
+import { useEffect } from "react";
 
-import ChantFontStyle from "@/components/chanting/ChantFontStyle";
+import { useChantReducer } from "@/components/chanting/ChantReducer";
 import ChantScrollerWrapper from "@/components/chanting/ChantScrollerWrapper";
 import ChantTocWrapper from "@/components/chanting/ChantTocWrapper";
 
@@ -35,33 +35,45 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-const ChantWindow = ({ onClose, disableReturnToc = false, ...props }) => {
-  const [chantSet, setChantSet] = useState(null);
-  const [maximize, setMaximize] = useState(true);
-  const classes = useStyles({ maximize });
-
-  const onCloseScroller = () => {
-    setChantSet(null);
-    if (disableReturnToc) {
-      onClose?.();
-    }
+const ChantWindow = ({
+  chantData = null,
+  chantSet: propsChantSet = null,
+  disableAudio = false,
+  disableFullScreen = false,
+  disableReturnToc = false,
+  disableToc = false,
+  onClose,
+}) => {
+  const values = {
+    chantData,
+    disableAudio,
+    disableFullScreen,
+    disableReturnToc,
+    disableToc,
+    propsChantSet,
   };
+  const [state, dispatch] = useChantReducer(values);
+  const classes = useStyles(state);
+
+  useEffect(() => {
+    dispatch({ type: "INITIALIZE", values });
+  }, [
+    chantData,
+    disableAudio,
+    disableFullScreen,
+    disableReturnToc,
+    disableToc,
+    propsChantSet,
+  ]);
+
+  useEffect(() => {
+    if (state.view === "CLOSE") onClose?.();
+  }, [state.view]);
 
   return (
     <div className={classes.root}>
-      <ChantFontStyle />
-      <ChantScrollerWrapper
-        {...props}
-        chantSet={chantSet}
-        onClose={onCloseScroller}
-        setMaximize={setMaximize}
-      />
-      <ChantTocWrapper
-        chantSet={chantSet}
-        onClose={onClose}
-        onOpen={setChantSet}
-        toc={props.chantData.toc}
-      />
+      <ChantScrollerWrapper dispatch={dispatch} state={state} />
+      <ChantTocWrapper dispatch={dispatch} state={state} />
     </div>
   );
 };

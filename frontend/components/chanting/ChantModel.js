@@ -64,16 +64,46 @@ const TIMEOUT_SETTINGS = 15; // 0.25 seconds -- fade in/out time
 
 let _chantSetId = 0;
 
-class ChantScrollerModel {
-  constructor() {
+class ChantModel {
+  constructor(dispatch, state) {
+    this.dispatch = dispatch;
+    this.state = state;
+
+    this.activeEl = null;
+    this.activeChantIndex = null;
+    this.activeIndex = null;
+    this.chantDataCheck = null;
+    this.chantSet = null;
+    this.chantSetCheck = null;
     this.containerEl = null;
+    this.controlsState = STATE_REMOVED;
+    this.controlsTimeout = 0;
+    this.diagnosticsCheck = false;
     this.diagnosticsEl = null;
+    this.dim = null;
+    this.domAccessCount = 0;
+    this.visible = true;
+    this.fontSizeCheck = DEFAULT_FONT_SIZE;
+    this.fullScreenCheck = false;
+    this.fullScreenTimeout = 0;
+    this.initialChantIndex = null;
+    this.lastTimestamp = null;
+    this.mediaStamp = null;
     this.scrollerEl = null;
-    this.dispatch = () => undefined;
-    this.state = { fontSize: DEFAULT_FONT_SIZE };
+    this.scrollState = STATE_POLLING;
+    this.scrollTimeout = 0;
+    this.settingsState = STATE_REMOVED;
+    this.settingsTimeout = 0;
+    this.time = 0;
+    this.themeTypeCheck = DEFAULT_THEME_TYPE;
+    this.useMediaPlayer = false;
+    this.velocity = 0;
+
     this.isMobile = isMobile(window.navigator);
     this.mediaPlayer = getMediaPlayerSingleton();
-    this.reset();
+    this.mediaPlayer.reset();
+    this._initializeChantSet();
+
     this.loop = makeLoop(this._loop.bind(this));
     [
       "Click",
@@ -102,7 +132,6 @@ class ChantScrollerModel {
     };
     const scrollerEl = getElement("chant-scroller");
     const diagnosticsEl = getElement("chant-diagnostics");
-    this.detach();
     window.addEventListener("resize", this._onResize);
     document.addEventListener("click", this._onClick);
     document.addEventListener("keydown", this._onKeyDown, { capture: true });
@@ -200,50 +229,9 @@ class ChantScrollerModel {
     }
   }
 
-  reset() {
-    this.chantSet = null;
-    this.controlsState = STATE_REMOVED;
-    this.controlsTimeout = 0;
-    this.diagnosticsCheck = false;
-    this.dim = null;
-    this.domAccessCount = 0;
-    this.visible = true;
-    this.fontSizeCheck = DEFAULT_FONT_SIZE;
-    this.fullScreenCheck = false;
-    this.fullScreenTimeout = 0;
-    this.initialChantIndex = null;
-    this.lastTimestamp = null;
-    this.mediaStamp = null;
-    this.scrollState = STATE_POLLING;
-    this.scrollTimeout = 0;
-    this.settingsState = STATE_REMOVED;
-    this.settingsTimeout = 0;
-    this.time = 0;
-    this.themeTypeCheck = DEFAULT_THEME_TYPE;
-    this.useMediaPlayer = false;
-    this.velocity = 0;
-    this.mediaPlayer.reset();
-    this._resetActive();
-  }
-
-  setDispatch(dispatch) {
+  setDispatchState(dispatch, state) {
     this.dispatch = dispatch;
-  }
-
-  setState(state, chantSetCallback) {
-    const reload =
-      this.state.chantData !== state.chantData ||
-      this.state.chantSet !== state.chantSet;
     this.state = state;
-    if (reload) {
-      this.reset();
-      if (state.chantData && state.chantSet) {
-        this._initializeChantSet();
-      } else {
-        this.chantSet = null;
-      }
-      chantSetCallback?.(this.chantSet);
-    }
   }
 
   _focusScroller() {
@@ -402,6 +390,10 @@ class ChantScrollerModel {
   }
 
   _initializeChantSet() {
+    if (!this.state.chantData || !this.state.chantSet) {
+      this.chantSet = null;
+      return;
+    }
     const { chantIds, link, title } = this.state.chantSet;
     const chantSetDomId = `chant-id-${_chantSetId++}`;
     this.initialChantIndex = null;
@@ -1164,4 +1156,4 @@ class ChantScrollerModel {
   }
 }
 
-export default ChantScrollerModel;
+export default ChantModel;

@@ -1,9 +1,8 @@
+import isMobile from "ismobilejs";
 import _clamp from "lodash/clamp";
 import _isBoolean from "lodash/isBoolean";
 import _isFinite from "lodash/isFinite";
 import { useReducer } from "react";
-
-import ChantScrollerModel from "@/components/chanting/ChantScrollerModel";
 
 export const DEFAULT_FONT_SIZE = 20;
 export const DEFAULT_SPEED = 1.0;
@@ -14,7 +13,7 @@ export const MAX_FONT_SIZE = 40;
 export const MAX_SPEED = 3.0;
 export const SPEED_STEP = 0.1;
 
-const LOCAL_STORAGE_KEY = "chantScrollerState";
+const LOCAL_STORAGE_KEY = "chantState";
 
 const normalizeStateForLocalStorage = (state) => ({
   audio: _isBoolean(state?.audio) ? state.audio : true,
@@ -54,42 +53,72 @@ const saveStateToLocalStorage = (state) => {
   return state;
 };
 
-const initialize = ({
-  chantData,
-  disableAudio = false,
-  disableFullScreen = false,
-}) => {
-  const model = new ChantScrollerModel();
-  return {
-    chantData,
-    chantSet: null,
-    close: false,
-    controls: false,
-    disableAudio,
-    disableFullScreen,
-    fullScreen: false,
-    maximize: model.getDefaultMaximize(),
-    model,
-    playing: false,
-    settings: false,
-    speed: DEFAULT_SPEED,
-    ...loadStateFromLocalStorage(), // audio, diagnostics, fontSize, highlight, themeType
-  };
+// This is redundant with ChantModel.getDefaultMaximize()
+const getDefaultMaximize = () => {
+  if (typeof window === "object") {
+    return Boolean(isMobile(window.navigator).phone);
+  } else {
+    return false;
+  }
+};
+
+const updateState = (prevState, values) => {
+  const nextState = { ...prevState, ...values };
+  nextState.chantSet = nextState.tocChantSet || nextState.propsChantSet;
+  if (nextState.view === "EMPTY") {
+    if (nextState.chantData && nextState.chantSet) {
+      nextState.view = "CHANT";
+    } else if (nextState.chantData && !nextState.disableToc) {
+      nextState.view = "TOC";
+    }
+  }
+  if (nextState.view === "CHANT") {
+    if (prevState.view !== "CHANT") nextState.playing = true;
+  } else {
+    nextState.fullScreen = false;
+    nextState.maximize = nextState.defaultMaximize;
+  }
+  return nextState;
+};
+
+const initialize = (values) => {
+  const defaultMaximize = getDefaultMaximize();
+  return updateState(
+    {
+      chantData: null,
+      chantSet: null,
+      controls: false,
+      defaultMaximize,
+      disableAudio: false,
+      disableFullScreen: false,
+      disableReturnToc: false,
+      disableToc: false,
+      fullScreen: false,
+      maximize: defaultMaximize,
+      playing: false,
+      propsChantSet: null,
+      settings: false,
+      speed: DEFAULT_SPEED,
+      tocChantSet: null,
+      view: "EMPTY",
+      ...loadStateFromLocalStorage(), // audio, diagnostics, fontSize, highlight, themeType
+    },
+    values
+  );
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
     case "CLOSE": {
-      if (state.settings) {
-        return { ...state, settings: false };
+      if (state.view === "CHANT") {
+        if (state.settings) {
+          return { ...state, settings: false };
+        } else {
+          const close = state.disableReturnToc || state.disableToc;
+          return updateState(state, { view: close ? "CLOSE" : "TOC" });
+        }
       } else {
-        return {
-          ...state,
-          close: true,
-          fullScreen: false,
-          maximize: state.model.getDefaultMaximize(),
-          playing: false,
-        };
+        return updateState(state, { view: "CLOSE" });
       }
     }
     case "DECREASE_SPEED":
@@ -116,17 +145,17 @@ const reducer = (state, action) => {
         ...state,
         fontSize: Math.min(MAX_FONT_SIZE, state.fontSize + FONT_SIZE_STEP),
       });
+    case "INITIALIZE":
+      return updateState(state, action.values);
     case "RESET_FONT_SIZE":
       return saveStateToLocalStorage({ ...state, fontSize: DEFAULT_FONT_SIZE });
     case "RESET_SPEED":
       return { ...state, speed: DEFAULT_SPEED };
-    case "SET_CHANT_SET":
-      return {
-        ...state,
-        chantSet: action.chantSet,
-        close: state.chantSet && !action.chantSet,
-        playing: Boolean(action.chantSet),
-      };
+    case "SET_TOC_CHANT_SET":
+      return updateState(state, {
+        tocChantSet: action.tocChantSet,
+        view: action.tocChantSet ? "CHANT" : state.view,
+      });
     case "SET_FONT_SIZE":
       return saveStateToLocalStorage({ ...state, fontSize: action.fontSize });
     case "SET_FULL_SCREEN":
@@ -164,5 +193,5 @@ const reducer = (state, action) => {
   }
 };
 
-export const useChantScrollerReducer = (props) =>
+export const useChantReducer = (props) =>
   useReducer(reducer, props, initialize);
