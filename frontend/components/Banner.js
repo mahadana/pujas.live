@@ -9,23 +9,26 @@ import { siteName } from "@/lib/util";
 
 const validImageNumbers = [2, 4, 7, 9, 10, 11, 13];
 
-const getBannerImageUrl = () =>
-  "https://pujas-live.sfo3.cdn.digitaloceanspaces.com/images/banner/banner" +
-  validImageNumbers[Math.floor(Math.random() * validImageNumbers.length)] +
-  ".jpg";
+const getBannerImageUrl = () => {
+  // Deterministically rotate through each image once per hour
+  const index = Math.floor(
+    (new Date().getUTCMinutes() * validImageNumbers.length) / 60
+  );
+  const number = validImageNumbers[index];
+  return `https://pujas-live.sfo3.cdn.digitaloceanspaces.com/images/banner/banner${number}.jpg`;
+};
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     height: "10rem",
     backgroundColor: "#202a13",
-    backgroundImage:
-      `linear-gradient(
-        ${fade(theme.palette.background.default, 0)} 0%,
-        ${fade(theme.palette.background.default, 0)} 60%,
-        ${fade(theme.palette.background.default, 0.4)} 75%,
-        ${fade(theme.palette.background.default, 1)} 90%)` +
-      (typeof window === "undefined" ? "" : `, url(${getBannerImageUrl()})`),
+    backgroundImage: `linear-gradient(
+      ${fade(theme.palette.background.default, 0)} 0%,
+      ${fade(theme.palette.background.default, 0)} 60%,
+      ${fade(theme.palette.background.default, 0.4)} 75%,
+      ${fade(theme.palette.background.default, 1)} 90%),
+      url(${getBannerImageUrl()})`,
     backgroundSize: "cover",
     "&, & a": {
       color: "white",
