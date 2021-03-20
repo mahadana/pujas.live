@@ -130,14 +130,14 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("xs")]: {
       bottom: 0,
       left: 0,
-      width: ({ disableAudio }) => (disableAudio ? "3.75rem" : "7.5rem"),
+      width: ({ model }) => (model.hasAudio() ? "7.5rem" : "3.75rem"),
       height: "3.75rem",
     },
     [theme.breakpoints.up("sm")]: {
       bottom: ({ model }) => (model.hasMaximize() ? "7.5rem" : "3.75rem"),
       right: 0,
       width: "3.75rem",
-      height: ({ disableAudio }) => (disableAudio ? "3.75rem" : "7.5rem"),
+      height: ({ model }) => (model.hasAudio() ? "7.5rem" : "3.75rem"),
       textAlign: "center",
       "& > button": {
         display: "flex",
@@ -213,7 +213,7 @@ const ChantScrollerInner = memo(({ dispatch, state }) => {
       </div>
       <div className={clsx(classes.operations, "chant-controls")}>
         <ChantPlayButton dispatch={dispatch} state={state} />
-        {!state.disableAudio && (
+        {model.hasAudio() && (
           <ChantAudioButton dispatch={dispatch} state={state} />
         )}
       </div>

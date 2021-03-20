@@ -161,6 +161,13 @@ class ChantScrollerModel {
     return Boolean(this.isMobile.phone);
   }
 
+  hasAudio() {
+    return (
+      !this.state.disableAudio &&
+      (this.chantSet?.chants?.some?.((chant) => chant.timing.mediaUrl) ?? false)
+    );
+  }
+
   hasMaximize() {
     return (
       !this.isMobile.apple.phone &&
