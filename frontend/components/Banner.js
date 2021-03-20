@@ -10,7 +10,7 @@ import { siteName } from "@/lib/util";
 const validImageNumbers = [2, 4, 7, 9, 10, 11, 13];
 
 const getBannerImageUrl = () =>
-  "/_next/image?w=1920&q=75&url=%2Fcropped" +
+  "https://pujas-live.sfo3.cdn.digitaloceanspaces.com/images/banner/banner" +
   validImageNumbers[Math.floor(Math.random() * validImageNumbers.length)] +
   ".jpg";
 
