@@ -716,7 +716,6 @@ class ChantScrollerModel {
       if (_isFinite(this.state.speed)) {
         this.mediaPlayer.setPlaybackRate(this.state.speed);
       }
-      this.mediaPlayer.setVolume(this.state.audio ? 1 : 0);
     }
   }
 
@@ -779,44 +778,49 @@ class ChantScrollerModel {
   }
 
   _loopUpdateUseMedia() {
-    const { scrollState } = this;
-    if (
-      scrollState === STATE_TOUCH ||
-      scrollState === STATE_MOVE ||
-      scrollState === STATE_RELEASE
-    ) {
-      return;
-    }
-
-    const chantIndex = this.activeChantIndex;
-    const mediaUrl = this._getMediaUrl();
-    const mediaStamp = {
-      chantIndex,
-      mediaUrl,
-      start: this.dim.chants[this.activeChantIndex]?.start ?? null,
-      end: this.dim.chants[this.activeChantIndex]?.end ?? null,
-    };
-
-    if (mediaUrl && this.visible && !this.state.disableAudio) {
-      if (mediaStamp.chantIndex !== this.mediaStamp?.chantIndex) {
-        this.mediaPlayer.setUrl(mediaUrl);
-        if (
-          mediaStamp.mediaUrl !== this.mediaStamp?.mediaUrl ||
-          mediaStamp.start !== this.mediaStamp?.end
-        ) {
-          this.mediaPlayer.setTime(this._getRelativeTime() ?? 0);
-          // ensure subsequent calls to getTime are good
-          this.mediaPlayer.preload();
-        }
-      }
-      this.useMediaPlayer = true;
-    } else {
-      if (this.useMediaPlayer) {
-        this.mediaPlayer.stop();
-      }
+    const {
+      activeChantIndex,
+      dim,
+      mediaPlayer,
+      scrollState,
+      state,
+      visible,
+    } = this;
+    if (!visible || !state.audio || state.disableAudio) {
+      if (this.useMediaPlayer) mediaPlayer.stop();
       this.useMediaPlayer = false;
+      this.mediaStamp = null;
+    } else if (
+      scrollState !== STATE_TOUCH &&
+      scrollState !== STATE_MOVE &&
+      scrollState !== STATE_RELEASE
+    ) {
+      const mediaUrl = this._getMediaUrl();
+      const mediaStamp = {
+        chantIndex: activeChantIndex,
+        mediaUrl,
+        start: dim.chants[activeChantIndex]?.start ?? null,
+        end: dim.chants[activeChantIndex]?.end ?? null,
+      };
+      if (mediaUrl) {
+        if (mediaStamp.chantIndex !== this.mediaStamp?.chantIndex) {
+          this.mediaPlayer.setUrl(mediaUrl);
+          if (
+            mediaStamp.mediaUrl !== this.mediaStamp?.mediaUrl ||
+            mediaStamp.start !== this.mediaStamp?.end
+          ) {
+            mediaPlayer.setTime(this._getRelativeTime() ?? 0);
+            // ensure subsequent calls to getTime are good
+            mediaPlayer.preload();
+          }
+        }
+        this.useMediaPlayer = true;
+      } else {
+        if (this.useMediaPlayer) mediaPlayer.stop();
+        this.useMediaPlayer = false;
+      }
+      this.mediaStamp = mediaStamp;
     }
-    this.mediaStamp = mediaStamp;
   }
 
   _loopUpdateTime() {

@@ -18,7 +18,7 @@ const initialize = ({
 }) => {
   const model = new ChantScrollerModel();
   return {
-    audio: false,
+    audio: true,
     chantData,
     chantSet: null,
     close: false,
