@@ -1,3 +1,6 @@
+import _clamp from "lodash/clamp";
+import _isBoolean from "lodash/isBoolean";
+import _isFinite from "lodash/isFinite";
 import { useReducer } from "react";
 
 import ChantScrollerModel from "@/components/chanting/ChantScrollerModel";
@@ -11,6 +14,46 @@ export const MAX_FONT_SIZE = 40;
 export const MAX_SPEED = 3.0;
 export const SPEED_STEP = 0.1;
 
+const LOCAL_STORAGE_KEY = "chantScrollerState";
+
+const normalizeStateForLocalStorage = (state) => ({
+  audio: _isBoolean(state?.audio) ? state.audio : true,
+  diagnostics: _isBoolean(state?.diagnostics) ? state.diagnostics : false,
+  fontSize: _isFinite(state?.fontSize)
+    ? _clamp(state.fontSize, MIN_FONT_SIZE, MAX_FONT_SIZE)
+    : DEFAULT_FONT_SIZE,
+  highlight: _isBoolean(state?.highlight) ? state.highlight : false,
+  themeType:
+    state?.themeType === "light" || state?.themeType === "dark"
+      ? state.themeType
+      : "light",
+});
+
+const loadStateFromLocalStorage = () => {
+  let localStorageState;
+  try {
+    localStorageState = JSON.parse(
+      window.localStorage.getItem(LOCAL_STORAGE_KEY)
+    );
+  } catch {
+    localStorageState = null;
+  }
+  return normalizeStateForLocalStorage(localStorageState);
+};
+
+const saveStateToLocalStorage = (state) => {
+  const localStorageState = normalizeStateForLocalStorage(state);
+  try {
+    window.localStorage.setItem(
+      LOCAL_STORAGE_KEY,
+      JSON.stringify(localStorageState)
+    );
+  } catch {
+    //
+  }
+  return state;
+};
+
 const initialize = ({
   chantData,
   disableAudio = false,
@@ -18,23 +61,19 @@ const initialize = ({
 }) => {
   const model = new ChantScrollerModel();
   return {
-    audio: true,
     chantData,
     chantSet: null,
     close: false,
     controls: false,
-    diagnostics: false,
     disableAudio,
     disableFullScreen,
-    fontSize: DEFAULT_FONT_SIZE,
     fullScreen: false,
-    highlight: false,
     maximize: model.getDefaultMaximize(),
     model,
     playing: false,
     settings: false,
     speed: DEFAULT_SPEED,
-    themeType: "light",
+    ...loadStateFromLocalStorage(), // audio, diagnostics, fontSize, highlight, themeType
   };
 };
 
@@ -59,10 +98,10 @@ const reducer = (state, action) => {
         speed: Math.max(MIN_SPEED, state.speed - SPEED_STEP),
       };
     case "DECREASE_FONT_SIZE":
-      return {
+      return saveStateToLocalStorage({
         ...state,
         fontSize: Math.max(MIN_FONT_SIZE, state.fontSize - FONT_SIZE_STEP),
-      };
+      });
     case "HIDE_CONTROLS":
       return { ...state, controls: false };
     case "HIDE_SETTINGS":
@@ -73,12 +112,12 @@ const reducer = (state, action) => {
         speed: Math.min(MAX_SPEED, state.speed + SPEED_STEP),
       };
     case "INCREASE_FONT_SIZE":
-      return {
+      return saveStateToLocalStorage({
         ...state,
         fontSize: Math.min(MAX_FONT_SIZE, state.fontSize + FONT_SIZE_STEP),
-      };
+      });
     case "RESET_FONT_SIZE":
-      return { ...state, fontSize: DEFAULT_FONT_SIZE };
+      return saveStateToLocalStorage({ ...state, fontSize: DEFAULT_FONT_SIZE });
     case "RESET_SPEED":
       return { ...state, speed: DEFAULT_SPEED };
     case "SET_CHANT_SET":
@@ -89,7 +128,7 @@ const reducer = (state, action) => {
         playing: Boolean(action.chantSet),
       };
     case "SET_FONT_SIZE":
-      return { ...state, fontSize: action.fontSize };
+      return saveStateToLocalStorage({ ...state, fontSize: action.fontSize });
     case "SET_FULL_SCREEN":
       return { ...state, fullScreen: action.fullScreen };
     case "SET_MAXIMIZE":
@@ -101,22 +140,25 @@ const reducer = (state, action) => {
     case "STOP_PLAYING":
       return { ...state, playing: false };
     case "TOGGLE_AUDIO":
-      return { ...state, audio: !state.audio };
+      return saveStateToLocalStorage({ ...state, audio: !state.audio });
     case "TOGGLE_DIAGNOSTICS":
-      return { ...state, diagnostics: !state.diagnostics };
+      return saveStateToLocalStorage({
+        ...state,
+        diagnostics: !state.diagnostics,
+      });
     case "TOGGLE_FULL_SCREEN":
       return { ...state, fullScreen: !state.fullScreen };
     case "TOGGLE_HIGHLIGHT":
-      return { ...state, highlight: !state.highlight };
+      return saveStateToLocalStorage({ ...state, highlight: !state.highlight });
     case "TOGGLE_PLAYING":
       return { ...state, playing: !state.playing };
     case "TOGGLE_SETTINGS":
       return { ...state, settings: !state.settings };
     case "TOGGLE_THEME_TYPE":
-      return {
+      return saveStateToLocalStorage({
         ...state,
         themeType: state.themeType === "light" ? "dark" : "light",
-      };
+      });
     default:
       throw new Error(`Unknown action type ${action.type}`);
   }
