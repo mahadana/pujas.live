@@ -156,6 +156,7 @@ const useStyles = makeStyles((theme) => ({
     "&:focus": {
       outline: "none",
     },
+    scrollbarWidth: "none", // Firefox
     "&::-webkit-scrollbar ": {
       display: "none",
     },
