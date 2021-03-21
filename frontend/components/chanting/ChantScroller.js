@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
   },
   close: {
     position: "absolute",
-    zIndex: 300,
+    zIndex: 400,
     top: 0,
     right: 0,
     width: "3.75rem",
@@ -98,10 +98,10 @@ const useStyles = makeStyles((theme) => ({
   },
   diagnostics: {
     position: "absolute",
-    zIndex: 500,
+    zIndex: 300,
     top: 0,
     left: 0,
-    width: "100%",
+    maxWidth: "100%",
     padding: "4px",
     overflow: "hidden",
     backgroundColor: "black",
@@ -166,7 +166,7 @@ const useStyles = makeStyles((theme) => ({
   },
   settingsButton: {
     position: "absolute",
-    zIndex: 300,
+    zIndex: 400,
     bottom: 0,
     right: 0,
     width: "3.75rem",
@@ -209,7 +209,7 @@ const ChantScrollerInner = memo(({ dispatch, state }) => {
         {model?.chantSet && <ChantSet chantSet={model.chantSet} />}
       </div>
       <div className={clsx(classes.close, "chant-controls")}>
-        <ChantCloseButton dispatch={dispatch} model={model} />
+        <ChantCloseButton dispatch={dispatch} model={model} state={state} />
       </div>
       <div className={clsx(classes.operations, "chant-controls")}>
         <ChantPlayButton dispatch={dispatch} state={state} />
