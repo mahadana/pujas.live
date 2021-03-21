@@ -4,6 +4,9 @@ import DailyRotateFile from "winston-daily-rotate-file";
 
 const logDir = resolve(__dirname, "..", "..", "logs", "worker");
 
+export const cleanMessage = (message) =>
+  String(message).replace(/key=\S+/g, "[REMOVED]");
+
 const logger = createLogger({
   level: "info",
   transports: [
@@ -13,7 +16,7 @@ const logger = createLogger({
         format.timestamp(),
         format.printf(
           ({ timestamp, [Symbol.for("message")]: message }) =>
-            `${timestamp} ${message}`
+            `${timestamp} ${cleanMessage(message)}`
         )
       ),
       dirname: logDir,
