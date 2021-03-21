@@ -6,7 +6,7 @@ set -eu
 SCRIPT_PATH="$(realpath "$0")"
 cd "$(dirname "$0")/.."
 
-LOG_NAME="pujas.live-deploy"
+LOG_NAME="deploy"
 LOG_DIR="$(pwd)/logs/deploy"
 LOG_FILE="$LOG_NAME-$(date +%Y-%m-%d).log"
 LOG_PATH="$LOG_DIR/$LOG_FILE"
