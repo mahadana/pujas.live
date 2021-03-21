@@ -60,6 +60,44 @@ systemctl restart webhook.service
 mkdir -p "$BASE_DIR/logs/worker"
 chown 1000:1000 "$BASE_DIR/logs/worker"
 
+# The following to support IPv6...
+
+test -x /usr/sbin/xinetd || apt-get -y install xinetd
+
+IPV6_ADDRESS=$(ip -o -6 addr show eth0 | head -1 | sed 's_^.*inet6 \(.*\)/[0-9].*$_\1_')
+
+cat <<EOF > /etc/xinetd.d/pujas-live
+service pujas-live-ipv6-http-proxy
+{
+  bind            = $IPV6_ADDRESS
+  disable         = no
+  flags           = IPv6
+  port            = 80
+  protocol        = tcp
+  redirect        = 127.0.0.1 80
+  socket_type     = stream
+  type            = UNLISTED
+  user            = nobody
+  wait            = no
+}
+
+service pujas-live-ipv6-https-proxy
+{
+  bind            = $IPV6_ADDRESS
+  disable         = no
+  flags           = IPv6
+  port            = 443
+  protocol        = tcp
+  redirect        = 127.0.0.1 443
+  socket_type     = stream
+  type            = UNLISTED
+  user            = nobody
+  wait            = no
+}
+EOF
+
+systemctl reload xinetd.service
+
 "$BASE_DIR/server/deploy.sh"
 
 echo "GitHub webhook secret: $(cat "$WEBHOOK_SECRET")"
