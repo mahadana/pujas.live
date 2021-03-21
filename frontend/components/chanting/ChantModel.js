@@ -155,6 +155,7 @@ class ChantModel {
   }
 
   detach() {
+    this._resetActive();
     window.removeEventListener("resize", this._onResize);
     document.removeEventListener("click", this._onClick);
     document.removeEventListener("keydown", this._onKeyDown, { capture: true });
