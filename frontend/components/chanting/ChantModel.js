@@ -209,22 +209,27 @@ class ChantModel {
     if (!this.state.disableFullScreen) {
       if (force || this.fullScreenTimeout <= TIMEOUT_FULL_SCREEN) {
         this._updateFullScreenCheck();
+        const handleFullScreenPromise = (promise) => {
+          if (promise?.then) {
+            promise.then(() => this._focusScroller()).catch(console.error);
+          } else {
+            setTimeout(() => {
+              // Fix for iPad/iOS
+              if (this.chantSet) this._resetDimensions();
+              this._focusScroller();
+            }, 500);
+          }
+        };
         if (fullScreen && !this.fullScreenCheck) {
           this.fullScreenCheck = true;
           this.fullScreenTimeout = TIMEOUT_FULL_SCREEN * 2;
           this.domAccessCount += 1;
-          this.containerEl
-            .requestFullscreen()
-            ?.then?.(() => this._focusScroller())
-            ?.catch?.(console.error);
+          handleFullScreenPromise(this.containerEl.requestFullscreen());
         } else if (!fullScreen && this.fullScreenCheck) {
           this.fullScreenCheck = false;
           this.fullScreenTimeout = TIMEOUT_FULL_SCREEN * 2;
           this.domAccessCount += 1;
-          document
-            .exitFullscreen()
-            ?.then?.(() => this._focusScroller())
-            ?.catch?.(console.error);
+          handleFullScreenPromise(document.exitFullscreen());
         }
       }
     }
@@ -1033,7 +1038,6 @@ class ChantModel {
       this._initializeDimensions();
       const [position] = this._getPositionFromTime(this.time);
       this._scrollToPosition(position);
-      this.velocity = 0;
     }
   }
 
