@@ -706,7 +706,7 @@ class ChantModel {
         this.scrollState === STATE_CATCHUP)
     ) {
       const mpState = this.mediaPlayer.state;
-      if (this.state.playing && this.visible) {
+      if (this.state.playing && this.visible && this.state.view === "CHANT") {
         if (mpState === "ENDED") {
           this.dispatch({ type: "STOP_PLAYING" });
           this.state.playing = false; // do not wait for React
